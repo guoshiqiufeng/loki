@@ -100,21 +100,3 @@ public class TestListener implements MessageListener<TestEntity> {
 }
 
 ```
-
-### 任务目标
-
-> 0.0.1 基于rocketmq 5.x完成基础功能实现
-
-- [x] Mapper send
-- [x] Mapper async send
-- [x] listener
-
-> 0.0.2 rocketmq 5.x配置
-
-- [ ] 发送配置
-- [ ] 监听配置
-
-> 0.1.0 添加注解支持
-
-- [ ] 注解 send
-- [ ] 注解 async send
