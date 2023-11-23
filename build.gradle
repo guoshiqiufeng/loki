@@ -1,0 +1,105 @@
+import java.time.LocalDateTime
+
+allprojects {
+    group APP_GROUP
+    version APP_VERSION
+}
+
+ext {
+    configuration = [
+            javaVersion = JavaVersion.VERSION_21
+    ]
+
+    libraries = [
+            springBootVersion = '2.7.17',
+            rocketMqVersion = '5.0.5'
+    ]
+
+    lib = [
+            "slf4j-api"           : "org.slf4j:slf4j-api:1.7.36",
+            "rocketmq-client-java": "org.apache.rocketmq:rocketmq-client-java:${rocketMqVersion}",
+            "fastjson2"           : "com.alibaba.fastjson2:fastjson2:2.0.42",
+            "logback-classic"     : "ch.qos.logback:logback-classic:1.4.11",
+            "hutool-all"          : "cn.hutool:hutool-all:5.8.23",
+    ]
+}
+
+description = "简化mq使用"
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: "io.freefair.lombok"
+    apply plugin: 'com.github.hierynomus.license'
+
+    sourceCompatibility = "${javaVersion}"
+    targetCompatibility = "${javaVersion}"
+
+    lombok {
+        version = "1.18.30"
+    }
+
+    compileJava {
+        options.release = 8
+    }
+
+    repositories {
+        mavenLocal()
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+    }
+
+    jar {
+        into("META-INF/") {
+            from rootProject.file("LICENSE")
+        }
+        afterEvaluate {
+            manifest {
+                attributes 'Implementation-Title': archiveBaseName
+                attributes 'Implementation-Version': archiveVersion
+                attributes 'Built-Gradle': gradle.gradleVersion
+                attributes 'Bundle-DocURL': 'https://guoshiqiufeng.github.io/'
+                attributes 'Build-OS': System.getProperty("os.name")
+                attributes 'Built-By': System.getProperty("user.name")
+                attributes 'Build-Jdk': System.getProperty("java.version")
+                attributes 'Build-Timestamp': LocalDateTime.now().format("yyyy-MM-dd HH:mm:ss")
+                attributes 'Automatic-Module-Name': "${project.group}.${project.name.replaceAll("-", ".")}"
+            }
+        }
+    }
+
+    license {
+        encoding = "UTF-8"
+        header = rootProject.file("license.txt")
+        includes(["**/*.java", "**/*.kt"])
+        mapping {
+            java = "SLASHSTAR_STYLE"
+            kt = "SLASHSTAR_STYLE"
+        }
+        ignoreFailures = true
+        ext.year = Calendar.getInstance().get(Calendar.YEAR)
+    }
+
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    javadoc {
+        afterEvaluate {
+            configure(options) {
+                encoding "UTF-8"
+                charSet 'UTF-8'
+                author true
+                version true
+                failOnError false
+                links "http://docs.oracle.com/javase/8/docs/api"
+            }
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}

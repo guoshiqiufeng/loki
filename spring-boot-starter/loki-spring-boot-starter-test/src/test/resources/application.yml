@@ -1,0 +1,11 @@
+server:
+  port: 8889
+
+logging:
+  level:
+    com.github.guoshiqiufeng.loki: debug
+loki:
+  global-config:
+    mq-config:
+      mq-type: ROCKET_MQ
+

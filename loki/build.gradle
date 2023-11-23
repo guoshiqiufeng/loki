@@ -1,0 +1,9 @@
+dependencies {
+    api project(":loki-annotation")
+    api project(":loki-core")
+
+    implementation "${lib.'rocketmq-client-java'}"
+    // implementation 'org.apache.rocketmq:rocketmq-client:5.1.4'
+    // implementation 'org.apache.rocketmq:rocketmq-client-java:5.0.5'
+    // testImplementation project(path: ':loki-annotation')
+}

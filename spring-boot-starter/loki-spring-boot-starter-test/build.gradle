@@ -1,0 +1,9 @@
+dependencies {
+    api project(":spring-boot-starter:loki-spring-boot-starter")
+    implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    api "org.springframework.boot:spring-boot-autoconfigure"
+    api "org.springframework.boot:spring-boot-starter-test"
+
+    testImplementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    testImplementation("${lib.'fastjson2'}")
+}

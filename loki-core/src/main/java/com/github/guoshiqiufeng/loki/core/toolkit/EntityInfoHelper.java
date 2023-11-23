@@ -1,0 +1,87 @@
+package com.github.guoshiqiufeng.loki.core.toolkit;
+
+import com.github.guoshiqiufeng.loki.annotation.MessageKey;
+import com.github.guoshiqiufeng.loki.annotation.MessageName;
+import com.github.guoshiqiufeng.loki.core.entity.MessageInfo;
+import com.github.guoshiqiufeng.loki.core.exception.LokiException;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.shaded.commons.lang3.StringUtils;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+/**
+ * @author yanghq
+ * @version 1.0
+ * @since 2023/11/22 13:33
+ */
+@Slf4j
+@UtilityClass
+public class EntityInfoHelper {
+
+    public MessageInfo getMessageInfo(Class<?> entityClass) {
+        MessageInfo result = new MessageInfo();
+        // 获取实体注解中信息
+        MessageName annotation = getAnnotation(entityClass, MessageName.class);
+        if (annotation == null) {
+            throw new LokiException("send entity is not set MessageName annotation");
+        }
+        // 获取topic
+        String topic = annotation.topic();
+        if (StringUtils.isEmpty(topic)) {
+            throw new LokiException("send entity topic is empty");
+        }
+        // 获取tag
+        String tag = annotation.tag();
+        // 获取生产者
+        String producer = annotation.producer();
+        // 获取消费者分组
+        String consumerGroup = annotation.consumerGroup();
+        // 获取延时
+        long deliveryTimestamp = annotation.deliveryTimestamp();
+        result.setTopic(topic)
+                .setTag(tag)
+                .setProducer(producer)
+                .setConsumerGroup(consumerGroup)
+                .setDeliveryTimestamp(deliveryTimestamp);
+        return result;
+    }
+
+    public String[] getMessageKeys(Class<?> entityClass, Object entity) {
+        Set<String> keys = new HashSet<>();
+        Field[] declaredFields = entityClass.getDeclaredFields();
+        for (Field declaredField : declaredFields) {
+            MessageKey messageKeyAnnotation = declaredField.getAnnotation(MessageKey.class);
+            if (messageKeyAnnotation != null) {
+                try {
+                    declaredField.setAccessible(true);
+                    Object value = declaredField.get(entity);
+                    String messageKey = Optional.ofNullable(value)
+                            .map(Object::toString).orElse(null);
+                    log.debug("EntityInfoHelper# send message key:{}", messageKey);
+                    if (messageKey != null) {
+                        keys.add(messageKey);
+                    }
+                } catch (Exception e) {
+                    throw new LokiException("send entity get message key error");
+                }
+            }
+        }
+        if (keys.isEmpty()) {
+            return null;
+        }
+        return keys.toArray(new String[0]);
+    }
+
+    /**
+     * 获取注解
+     */
+    private static <T extends Annotation> T getAnnotation(AnnotatedElement element, Class<T> annotationType) {
+        return element.getAnnotation(annotationType);
+    }
+}

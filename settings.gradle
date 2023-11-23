@@ -1,0 +1,26 @@
+buildscript {
+    repositories {
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url "https://maven.aliyun.com/repository/gradle-plugin" }
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencies {
+        //noinspection DifferentKotlinGradleVersion
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20-Beta2"
+        classpath "gradle.plugin.com.hierynomus.gradle.plugins:license-gradle-plugin:0.16.1"
+        classpath "io.freefair.gradle:lombok-plugin:8.4"
+    }
+}
+
+rootProject.name = 'loki-root'
+include 'loki'
+include 'loki-annotation'
+include 'loki-core'
+include 'loki-bom'
+include 'spring-boot-starter'
+include 'spring-boot-starter:loki-spring-boot-autoconfigure'
+include 'spring-boot-starter:loki-spring-boot-starter-test'
+include 'spring-boot-starter:loki-spring-boot-starter'
+
