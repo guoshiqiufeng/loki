@@ -3,7 +3,7 @@ server:
 
 logging:
   level:
-    com.github.guoshiqiufeng.loki: debug
+    io.github.guoshiqiufeng.loki: debug
 loki:
   global-config:
     mq-config:

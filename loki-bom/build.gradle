@@ -12,7 +12,7 @@ apply plugin: "io.spring.dependency-management"
 
 dependencyManagement {
     dependencies {
-        dependency "com.github.guoshiqiufeng:loki-annotation:${APP_VERSION}"
-        dependency "com.github.guoshiqiufeng:loki-core:${APP_VERSION}"
+        dependency "io.github.guoshiqiufeng:loki-annotation:${APP_VERSION}"
+        dependency "io.github.guoshiqiufeng:loki-core:${APP_VERSION}"
     }
 }

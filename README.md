@@ -1,6 +1,6 @@
 ## loki
 
-[![Maven central](https://img.shields.io/maven-central/v/com.github.guoshiqiufeng/loki.svg?style=flat-square)](https://search.maven.org/search?q=g:com.github.guoshiqiufeng%20AND%20a:loki)
+[![Maven central](https://img.shields.io/maven-central/v/io.github.guoshiqiufeng/loki.svg?style=flat-square)](https://search.maven.org/search?q=g:io.github.guoshiqiufeng%20AND%20a:loki)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 ## loki介绍
@@ -23,14 +23,14 @@
 - groovy
 
 ```groovy
-    api project("com.github.guoshiqiufeng:loki-spring-boot-starter:0.0.1")
+    api project("io.github.guoshiqiufeng:loki-spring-boot-starter:0.0.1")
 ```
 
 - maven
 
 ```maven
    <dependency>
-        <groupId>com.github.guoshiqiufeng</groupId>
+        <groupId>io.github.guoshiqiufeng</groupId>
         <artifactId>loki-spring-boot-starter</artifactId>
         <version>0.0.1</version>
    </dependency>
