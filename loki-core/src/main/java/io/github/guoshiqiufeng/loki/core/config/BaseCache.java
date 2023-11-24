@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 缓存类
  * @author yanghq
  * @version 1.0
  * @since 2023/11/21 14:07
@@ -31,28 +32,9 @@ public class BaseCache {
                                  HandlerHolder handlerHolder) {
         // 初始化baseMapper的所有实现类实例
         BaseMapperImpl<?> baseMapper = new BaseMapperImpl<>();
-        //baseMapper.setLokiProperties(lokiProperties);
         baseMapper.setHandlerHolder(handlerHolder);
         baseMapper.setEntityClass(entityClass);
         baseMapperInstanceMap.put(mapperInterface, baseMapper);
-//
-//        // 初始化entity中所有字段(注解策略生效)
-//        Map<String, Method> invokeMethodsMap = initInvokeMethodsMap(entityClass);
-//        baseEsEntityMethodMap.putIfAbsent(entityClass, invokeMethodsMap);
-//
-//        EntityInfo entityInfo = EntityInfoHelper.getEntityInfo(entityClass);
-//        // 初始化嵌套类中的所有方法
-//        Set<Class<?>> allNestedClass = entityInfo.getAllNestedClass();
-//        if (CollectionUtils.isNotEmpty(allNestedClass)) {
-//            allNestedClass.forEach(nestedClass -> {
-//                Map<String, Method> nestedInvokeMethodsMap = initInvokeMethodsMap(nestedClass);
-//                baseEsEntityMethodMap.putIfAbsent(nestedClass, nestedInvokeMethodsMap);
-//            });
-//        }
-//
-//        // 初始化父子类型JoinField中的所有方法
-//        Map<String, Method> joinInvokeMethodsMap = initInvokeMethodsMap(entityInfo.getJoinFieldClass());
-//        BaseCache.baseEsEntityMethodMap.putIfAbsent(entityInfo.getJoinFieldClass(), joinInvokeMethodsMap);
     }
 
     /**

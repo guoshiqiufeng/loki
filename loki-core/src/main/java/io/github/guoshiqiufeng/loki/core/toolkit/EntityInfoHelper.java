@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
+ * 实体信息工具类
  * @author yanghq
  * @version 1.0
  * @since 2023/11/22 13:33
@@ -24,6 +25,11 @@ import java.util.Set;
 @UtilityClass
 public class EntityInfoHelper {
 
+    /**
+     * 获取消息信息
+     * @param entityClass 实体类class
+     * @return 消息信息
+     */
     public MessageInfo getMessageInfo(Class<?> entityClass) {
         MessageInfo result = new MessageInfo();
         // 获取实体注解中信息
@@ -52,6 +58,12 @@ public class EntityInfoHelper {
         return result;
     }
 
+    /**
+     * 获取消息key
+     * @param entityClass 实体类class
+     * @param entity 实体类
+     * @return 消息key
+     */
     public String[] getMessageKeys(Class<?> entityClass, Object entity) {
         Set<String> keys = new HashSet<>();
         Field[] declaredFields = entityClass.getDeclaredFields();

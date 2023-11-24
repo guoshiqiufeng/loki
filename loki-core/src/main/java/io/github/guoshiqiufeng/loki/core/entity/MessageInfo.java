@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
+ * 消息信息
  * @author yanghq
  * @version 1.0
  * @since 2023/11/22 13:38

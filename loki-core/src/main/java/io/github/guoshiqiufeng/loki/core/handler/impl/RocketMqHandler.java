@@ -4,7 +4,7 @@ import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.core.toolkit.ProductUtils;
+import io.github.guoshiqiufeng.loki.core.toolkit.RocketMqConfigUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
@@ -43,6 +43,16 @@ public class RocketMqHandler extends AbstractHandler {
         super.init();
     }
 
+    /**
+     * 发送消息
+     * @param producerName      生产者名称
+     * @param topic             消息主题
+     * @param tag               消息标签
+     * @param body           消息内容
+     * @param deliveryTimestamp 延时发送时间
+     * @param keys              keys
+     * @return messageId 消息id
+     */
     @Override
     public String send(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
         if (StringUtils.isEmpty(topic)) {
@@ -55,7 +65,7 @@ public class RocketMqHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            Producer producer = ProductUtils.getProducer(producerName, properties);
+            Producer producer = RocketMqConfigUtils.getProducer(producerName, properties);
             MessageBuilder messageBuilder = new MessageBuilderImpl()
                     .setTopic(topic);
             if (StringUtils.isNoneBlank(tag)) {
@@ -80,6 +90,16 @@ public class RocketMqHandler extends AbstractHandler {
         }
     }
 
+    /**
+     * 异步发送消息
+     * @param producerName
+     * @param topic   消息主题
+     * @param tag
+     * @param body 消息内容
+     * @param deliveryTimestamp
+     * @param keys
+     * @return messageId 消息id
+     */
     @Override
     public CompletableFuture<String> sendAsync(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
         if (StringUtils.isEmpty(topic)) {
@@ -92,7 +112,7 @@ public class RocketMqHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            Producer producer = ProductUtils.getProducer(producerName, properties);
+            Producer producer = RocketMqConfigUtils.getProducer(producerName, properties);
             MessageBuilder messageBuilder = new MessageBuilderImpl()
                     .setTopic(topic);
             if (StringUtils.isNoneBlank(tag)) {
@@ -115,6 +135,13 @@ public class RocketMqHandler extends AbstractHandler {
         }
     }
 
+    /**
+     * 消息监听
+     * @param consumerGroup
+     * @param topic
+     * @param tag
+     * @param function
+     */
     @Override
     public void pushMessageListener(String consumerGroup, String topic, String tag, Function<MessageContent<String>, Void> function) {
         if (StringUtils.isEmpty(topic)) {
@@ -122,7 +149,7 @@ public class RocketMqHandler extends AbstractHandler {
             return;
         }
         try {
-            PushConsumerBuilder pushConsumerBuilder = ProductUtils.getPushConsumerBuilder(properties);
+            PushConsumerBuilder pushConsumerBuilder = RocketMqConfigUtils.getPushConsumerBuilder(properties);
             if (StringUtils.isEmpty(tag)) {
                 tag = "*";
             }

@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 /**
  * 代理类
  *
- * @param <T>
+ * @param <T> 代理类泛型
  */
 public class MapperProxy<T> implements InvocationHandler, Serializable {
     private static final long serialVersionUID = -523967211560155711L;

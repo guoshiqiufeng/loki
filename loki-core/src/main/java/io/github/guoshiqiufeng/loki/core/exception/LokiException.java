@@ -3,6 +3,7 @@ package io.github.guoshiqiufeng.loki.core.exception;
 import lombok.AllArgsConstructor;
 
 /**
+ * 异常类
  * @author yanghq
  * @version 1.0
  * @since 2023/11/10 14:17

@@ -73,6 +73,14 @@ public interface Handler {
      */
     CompletableFuture<String> sendAsync(String producerName, String topic, String tag, String message, Long deliveryTimestamp, String... keys);
 
+    /**
+     * 消息监听
+     *
+     * @param consumerGroup 消费分组
+     * @param topic         消息主题
+     * @param tag           消息标签
+     * @param function      消息处理函数
+     */
     void pushMessageListener(String consumerGroup, String topic, String tag, Function<MessageContent<String>, Void> function);
 
 }

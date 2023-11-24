@@ -27,16 +27,6 @@ public class GlobalConfig implements Serializable {
      */
     private MqConfig mqConfig;
 
-    /**
-     * 队列配置
-     */
-    private TopicConfig topicConfig;
-
-    @Data
-    public static class TopicConfig {
-
-    }
-
 
     @Data
     @Accessors(chain = true)

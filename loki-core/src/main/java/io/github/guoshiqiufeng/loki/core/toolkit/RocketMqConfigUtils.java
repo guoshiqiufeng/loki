@@ -14,16 +14,26 @@ import java.time.Duration;
 import java.util.Map;
 
 /**
+ * RocketMq配置工具类
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/11/18 10:03
  */
 @Slf4j
 @UtilityClass
-public class ProductUtils {
+public class RocketMqConfigUtils {
 
     private final Map<String, Producer> producerMap = Maps.newHashMap();
 
+    /**
+     * 获取 Producer
+     *
+     * @param beanName   beanName
+     * @param properties 配置
+     * @return Producer
+     * @throws ClientException ClientException
+     */
     public Producer getProducer(String beanName, LokiProperties properties) throws ClientException {
         if (beanName == null || beanName.isEmpty()) {
             beanName = "defaultProducer";
@@ -38,6 +48,14 @@ public class ProductUtils {
         return producerMap.get(beanName);
     }
 
+    /**
+     * 创建 Producer
+     *
+     * @param beanName   beanName
+     * @param properties 配置
+     * @return Producer
+     * @throws ClientException ClientException
+     */
     public Producer producerBuilder(String beanName, LokiProperties properties) throws ClientException {
         ClientConfiguration clientConfiguration = getClientConfiguration(properties);
         ClientServiceProvider provider = ClientServiceProvider.loadService();
@@ -52,6 +70,11 @@ public class ProductUtils {
         return producer;
     }
 
+    /**
+     * 获取 PushConsumerBuilder
+     * @param properties 配置
+     * @return PushConsumerBuilder
+     */
     public PushConsumerBuilder getPushConsumerBuilder(LokiProperties properties) {
         ClientConfiguration clientConfiguration = getClientConfiguration(properties);
         ClientServiceProvider provider = ClientServiceProvider.loadService();

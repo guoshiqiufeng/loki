@@ -6,7 +6,7 @@ import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.Handler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.handler.impl.RocketMqHandler;
-import io.github.guoshiqiufeng.loki.core.toolkit.ProductUtils;
+import io.github.guoshiqiufeng.loki.core.toolkit.RocketMqConfigUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.apache.rocketmq.client.apis.producer.Producer;
@@ -39,7 +39,7 @@ public class LokiAutoConfiguration {
     //@ConditionalOnProperty(prefix = "loki.global-config.mq-config.mq-type", name = "ROCKET_MQ")
     @ConditionalOnMissingBean(Producer.class)
     public Producer defaultProducer(LokiProperties properties) throws ClientException {
-        return ProductUtils.producerBuilder("defaultProducer", properties);
+        return RocketMqConfigUtils.producerBuilder("defaultProducer", properties);
     }
 
     @Bean

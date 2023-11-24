@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.CompletableFuture;
 
 /**
+ * 基础mapper实现类
  * @author yanghq
  * @version 1.0
  * @since 2023/11/21 16:24
@@ -25,6 +26,12 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
     @Setter
     private Class<?> entityClass;
 
+    /**
+     * 发送消息
+     *
+     * @param entity 消息实体
+     * @return messageId 消息id
+     */
     @Override
     public String send(T entity) {
         if (entity == null) {
@@ -42,6 +49,12 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
                 messageInfo.getTopic(), messageInfo.getTag(), message, messageInfo.getDeliveryTimestamp(), messageKeys);
     }
 
+    /**
+     * 发送异步消息
+     *
+     * @param entity 消息实体
+     * @return messageId 消息id
+     */
     @Override
     public CompletableFuture<String> sendAsync(T entity) {
         if (entity == null) {

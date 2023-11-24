@@ -3,6 +3,7 @@ package io.github.guoshiqiufeng.loki.core.mapper;
 import java.util.concurrent.CompletableFuture;
 
 /**
+ * 基础mapper
  * @author yanghq
  * @version 1.0
  * @since 2023/11/10 14:51
