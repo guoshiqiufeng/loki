@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
+ * Loki配置类-springboot
  * @author yanghq
  * @version 1.0
  * @since 2023/11/24 15:00
