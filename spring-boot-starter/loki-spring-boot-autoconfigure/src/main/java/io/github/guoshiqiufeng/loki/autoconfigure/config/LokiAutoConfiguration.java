@@ -30,9 +30,9 @@ public class LokiAutoConfiguration {
 
     @Bean
     @ConfigurationProperties(prefix = "loki")
-    @ConditionalOnMissingBean(LokiProperties.class)
-    public LokiProperties lokiProperties() {
-        return new LokiProperties();
+    @ConditionalOnMissingBean(AutoConfigurationProperties.class)
+    public AutoConfigurationProperties lokiProperties() {
+        return new AutoConfigurationProperties();
     }
 
     @Bean
