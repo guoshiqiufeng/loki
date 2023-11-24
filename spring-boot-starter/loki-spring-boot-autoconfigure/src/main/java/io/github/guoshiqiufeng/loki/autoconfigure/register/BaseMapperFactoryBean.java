@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.lang.reflect.Proxy;
 
 /**
+ * BaseMapper工厂类
  * @author yanghq
  * @version 1.0
  * @since 2023/11/15 16:08
