@@ -11,7 +11,6 @@ import java.util.Map;
  * @version 1.0
  * @since 2023/11/16 14:10
  */
-@NoArgsConstructor
 public class HandlerHolder {
 
     private final Map<Integer, Handler> handlers = new HashMap<Integer, Handler>(128);
@@ -34,4 +33,8 @@ public class HandlerHolder {
         return handlers.get(type);
     }
 
+    /**
+     * 构造方法
+     */
+    public HandlerHolder() {}
 }
