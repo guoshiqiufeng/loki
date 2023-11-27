@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 /**
  * 代理类
  *
+ * @author yanghq
  * @param <T> 代理类泛型
  */
 public class MapperProxy<T> implements InvocationHandler, Serializable {

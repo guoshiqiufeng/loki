@@ -67,9 +67,13 @@ public interface Handler {
     /**
      * 异步发送消息
      *
-     * @param topic   消息主题
-     * @param message 消息内容
-     * @return
+     * @param producerName      生产者名称
+     * @param topic             消息主题
+     * @param tag               消息标签
+     * @param message           消息内容
+     * @param deliveryTimestamp 延时发送时间
+     * @param keys              keys
+     * @return messageId 消息id
      */
     CompletableFuture<String> sendAsync(String producerName, String topic, String tag, String message, Long deliveryTimestamp, String... keys);
 

@@ -20,7 +20,7 @@ public class BaseCache {
     /**
      * 用于存放BaseMapper的所有实例
      */
-    private static final Map<Class<?>, BaseMapper<?>> baseMapperInstanceMap = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, BaseMapper<?>> BASE_MAPPER_INSTANCE_MAP = new ConcurrentHashMap<>();
 
     /**
      * 初始化缓存
@@ -34,7 +34,7 @@ public class BaseCache {
         BaseMapperImpl<?> baseMapper = new BaseMapperImpl<>();
         baseMapper.setHandlerHolder(handlerHolder);
         baseMapper.setEntityClass(entityClass);
-        baseMapperInstanceMap.put(mapperInterface, baseMapper);
+        BASE_MAPPER_INSTANCE_MAP.put(mapperInterface, baseMapper);
     }
 
     /**
@@ -44,7 +44,7 @@ public class BaseCache {
      * @return 实现类
      */
     public static BaseMapper<?> getBaseMapperInstance(Class<?> mapperInterface) {
-        return Optional.ofNullable(baseMapperInstanceMap.get(mapperInterface))
+        return Optional.ofNullable(BASE_MAPPER_INSTANCE_MAP.get(mapperInterface))
                 .orElseThrow(() -> new LokiException("No interface instance exists ", mapperInterface));
     }
 }

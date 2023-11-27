@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @Configuration
-//@ConditionalOnProperty(prefix = "loki", name = "enabled", matchIfMissing = true)
+/*@ConditionalOnProperty(prefix = "loki", name = "enabled", matchIfMissing = true)*/
 public class LokiAutoConfiguration {
 
     @Bean
@@ -37,7 +37,7 @@ public class LokiAutoConfiguration {
     }
 
     @Bean
-    //@ConditionalOnProperty(prefix = "loki.global-config.mq-config.mq-type", name = "ROCKET_MQ")
+    /*@ConditionalOnProperty(prefix = "loki.global-config.mq-config.mq-type", name = "ROCKET_MQ")*/
     @ConditionalOnMissingBean(Producer.class)
     public Producer defaultProducer(LokiProperties properties) throws ClientException {
         return RocketMqConfigUtils.producerBuilder("defaultProducer", properties);

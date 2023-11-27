@@ -24,10 +24,14 @@ public class GlobalConfigUtils {
      */
     public static GlobalConfig defaults() {
         return new GlobalConfig()
+                .setBanner(Boolean.TRUE)
                 .setMqConfig(
                         new GlobalConfig.MqConfig()
                                 .setMqType(MqType.ROCKET_MQ)
                                 .setAddress("127.0.0.1:8081")
+                                .setAuth(Boolean.FALSE)
+                                .setConnectTimeout(180)
+                                .setMaxAttempts(3)
                 );
     }
 }

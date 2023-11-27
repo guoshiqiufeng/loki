@@ -70,7 +70,7 @@ public class LokiRegistrar<T> {
 
                 handlerHolder.route(MqType.ROCKET_MQ.getCode()).pushMessageListener(messageInfo.getConsumerGroup(),
                         messageInfo.getTopic(), messageInfo.getTag(), messageContent -> {
-                            // log.debug("messageContent:{}", messageContent);
+                            // log.debug("messageContent:{}", messageContent)
                             String body = messageContent.getBody();
                             // TODO 序列化
                             MessageContent<T> tMessageContent = new MessageContent<T>()

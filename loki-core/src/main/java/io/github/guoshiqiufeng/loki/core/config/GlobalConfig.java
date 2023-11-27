@@ -20,7 +20,7 @@ public class GlobalConfig implements Serializable {
     /**
      * 是否开启logo
      */
-    private boolean banner = true;
+    private boolean banner;
 
     /**
      * mq配置
@@ -45,26 +45,26 @@ public class GlobalConfig implements Serializable {
         /**
          * 开启授权
          */
-        private Boolean auth = false;
+        private Boolean auth;
 
         /**
          * 用户名
          */
-        private String username = "loki";
+        private String username;
 
         /**
          * 密码
          */
-        private String password = "loki";
+        private String password;
 
         /**
          * 链接超时时间，单位秒，默认180s
          */
-        private int connectTimeout = 180;
+        private int connectTimeout;
 
         /**
-         * 发送最大尝试次数
+         * 发送最大尝试次数, 默认3次
          */
-        private int maxAttempts = 3;
+        private int maxAttempts;
     }
 }

@@ -166,7 +166,6 @@ public class RocketMqHandler extends AbstractHandler {
                         String topicName = messageView.getTopic();
                         Collection<String> keys = messageView.getKeys();
                         String body = StandardCharsets.UTF_8.decode(messageView.getBody()).toString();
-                        // log.debug("messageId={}, messageGroup={}, tagName={}, topicName={}, body={}", messageId, messageGroup, tagName, topicName, body);
                         function.apply(new MessageContent<String>()
                                 .setMessageId(messageId.toString())
                                 .setMessageGroup(messageGroup)

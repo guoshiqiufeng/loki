@@ -38,11 +38,8 @@ public class RocketMqConfigUtils {
         if (beanName == null || beanName.isEmpty()) {
             beanName = "defaultProducer";
         }
-        // TODO 获取/创建对应 Producer
         if (producerMap.get(beanName) == null) {
-            // TODO 创建 Producer
             Producer producer = producerBuilder(beanName, properties);
-            // TODO 添加到 producerMap
             producerMap.put(beanName, producer);
         }
         return producerMap.get(beanName);
@@ -81,6 +78,11 @@ public class RocketMqConfigUtils {
                 .setClientConfiguration(clientConfiguration);
     }
 
+    /**
+     * 获取 ClientConfiguration
+     * @param properties 配置
+     * @return ClientConfiguration
+     */
     private ClientConfiguration getClientConfiguration(LokiProperties properties) {
         GlobalConfig.MqConfig mqConfig = properties.getGlobalConfig().getMqConfig();
         String endpoints = mqConfig.getAddress();

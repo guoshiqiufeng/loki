@@ -77,7 +77,7 @@ public class BaseMapperComponentRegistrar implements ImportBeanDefinitionRegistr
         scanner.setResourceLoader(this.resourceLoader);
         // 过滤只获取实现了 BaseMapper接口的
         scanner.addIncludeFilter(new AssignableTypeFilter(BaseMapper.class));
-        // scanner.addIncludeFilter(new AssignableTypeFilter(MessageListener.class));
+
         for (String basePackage : basePackages) {
             Set<BeanDefinition> candidateComponents = scanner.findCandidateComponents(basePackage);
             for (BeanDefinition beanDefinition : candidateComponents) {
