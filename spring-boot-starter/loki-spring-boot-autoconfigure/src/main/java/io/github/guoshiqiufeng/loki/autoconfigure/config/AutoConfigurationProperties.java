@@ -5,6 +5,7 @@ import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.toolkit.GlobalConfigUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
@@ -27,4 +28,10 @@ public class AutoConfigurationProperties extends LokiProperties {
      */
     @NestedConfigurationProperty
     private GlobalConfig globalConfig = GlobalConfigUtils.defaults();
+
+    /**
+     * 构造函数
+     */
+    public AutoConfigurationProperties() {
+    }
 }

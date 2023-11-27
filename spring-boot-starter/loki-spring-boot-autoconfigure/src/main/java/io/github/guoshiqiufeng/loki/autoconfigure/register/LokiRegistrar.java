@@ -18,10 +18,11 @@ import java.util.Optional;
 
 /**
  * loki注册类
+ *
+ * @param <T> 监听器消息类型
  * @author yanghq
  * @version 1.0
  * @since 2023/11/16 13:41
- * @param <T> 监听器消息类型
  */
 @Slf4j
 public class LokiRegistrar<T> {
@@ -31,6 +32,13 @@ public class LokiRegistrar<T> {
     private final LokiProperties lokiProperties;
     private final List<MessageListener<T>> messageListenerList;
 
+    /**
+     * 构造函数
+     *
+     * @param handlerHolder       处理器持有者
+     * @param lokiProperties      loki配置
+     * @param messageListenerList 消息监听器列表
+     */
     public LokiRegistrar(HandlerHolder handlerHolder, LokiProperties lokiProperties, List<MessageListener<T>> messageListenerList) {
         this.handlerHolder = handlerHolder;
         this.lokiProperties = lokiProperties;
@@ -38,7 +46,9 @@ public class LokiRegistrar<T> {
         init();
     }
 
-
+    /**
+     * 初始化
+     */
     public void init() {
         // init config
         GlobalConfig globalConfig = lokiProperties.getGlobalConfig();
@@ -62,6 +72,12 @@ public class LokiRegistrar<T> {
         }
     }
 
+
+    /**
+     * 创建监听
+     *
+     * @param messageListenerList 消息监听器列表
+     */
     private void initListener(List<MessageListener<T>> messageListenerList) {
         for (MessageListener<T> messageListener : messageListenerList) {
             @SuppressWarnings("unchecked")

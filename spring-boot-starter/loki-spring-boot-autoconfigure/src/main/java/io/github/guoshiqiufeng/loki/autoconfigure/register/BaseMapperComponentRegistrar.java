@@ -1,6 +1,7 @@
 package io.github.guoshiqiufeng.loki.autoconfigure.register;
 
 import io.github.guoshiqiufeng.loki.core.mapper.BaseMapper;
+import lombok.Setter;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
@@ -34,22 +35,14 @@ public class BaseMapperComponentRegistrar implements ImportBeanDefinitionRegistr
     /**
      * 环境变量
      */
+    @Setter
     private Environment environment;
 
     /**
      * 资源加载器
      */
+    @Setter
     private ResourceLoader resourceLoader;
-
-    @Override
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
-
-    @Override
-    public void setResourceLoader(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
-    }
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry,
@@ -108,5 +101,12 @@ public class BaseMapperComponentRegistrar implements ImportBeanDefinitionRegistr
 
         BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(beanDefinition, className);
         BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, registry);
+    }
+
+    /**
+     * 构造函数
+     */
+    public BaseMapperComponentRegistrar() {
+        super();
     }
 }

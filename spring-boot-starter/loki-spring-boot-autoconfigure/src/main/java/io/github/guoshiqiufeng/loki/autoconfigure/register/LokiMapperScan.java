@@ -20,7 +20,7 @@ public @interface LokiMapperScan {
     /**
      * 扫描路径
      *
-     * @return
+     * @return 扫描路径
      */
     String[] value() default {};
 }

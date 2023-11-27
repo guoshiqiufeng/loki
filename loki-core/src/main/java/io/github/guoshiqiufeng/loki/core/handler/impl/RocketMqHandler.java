@@ -38,6 +38,11 @@ import java.util.function.Function;
 public class RocketMqHandler extends AbstractHandler {
 
 
+    /**
+     * 构造函数
+     * @param properties loki配置
+     * @param handlerHolder 具体事件处理持有者
+     */
     public RocketMqHandler(LokiProperties properties, HandlerHolder handlerHolder) {
         super(properties, handlerHolder);
         type = MqType.ROCKET_MQ.getCode();

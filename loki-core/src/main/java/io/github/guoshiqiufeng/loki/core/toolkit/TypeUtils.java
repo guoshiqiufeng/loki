@@ -1,5 +1,7 @@
 package io.github.guoshiqiufeng.loki.core.toolkit;
 
+import lombok.experimental.UtilityClass;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -7,6 +9,7 @@ import java.lang.reflect.Type;
  * 工具类用于处理类型相关操作。
  * @author yanghq
  */
+@UtilityClass
 public class TypeUtils {
 
     /**
@@ -17,7 +20,7 @@ public class TypeUtils {
      * @return 类型的Class对象
      * @throws IllegalArgumentException 如果类型不是Class或ParameterizedType
      */
-    public static Class<?> getInterfaceGenericType(Class<?> clazz, int index) {
+    public Class<?> getInterfaceGenericType(Class<?> clazz, int index) {
         // 获取类实现的接口
         Type[] genericInterfaces = clazz.getGenericInterfaces();
 
@@ -39,7 +42,7 @@ public class TypeUtils {
      * @return 类型的Class对象
      * @throws IllegalArgumentException 如果类型不是Class或ParameterizedType
      */
-    private static Class<?> checkType(Type type, int index) {
+    private Class<?> checkType(Type type, int index) {
         if (type instanceof Class<?>) {
             // 如果是Class类型，直接返回
             return (Class<?>) type;

@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * loki自动配置类
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/11/16 09:26
@@ -29,6 +30,11 @@ import java.util.List;
 /*@ConditionalOnProperty(prefix = "loki", name = "enabled", matchIfMissing = true)*/
 public class LokiAutoConfiguration {
 
+    /**
+     * 配置文件
+     *
+     * @return 配置文件
+     */
     @Bean
     @ConfigurationProperties(prefix = "loki")
     @ConditionalOnMissingBean(AutoConfigurationProperties.class)
@@ -36,24 +42,52 @@ public class LokiAutoConfiguration {
         return new AutoConfigurationProperties();
     }
 
+    /**
+     * 默认生产者
+     *
+     * @param properties loki配置
+     * @return 默认生产者
+     * @throws ClientException 异常
+     */
     @Bean
-    /*@ConditionalOnProperty(prefix = "loki.global-config.mq-config.mq-type", name = "ROCKET_MQ")*/
     @ConditionalOnMissingBean(Producer.class)
     public Producer defaultProducer(LokiProperties properties) throws ClientException {
         return RocketMqConfigUtils.producerBuilder("defaultProducer", properties);
     }
 
+    /**
+     * LokiRegistrar Bean，用于注册处理器和消息监听器
+     *
+     * @param handlerHolder       处理器持有者
+     * @param handler             处理器列表
+     * @param lokiProperties      Loki配置
+     * @param messageListenerList 消息监听器列表
+     * @param <T>                 监听器消息类型
+     * @return LokiRegistrar 实例
+     */
     @Bean
     public <T> LokiRegistrar<T> lokiRegistrar(HandlerHolder handlerHolder, List<Handler> handler, LokiProperties lokiProperties,
                                               List<MessageListener<T>> messageListenerList) {
         return new LokiRegistrar<T>(handlerHolder, lokiProperties, messageListenerList);
     }
 
+    /**
+     * HandlerHolder Bean，用于持有处理器
+     *
+     * @return HandlerHolder 实例
+     */
     @Bean
     public HandlerHolder handlerHolder() {
         return new HandlerHolder();
     }
 
+    /**
+     * Handler Bean列表，包含RocketMqHandler
+     *
+     * @param properties    Loki配置
+     * @param handlerHolder 处理器持有者
+     * @return Handler 实例列表
+     */
     @Bean
     public List<Handler> handler(LokiProperties properties, HandlerHolder handlerHolder) {
         RocketMqHandler rocketMqHandler = new RocketMqHandler(properties, handlerHolder);
@@ -62,4 +96,8 @@ public class LokiAutoConfiguration {
         return handler;
     }
 
+    /**
+     * 构造函数
+     */
+    public LokiAutoConfiguration() {}
 }
