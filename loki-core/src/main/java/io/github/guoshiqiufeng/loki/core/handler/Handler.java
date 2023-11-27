@@ -83,8 +83,8 @@ public interface Handler {
      * @param consumerGroup          消费分组
      * @param topic                  消息主题
      * @param tag                    消息标签
-     * @param consumptionThreadCount
-     * @param maxCacheMessageCount
+     * @param consumptionThreadCount 消费线数
+     * @param maxCacheMessageCount   最大缓存信息数
      * @param function               消息处理函数
      */
     void pushMessageListener(String consumerGroup, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount,

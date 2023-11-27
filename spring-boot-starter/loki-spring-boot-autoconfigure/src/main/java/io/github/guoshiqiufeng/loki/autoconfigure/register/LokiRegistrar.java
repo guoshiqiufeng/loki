@@ -21,6 +21,7 @@ import java.util.Optional;
  * @author yanghq
  * @version 1.0
  * @since 2023/11/16 13:41
+ * @param <T> 监听器消息类型
  */
 @Slf4j
 public class LokiRegistrar<T> {

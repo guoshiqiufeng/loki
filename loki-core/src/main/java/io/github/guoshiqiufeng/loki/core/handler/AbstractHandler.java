@@ -13,10 +13,15 @@ import javax.annotation.PostConstruct;
  */
 public abstract class AbstractHandler implements Handler {
 
-
+    /**
+     * loki配置
+     */
     protected LokiProperties properties;
 
 
+    /**
+     * 具体事件处理持有者
+     */
     protected HandlerHolder handlerHolder;
 
     /**
@@ -34,6 +39,11 @@ public abstract class AbstractHandler implements Handler {
         handlerHolder.putHandler(type, this);
     }
 
+    /**
+     * 构造函数
+     * @param properties loki配置
+     * @param handlerHolder 具体事件处理持有者
+     */
     public AbstractHandler(LokiProperties properties, HandlerHolder handlerHolder) {
         this.properties = properties;
         this.handlerHolder = handlerHolder;

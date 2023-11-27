@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 全局配置工具类
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/11/16 09:55
@@ -21,17 +23,18 @@ public class GlobalConfigUtils {
 
     /**
      * 获取默认 GlobalConfig
+     * @return GlobalConfig默认配置
      */
     public static GlobalConfig defaults() {
         return new GlobalConfig()
-                .setBanner(Boolean.TRUE)
+                 .setBanner(Boolean.TRUE)
                 .setMqConfig(
                         new GlobalConfig.MqConfig()
                                 .setMqType(MqType.ROCKET_MQ)
                                 .setAddress("127.0.0.1:8081")
-                                .setAuth(Boolean.FALSE)
-                                .setConnectTimeout(180)
-                                .setMaxAttempts(3)
+                                 .setAuth(Boolean.FALSE)
+                                 .setConnectTimeout(180)
+                                 .setMaxAttempts(3)
                 );
     }
 }

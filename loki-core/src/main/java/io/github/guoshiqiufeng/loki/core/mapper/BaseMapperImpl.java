@@ -21,9 +21,15 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class BaseMapperImpl<T> implements BaseMapper<T> {
 
+    /**
+     * 具体事件处理持有者
+     */
     @Setter
     private HandlerHolder handlerHolder;
 
+    /**
+     * 实体类class
+     */
     @Setter
     private Class<?> entityClass;
 
