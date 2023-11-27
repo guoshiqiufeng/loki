@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 
 /**
  * 消息信息
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/11/22 13:38
@@ -37,5 +38,15 @@ public class MessageInfo {
      * 消费者
      */
     private String consumerGroup;
+
+    /**
+     * 消费线程数
+     */
+    private Integer consumptionThreadCount;
+
+    /**
+     * 最大缓存信息数
+     */
+    private Integer maxCacheMessageCount;
 
 }

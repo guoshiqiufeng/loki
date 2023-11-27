@@ -69,7 +69,8 @@ public class LokiRegistrar<T> {
                 MessageInfo messageInfo = EntityInfoHelper.getMessageInfo(interfaceGenericType);
 
                 handlerHolder.route(MqType.ROCKET_MQ.getCode()).pushMessageListener(messageInfo.getConsumerGroup(),
-                        messageInfo.getTopic(), messageInfo.getTag(), messageContent -> {
+                        messageInfo.getTopic(), messageInfo.getTag(), messageInfo.getConsumptionThreadCount(),
+                        messageInfo.getMaxCacheMessageCount(), messageContent -> {
                             // log.debug("messageContent:{}", messageContent)
                             String body = messageContent.getBody();
                             // TODO 序列化

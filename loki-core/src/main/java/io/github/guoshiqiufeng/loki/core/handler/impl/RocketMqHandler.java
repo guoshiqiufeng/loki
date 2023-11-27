@@ -18,6 +18,7 @@ import org.apache.rocketmq.client.apis.message.MessageId;
 import org.apache.rocketmq.client.apis.producer.Producer;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
 import org.apache.rocketmq.client.java.message.MessageBuilderImpl;
+import org.apache.rocketmq.shaded.com.google.common.base.Throwables;
 import org.apache.rocketmq.shaded.commons.lang3.StringUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -92,12 +93,12 @@ public class RocketMqHandler extends AbstractHandler {
 
     /**
      * 异步发送消息
-     * @param producerName
+     * @param producerName 生产者名称
      * @param topic   消息主题
-     * @param tag
+     * @param tag 消息标签
      * @param body 消息内容
-     * @param deliveryTimestamp
-     * @param keys
+     * @param deliveryTimestamp 延时发送时间
+     * @param keys              keys
      * @return messageId 消息id
      */
     @Override
@@ -137,13 +138,16 @@ public class RocketMqHandler extends AbstractHandler {
 
     /**
      * 消息监听
-     * @param consumerGroup
-     * @param topic
-     * @param tag
-     * @param function
+     *
+     * @param consumerGroup          消费分组
+     * @param topic                  消息主题
+     * @param tag                    消息标签
+     * @param consumptionThreadCount
+     * @param maxCacheMessageCount
+     * @param function               消息处理函数
      */
     @Override
-    public void pushMessageListener(String consumerGroup, String topic, String tag, Function<MessageContent<String>, Void> function) {
+    public void pushMessageListener(String consumerGroup, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
         if (StringUtils.isEmpty(topic)) {
             log.error("RocketMqHandler# pushMessageListener error: topic is null");
             return;
@@ -158,6 +162,8 @@ public class RocketMqHandler extends AbstractHandler {
                     .setConsumerGroup(consumerGroup)
                     // Set the subscription for the consumer.
                     .setSubscriptionExpressions(Collections.singletonMap(topic, filterExpression))
+                    .setConsumptionThreadCount(consumptionThreadCount)
+                    .setMaxCacheMessageCount(maxCacheMessageCount)
                     .setMessageListener(messageView -> {
                         log.debug("Consume message={}", messageView);
                         MessageId messageId = messageView.getMessageId();
@@ -166,13 +172,18 @@ public class RocketMqHandler extends AbstractHandler {
                         String topicName = messageView.getTopic();
                         Collection<String> keys = messageView.getKeys();
                         String body = StandardCharsets.UTF_8.decode(messageView.getBody()).toString();
-                        function.apply(new MessageContent<String>()
-                                .setMessageId(messageId.toString())
-                                .setMessageGroup(messageGroup)
-                                .setTopic(topicName)
-                                .setTag(tagName)
-                                .setKeys(keys)
-                                .setBody(body));
+                        try {
+                            function.apply(new MessageContent<String>()
+                                    .setMessageId(messageId.toString())
+                                    .setMessageGroup(messageGroup)
+                                    .setTopic(topicName)
+                                    .setTag(tagName)
+                                    .setKeys(keys)
+                                    .setBody(body));
+                        } catch (Exception e) {
+                            log.error("RocketMqHandler# pushMessageListener error:{}", Throwables.getStackTraceAsString(e));
+                            return ConsumeResult.FAILURE;
+                        }
                         return ConsumeResult.SUCCESS;
                     })
                     .build();

@@ -51,9 +51,15 @@ public @interface MessageName {
     String consumerGroup() default "defaultConsumerGroup";
 
     /**
-     * 发送重试次数
+     * 消费线数
      *
      * @return 发送重试次数
      */
-    int retryTimesWhenSendFailed() default 3;
+    int consumptionThreadCount() default 20;
+
+    /**
+     * 最大缓存信息数
+     * @return 最大缓存信息数
+     */
+    int maxCacheMessageCount() default 1024;
 }
