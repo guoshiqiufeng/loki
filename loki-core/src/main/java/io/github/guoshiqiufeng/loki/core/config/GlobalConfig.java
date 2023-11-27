@@ -61,5 +61,10 @@ public class GlobalConfig implements Serializable {
          * 链接超时时间，单位秒，默认180s
          */
         private int connectTimeout = 180;
+
+        /**
+         * 发送最大尝试次数
+         */
+        private int maxAttempts = 3;
     }
 }

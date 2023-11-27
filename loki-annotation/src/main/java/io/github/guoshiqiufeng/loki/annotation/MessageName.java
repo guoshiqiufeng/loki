@@ -18,35 +18,42 @@ public @interface MessageName {
     /**
      * 主题
      *
-     * @return
+     * @return 主题
      */
     String topic();
 
     /**
      * 标签
      *
-     * @return
+     * @return 标签
      */
     String tag() default "";
 
     /**
      * 生产者
      *
-     * @return
+     * @return 生产者
      */
     String producer() default "defaultProducer";
 
     /**
      * 延时时间
      *
-     * @return
+     * @return 延时时间
      */
     long deliveryTimestamp() default 0;
 
     /**
      * 消费者组
      *
-     * @return
+     * @return 消费者组
      */
     String consumerGroup() default "defaultConsumerGroup";
+
+    /**
+     * 发送重试次数
+     *
+     * @return 发送重试次数
+     */
+    int retryTimesWhenSendFailed() default 3;
 }

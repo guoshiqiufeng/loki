@@ -1,6 +1,6 @@
 package io.github.guoshiqiufeng.loki.autoconfigure.config;
 
-import io.github.guoshiqiufeng.loki.annotation.MessageListener;
+import io.github.guoshiqiufeng.loki.MessageListener;
 import io.github.guoshiqiufeng.loki.autoconfigure.register.LokiRegistrar;
 import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.Handler;

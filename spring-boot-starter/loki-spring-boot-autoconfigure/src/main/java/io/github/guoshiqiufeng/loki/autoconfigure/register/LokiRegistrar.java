@@ -2,7 +2,7 @@ package io.github.guoshiqiufeng.loki.autoconfigure.register;
 
 import com.alibaba.fastjson2.JSON;
 import io.github.guoshiqiufeng.loki.MessageContent;
-import io.github.guoshiqiufeng.loki.annotation.MessageListener;
+import io.github.guoshiqiufeng.loki.MessageListener;
 import io.github.guoshiqiufeng.loki.core.config.GlobalConfig;
 import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.entity.MessageInfo;

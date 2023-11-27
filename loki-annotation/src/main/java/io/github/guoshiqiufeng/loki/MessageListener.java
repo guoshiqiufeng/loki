@@ -1,6 +1,4 @@
-package io.github.guoshiqiufeng.loki.annotation;
-
-import io.github.guoshiqiufeng.loki.MessageContent;
+package io.github.guoshiqiufeng.loki;
 
 /**
  * @author yanghq

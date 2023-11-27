@@ -61,9 +61,8 @@ public class RocketMqConfigUtils {
         ClientServiceProvider provider = ClientServiceProvider.loadService();
         Producer producer = provider.newProducerBuilder()
                 .setClientConfiguration(clientConfiguration)
-                //.setTopics("loki")
                 // 设置重试次数，默认为3
-                .setMaxAttempts(3)
+                .setMaxAttempts(properties.getGlobalConfig().getMqConfig().getMaxAttempts())
                 .build();
         log.info(String.format("%s started successful on endpoints %s", beanName, clientConfiguration.getEndpoints()));
         producerMap.put(beanName, producer);
