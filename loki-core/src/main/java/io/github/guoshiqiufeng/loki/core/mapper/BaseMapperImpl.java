@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
  * @author yanghq
  * @version 1.0
  * @since 2023/11/21 16:24
+ * @param <T> 消息类型
  */
 @Slf4j
 public class BaseMapperImpl<T> implements BaseMapper<T> {

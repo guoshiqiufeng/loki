@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * loki注册类
  * @author yanghq
  * @version 1.0
  * @since 2023/11/16 13:41

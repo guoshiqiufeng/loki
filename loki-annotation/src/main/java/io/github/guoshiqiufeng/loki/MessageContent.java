@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.Collection;
 
 /**
+ * 消息内容
+ *
+ * @param <T> 消息类型
  * @author yanghq
  * @version 1.0
  * @since 2023/11/23 10:21

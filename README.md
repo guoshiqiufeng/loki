@@ -18,8 +18,11 @@ https://guoshiqiufeng.github.io/loki-doc/
 - spring boot 2.7.17
 
 ### 使用
-
-> 可参考 [loki-spring-boot-starter-test](spring-boot-starter%2Floki-spring-boot-starter-test)
+> 可参考 
+> 
+> -  [loki-test](https://github.com/guoshiqiufeng/loki-test)
+> 
+> -  [loki-spring-boot-starter-test](spring-boot-starter%2Floki-spring-boot-starter-test)
 
 #### 1. 添加依赖
 
@@ -38,8 +41,35 @@ https://guoshiqiufeng.github.io/loki-doc/
         <version>0.0.1</version>
    </dependency>
 ```
+#### 2. 配置
 
-#### 2. 消息发送
+```yaml
+loki:
+  global-config:
+    mq-config:
+      mq-type: ROCKET_MQ
+      address: 127.0.0.1:8081
+      auth: false
+      username: un
+      password: ps
+      connect-timeout: 300
+```
+
+#### 3. 启动类添加注解
+
+```java
+@LokiMapperScan
+@SpringBootApplication
+public class LokiTestApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(LokiTestApplication.class, args);
+    }
+
+}
+```
+
+#### 4. 消息发送
 
 ```java
 
@@ -90,7 +120,7 @@ public class TestController {
 }
 ```
 
-#### 3. 消息接收
+#### 5. 消息接收
 
 ```java
 
@@ -101,5 +131,5 @@ public class TestListener implements MessageListener<TestEntity> {
         log.debug("entity:{}", entity);
     }
 }
-
 ```
+

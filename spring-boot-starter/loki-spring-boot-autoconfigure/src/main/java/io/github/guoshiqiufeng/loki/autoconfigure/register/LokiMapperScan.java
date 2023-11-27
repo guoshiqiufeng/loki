@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
+ * 扫描mapper注解
  * @author yanghq
  * @version 1.0
  * @since 2023/11/15 15:25

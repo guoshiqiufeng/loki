@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * loki自动配置类
  * @author yanghq
  * @version 1.0
  * @since 2023/11/16 09:26
@@ -30,9 +31,9 @@ public class LokiAutoConfiguration {
 
     @Bean
     @ConfigurationProperties(prefix = "loki")
-    @ConditionalOnMissingBean(LokiProperties.class)
-    public LokiProperties lokiProperties() {
-        return new LokiProperties();
+    @ConditionalOnMissingBean(AutoConfigurationProperties.class)
+    public AutoConfigurationProperties lokiProperties() {
+        return new AutoConfigurationProperties();
     }
 
     @Bean
