@@ -2,11 +2,12 @@ package io.github.guoshiqiufeng.loki.spring.boot.starter.test.controller;
 
 import io.github.guoshiqiufeng.loki.spring.boot.starter.test.TestEntity;
 import io.github.guoshiqiufeng.loki.spring.boot.starter.test.mapper.TestMapper;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
