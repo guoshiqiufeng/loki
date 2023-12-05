@@ -13,7 +13,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 ### 开发框架
 
 - java 21
-- gradle 8.4
+- gradle 8.5
 - rocketmq 5.x
 - spring boot 2.7.17
 
