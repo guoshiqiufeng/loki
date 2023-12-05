@@ -12,10 +12,10 @@ https://guoshiqiufeng.github.io/loki-doc/
 
 ### 开发框架
 
-- java 21
-- gradle 8.5
-- rocketmq 5.x
-- spring boot 2.7.17
+- Java 21
+- Gradle 8.5
+- RocketMQ 5.x
+- Spring Boot 2.7.18
 
 ### 使用
 > 可参考 
@@ -29,7 +29,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 - groovy
 
 ```groovy
-    api project("io.github.guoshiqiufeng:loki-spring-boot-starter:0.0.1")
+    api project("io.github.guoshiqiufeng:loki-spring-boot-starter:0.1.0")
 ```
 
 - maven
@@ -38,7 +38,7 @@ https://guoshiqiufeng.github.io/loki-doc/
    <dependency>
         <groupId>io.github.guoshiqiufeng</groupId>
         <artifactId>loki-spring-boot-starter</artifactId>
-        <version>0.0.1</version>
+        <version>0.1.0</version>
    </dependency>
 ```
 #### 2. 配置
@@ -47,12 +47,13 @@ https://guoshiqiufeng.github.io/loki-doc/
 loki:
   global-config:
     mq-config:
-      mq-type: ROCKET_MQ
-      address: 127.0.0.1:8081
-      auth: false
-      username: un
-      password: ps
-      connect-timeout: 300
+      mq-type: ROCKET_MQ # 默认为 ROCKET_MQ
+      address: 127.0.0.1:8081 # 默认为 127.0.0.1:8081
+      auth: false     #若不用密码可不配置
+      username: username #若不用密码可不配置
+      password: password #若不用密码可不配置
+      connect-timeout: 300   #默认为 300 s
+      max-attempts: 5    #重试次数，默认为5次
 ```
 
 #### 3. 启动类添加注解
