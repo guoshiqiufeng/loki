@@ -2,5 +2,6 @@ dependencies {
     api project(":loki-annotation")
     api "${lib.'rocketmq-client-java'}"
     api "${lib.'fastjson2'}"
+    api "${lib.'spring-context'}"
     implementation "${lib."slf4j-api"}"
 }

@@ -25,6 +25,9 @@ public class BaseCache {
      */
     private final Map<Class<?>, BaseMapper<?>> BASE_MAPPER_INSTANCE_MAP = new ConcurrentHashMap<>();
 
+
+    private final Map<Class<?>, Class<?>> BASE_ENTITY_INSTANCE_MAP = new ConcurrentHashMap<>();
+
     /**
      * 初始化缓存
      *
@@ -40,6 +43,11 @@ public class BaseCache {
         baseMapper.setHandlerHolder(handlerHolder);
         baseMapper.setEntityClass(entityClass);
         BASE_MAPPER_INSTANCE_MAP.put(mapperInterface, baseMapper);
+        BASE_ENTITY_INSTANCE_MAP.put(mapperInterface, entityClass);
+    }
+
+    public Class<?> getEntityClass(Class<?> mapperInterface) {
+        return BASE_ENTITY_INSTANCE_MAP.get(mapperInterface);
     }
 
     /**
@@ -50,6 +58,6 @@ public class BaseCache {
      */
     public BaseMapper<?> getBaseMapperInstance(Class<?> mapperInterface) {
         return Optional.ofNullable(BASE_MAPPER_INSTANCE_MAP.get(mapperInterface))
-                .orElseThrow(() -> new LokiException("No interface instance exists ", mapperInterface));
+                .orElseThrow(() -> new LokiException("No interface instance exists %s", mapperInterface));
     }
 }

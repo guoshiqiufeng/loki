@@ -91,13 +91,18 @@ public class LokiRegistrar<T> {
                             // log.debug("messageContent:{}", messageContent)
                             String body = messageContent.getBody();
                             // TODO 序列化
+                            T bodyObject = null;
+                            if (body != null && body.trim().startsWith("{")) {
+                                bodyObject = JSON.parseObject(body, interfaceGenericType);
+                            }
+
                             MessageContent<T> tMessageContent = new MessageContent<T>()
                                     .setMessageId(messageContent.getMessageId())
                                     .setTopic(messageContent.getTopic())
                                     .setTag(messageContent.getTag())
                                     .setKeys(messageContent.getKeys())
                                     .setMessageGroup(messageContent.getMessageGroup())
-                                    .setBody(JSON.parseObject(body, interfaceGenericType));
+                                    .setBody(bodyObject);
                             messageListener.onMessage(tMessageContent);
                             return null;
                         });

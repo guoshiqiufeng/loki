@@ -1,5 +1,6 @@
 package io.github.guoshiqiufeng.loki.spring.boot.starter.test.controller;
 
+import com.alibaba.fastjson2.JSON;
 import io.github.guoshiqiufeng.loki.spring.boot.starter.test.TestEntity;
 import io.github.guoshiqiufeng.loki.spring.boot.starter.test.mapper.TestMapper;
 import jakarta.annotation.Resource;
@@ -58,6 +59,16 @@ public class TestController {
             }
             log.info("Send message successfully, messageId={}", messageId);
         }, sendCallbackExecutor);
+        return "success";
+    }
+
+    @GetMapping("customSend")
+    public String customSend() {
+        TestEntity entity = new TestEntity();
+        entity.setId("9521");
+        entity.setMessage("test");
+        String messageId = testMapper.customSend(entity);
+        log.debug("send messageId:{}", messageId);
         return "success";
     }
 }
