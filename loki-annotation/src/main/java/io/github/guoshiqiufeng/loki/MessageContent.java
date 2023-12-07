@@ -48,4 +48,9 @@ public class MessageContent<T> implements Serializable {
      * 内容
      */
     private T body;
+
+    /**
+     * 内容String 格式
+     */
+    private String bodyMessage;
 }

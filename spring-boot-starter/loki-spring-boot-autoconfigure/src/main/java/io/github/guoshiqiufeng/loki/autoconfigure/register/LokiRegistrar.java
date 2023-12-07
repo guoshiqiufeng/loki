@@ -102,7 +102,8 @@ public class LokiRegistrar<T> {
                                     .setTag(messageContent.getTag())
                                     .setKeys(messageContent.getKeys())
                                     .setMessageGroup(messageContent.getMessageGroup())
-                                    .setBody(bodyObject);
+                                    .setBody(bodyObject)
+                                    .setBodyMessage(body);
                             messageListener.onMessage(tMessageContent);
                             return null;
                         });

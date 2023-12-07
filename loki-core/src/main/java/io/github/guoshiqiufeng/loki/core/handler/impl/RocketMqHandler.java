@@ -186,7 +186,8 @@ public class RocketMqHandler extends AbstractHandler {
                                     .setTopic(topicName)
                                     .setTag(tagName)
                                     .setKeys(keys)
-                                    .setBody(body));
+                                    .setBody(body)
+                                    .setBodyMessage(body));
                         } catch (Exception e) {
                             log.error("RocketMqHandler# pushMessageListener error:{}", Throwables.getStackTraceAsString(e));
                             return ConsumeResult.FAILURE;
