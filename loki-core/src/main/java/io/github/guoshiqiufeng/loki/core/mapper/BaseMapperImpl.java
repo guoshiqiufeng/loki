@@ -135,11 +135,22 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
             }
         }
 
-        return async ? handlerHolder.route(MqType.ROCKET_MQ.getCode()).sendAsync(producer, topic, tag,
+       Object messageId = async ? handlerHolder.route(MqType.ROCKET_MQ.getCode()).sendAsync(producer, topic, tag,
                 messageContent, deliveryTimestamp, messageKeys) :
                 handlerHolder.route(MqType.ROCKET_MQ.getCode()).send(producer, topic, tag,
                         messageContent, deliveryTimestamp, messageKeys);
-    }
 
+        Class<?> returnType = method.getReturnType();
+        switch (returnType.getName()) {
+            case "java.lang.String":
+                return messageId;
+            case "java.util.concurrent.CompletableFuture":
+                return messageId;
+            case "void":
+                return null;
+            default:
+                return "";
+        }
+    }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -63,12 +64,15 @@ public class TestController {
     }
 
     @GetMapping("customSend")
-    public String customSend() {
+    public String customSend() throws ExecutionException, InterruptedException {
         TestEntity entity = new TestEntity();
         entity.setId("9521");
         entity.setMessage("test");
-        String messageId = testMapper.customSend(entity);
+        CompletableFuture<String> stringCompletableFuture = testMapper.customAsyncSend(entity);
+        String messageId = stringCompletableFuture.get();
         log.debug("send messageId:{}", messageId);
+        //String messageId = testMapper.customSend(entity);
+        //log.debug("send messageId:{}", messageId);
         return "success";
     }
 }
