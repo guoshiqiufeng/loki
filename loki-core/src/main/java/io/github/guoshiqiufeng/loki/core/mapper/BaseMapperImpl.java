@@ -54,19 +54,7 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
      */
     @Override
     public String send(T entity) {
-        if (entity == null) {
-            throw new LokiException("send entity must not be null");
-        }
-        log.debug("BaseMapperImpl# send message:{}", entity);
-        MessageInfo messageInfo = EntityInfoHelper.getMessageInfo(entityClass);
-
-        // 遍历字段， 获取是否存在@MessageKey注解
-        String[] messageKeys = EntityInfoHelper.getMessageKeys(entityClass, entity);
-
-        // TODO 根据序列化方式序列化消息
-        String message = JSON.toJSONString(entity);
-        return handlerHolder.route(MqType.ROCKET_MQ.getCode()).send(messageInfo.getProducer(),
-                messageInfo.getTopic(), messageInfo.getTag(), message, messageInfo.getDeliveryTimestamp(), messageKeys);
+        return (String) doSend(entity, false);
     }
 
     /**
@@ -76,9 +64,14 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
      * @return messageId 消息id
      */
     @Override
+    @SuppressWarnings("all")
     public CompletableFuture<String> sendAsync(T entity) {
+        return (CompletableFuture<String>) doSend(entity, true);
+    }
+
+    private Object doSend(T entity, boolean async) {
         if (entity == null) {
-            throw new LokiException("send entity must not be null");
+            throw new IllegalArgumentException("send entity must not be null");
         }
         log.debug("BaseMapperImpl# sendAsync message:{}", entity);
         MessageInfo messageInfo = EntityInfoHelper.getMessageInfo(entityClass);
@@ -88,8 +81,13 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
 
         // TODO 根据序列化方式序列化消息
         String message = JSON.toJSONString(entity);
-        return handlerHolder.route(MqType.ROCKET_MQ.getCode()).sendAsync(messageInfo.getProducer(),
-                messageInfo.getTopic(), messageInfo.getTag(), message, messageInfo.getDeliveryTimestamp(), messageKeys);
+        return async ?
+                handlerHolder.route(MqType.ROCKET_MQ.getCode()).sendAsync(messageInfo.getProducer(),
+                    messageInfo.getTopic(), messageInfo.getTag(),
+                    message, messageInfo.getDeliveryTimestamp(), messageKeys):
+                handlerHolder.route(MqType.ROCKET_MQ.getCode()).send(messageInfo.getProducer(),
+                        messageInfo.getTopic(), messageInfo.getTag(),
+                        message, messageInfo.getDeliveryTimestamp(), messageKeys);
     }
 
 
@@ -143,7 +141,6 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
         Class<?> returnType = method.getReturnType();
         switch (returnType.getName()) {
             case "java.lang.String":
-                return messageId;
             case "java.util.concurrent.CompletableFuture":
                 return messageId;
             case "void":
