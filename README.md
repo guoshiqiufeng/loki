@@ -29,7 +29,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 - groovy
 
 ```groovy
-    api project("io.github.guoshiqiufeng:loki-spring-boot-starter:0.1.0")
+    api project("io.github.guoshiqiufeng:loki-spring-boot-starter:0.2.0")
 ```
 
 - maven
@@ -38,7 +38,7 @@ https://guoshiqiufeng.github.io/loki-doc/
    <dependency>
         <groupId>io.github.guoshiqiufeng</groupId>
         <artifactId>loki-spring-boot-starter</artifactId>
-        <version>0.1.0</version>
+        <version>0.2.0</version>
    </dependency>
 ```
 #### 2. 配置
@@ -126,11 +126,20 @@ public class TestController {
 ```java
 
 @Component
-public class TestListener implements MessageListener<TestEntity> {
+public class TestListener implements Listener<TestEntity> {
     @Override
     public void onMessage(MessageContent<TestEntity> entity) {
         log.debug("entity:{}", entity);
     }
 }
 ```
-
+或
+```java
+@MessageListener(topic = "loki")
+@Component
+public class TestListener implements Listener<String> {
+    @Override
+    public void onMessage(MessageContent<String> entity) {
+        log.debug("entity:{}", entity);
+    }
+}

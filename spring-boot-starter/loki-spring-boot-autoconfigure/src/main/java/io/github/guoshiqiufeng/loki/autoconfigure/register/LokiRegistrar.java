@@ -79,6 +79,7 @@ public class LokiRegistrar<T> {
      *
      * @param listenerList 消息监听器列表
      */
+    @SuppressWarnings("unchecked")
     private void initListener(List<Listener<T>> listenerList) {
         for (Listener<T> listener : listenerList) {
             @SuppressWarnings("unchecked")
@@ -123,6 +124,8 @@ public class LokiRegistrar<T> {
                             T bodyObject = null;
                             if (body != null && body.trim().startsWith("{")) {
                                 bodyObject = JSON.parseObject(body, interfaceGenericType);
+                            } else if (String.class.getName().equals(interfaceGenericType.getName())) {
+                                bodyObject = (T) body;
                             }
 
                             MessageContent<T> tMessageContent = new MessageContent<T>()

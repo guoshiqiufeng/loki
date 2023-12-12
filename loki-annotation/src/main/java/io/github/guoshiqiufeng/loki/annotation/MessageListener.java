@@ -3,6 +3,7 @@ package io.github.guoshiqiufeng.loki.annotation;
 import java.lang.annotation.*;
 
 /**
+ * 消息监听器注解
  * @author yanghq
  * @version 1.0
  * @since 2023/12/12 15:51
