@@ -23,10 +23,10 @@ public interface TestMapper extends BaseMapper<TestEntity> {
     @SendMessage(topic = "", async = true, message = "#message")
     String customAsyncSend(String message);
 
-    @SendMessage(topic = "", tag = "create", message = "#entity.message", messageKey = "#entity.id")
+    @SendMessage(topic = "", tag = "custom", message = "#entity.message", messageKey = "#entity.id")
     void customSend(TestEntity entity);
 
-    @SendMessage(topic = "", tag = "create", async = true, message = "#entity.message", messageKey = "#entity.id")
+    @SendMessage(topic = "", tag = "custom", async = true, message = "#entity.message", messageKey = "#entity.id")
     CompletableFuture<String> customAsyncSend(TestEntity entity);
 
 

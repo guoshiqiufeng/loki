@@ -7,7 +7,7 @@ package io.github.guoshiqiufeng.loki;
  * @since 2023/11/22 17:12
  * @param <T> 消息类型
  */
-public interface MessageListener<T> {
+public interface Listener<T> {
 
     /**
      * 消息监听
