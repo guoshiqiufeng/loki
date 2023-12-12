@@ -1,6 +1,6 @@
 package io.github.guoshiqiufeng.loki.autoconfigure.config;
 
-import io.github.guoshiqiufeng.loki.MessageListener;
+import io.github.guoshiqiufeng.loki.Listener;
 import io.github.guoshiqiufeng.loki.autoconfigure.register.LokiRegistrar;
 import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.Handler;
@@ -61,14 +61,14 @@ public class LokiAutoConfiguration {
      * @param handlerHolder       处理器持有者
      * @param handler             处理器列表
      * @param lokiProperties      Loki配置
-     * @param messageListenerList 消息监听器列表
+     * @param listenerList 消息监听器列表
      * @param <T>                 监听器消息类型
      * @return LokiRegistrar 实例
      */
     @Bean
     public <T> LokiRegistrar<T> lokiRegistrar(HandlerHolder handlerHolder, List<Handler> handler, LokiProperties lokiProperties,
-                                              List<MessageListener<T>> messageListenerList) {
-        return new LokiRegistrar<T>(handlerHolder, lokiProperties, messageListenerList);
+                                              List<Listener<T>> listenerList) {
+        return new LokiRegistrar<T>(handlerHolder, lokiProperties, listenerList);
     }
 
     /**

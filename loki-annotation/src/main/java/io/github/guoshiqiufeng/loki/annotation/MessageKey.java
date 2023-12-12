@@ -16,6 +16,7 @@ public @interface MessageKey {
 
     /**
      * 字段名（该值可无）
+     * @return 字段名
      */
     String value() default "";
 }

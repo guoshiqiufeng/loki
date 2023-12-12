@@ -1,5 +1,6 @@
 package io.github.guoshiqiufeng.loki.spring.boot.starter.test.controller;
 
+import com.alibaba.fastjson2.JSON;
 import io.github.guoshiqiufeng.loki.spring.boot.starter.test.TestEntity;
 import io.github.guoshiqiufeng.loki.spring.boot.starter.test.mapper.TestMapper;
 import jakarta.annotation.Resource;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -58,6 +60,19 @@ public class TestController {
             }
             log.info("Send message successfully, messageId={}", messageId);
         }, sendCallbackExecutor);
+        return "success";
+    }
+
+    @GetMapping("customSend")
+    public String customSend() throws ExecutionException, InterruptedException {
+        TestEntity entity = new TestEntity();
+        entity.setId("9521");
+        entity.setMessage("test");
+        CompletableFuture<String> stringCompletableFuture = testMapper.customAsyncSend(entity);
+        String messageId = stringCompletableFuture.get();
+        log.debug("send messageId:{}", messageId);
+        //String messageId = testMapper.customSend(entity);
+        //log.debug("send messageId:{}", messageId);
         return "success";
     }
 }
