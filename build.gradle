@@ -92,7 +92,7 @@ subprojects {
 
     license {
         encoding = "UTF-8"
-        header = rootProject.file("license.txt")
+        header = rootProject.file("license-tmp.txt")
         includes(["**/*.java", "**/*.kt"])
         mapping {
             java = "SLASHSTAR_STYLE"
