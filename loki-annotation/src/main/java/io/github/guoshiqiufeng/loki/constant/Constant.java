@@ -13,55 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.core.entity;
-
-import lombok.Data;
-import lombok.experimental.Accessors;
+package io.github.guoshiqiufeng.loki.constant;
 
 /**
- * 消息信息
- *
+ * 常量
  * @author yanghq
  * @version 1.0
- * @since 2023/11/22 13:38
+ * @since 2023/12/14 14:09
  */
-@Data
-@Accessors(chain = true)
-public class MessageInfo {
+public interface Constant {
 
     /**
-     * topic
+     * kafaka 标签名
      */
-    private String topic;
-
-    /**
-     * tag
-     */
-    private String tag;
-
-    /**
-     * 生产者
-     */
-    private String producer;
-
-    /**
-     * 延时
-     */
-    private long deliveryTimestamp;
-
-    /**
-     * 消费者
-     */
-    private String consumerGroup;
-
-    /**
-     * 消费线程数
-     */
-    private Integer consumptionThreadCount;
-
-    /**
-     * 最大缓存信息数
-     */
-    private Integer maxCacheMessageCount;
-
+    String KAFKA_TAG = "kafka_tag_id";
 }

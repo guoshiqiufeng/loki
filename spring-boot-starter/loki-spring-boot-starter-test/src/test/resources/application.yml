@@ -6,4 +6,7 @@ logging:
     io.github.guoshiqiufeng.loki: debug
 loki:
   enabled: true
+  global-config:
+    mq-config:
+      mq-type: KAFKA
 
