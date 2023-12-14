@@ -15,6 +15,7 @@
  */
 package io.github.guoshiqiufeng.loki.core.handler;
 
+import io.github.guoshiqiufeng.loki.enums.MqType;
 import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
@@ -46,6 +47,15 @@ public class HandlerHolder {
      */
     public Handler route(Integer type) {
         return handlers.get(type);
+    }
+
+    /**
+     * 获取Handler
+     * @param mqType 类型
+     * @return 事件Handler
+     */
+    public Handler route(MqType mqType) {
+        return handlers.get(mqType.getCode());
     }
 
     /**

@@ -18,6 +18,7 @@ package io.github.guoshiqiufeng.loki.autoconfigure.config;
 import io.github.guoshiqiufeng.loki.Listener;
 import io.github.guoshiqiufeng.loki.autoconfigure.register.LokiRegistrar;
 import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.core.handler.Handler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.handler.impl.KafkaHandler;
@@ -68,7 +69,7 @@ public class LokiAutoConfiguration {
      * @throws ClientException 异常
      */
     @Bean
-    @ConditionalOnProperty(prefix = "loki.global-config.mq-config", name = "mq-type", value = "ROCKET_MQ")
+    @ConditionalOnProperty(prefix = "loki.global-config.mq-config", name = "mq-type", havingValue = "ROCKET_MQ")
     @ConditionalOnMissingBean(Producer.class)
     public Producer defaultProducer(LokiProperties properties) throws ClientException {
         return RocketMqConfigUtils.producerBuilder("defaultProducer", properties);
@@ -116,6 +117,8 @@ public class LokiAutoConfiguration {
         } else if (properties.getGlobalConfig().getMqConfig().getMqType().equals(MqType.KAFKA)) {
             KafkaHandler kafkaHandler = new KafkaHandler(properties, handlerHolder);
             handler.add(kafkaHandler);
+        } else {
+            throw new LokiException("mq type is not support ");
         }
         return handler;
     }

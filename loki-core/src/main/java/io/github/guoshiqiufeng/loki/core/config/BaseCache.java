@@ -56,11 +56,17 @@ public class BaseCache {
         // 初始化baseMapper的所有实现类实例
         BaseMapperImpl<?> baseMapper = new BaseMapperImpl<>();
         baseMapper.setHandlerHolder(handlerHolder);
+        baseMapper.setLokiProperties(lokiProperties);
         baseMapper.setEntityClass(entityClass);
         BASE_MAPPER_INSTANCE_MAP.put(mapperInterface, baseMapper);
         BASE_ENTITY_INSTANCE_MAP.put(mapperInterface, entityClass);
     }
 
+    /**
+     * 获取实体class
+     * @param mapperInterface mapper接口
+     * @return 实体class
+     */
     public Class<?> getEntityClass(Class<?> mapperInterface) {
         return BASE_ENTITY_INSTANCE_MAP.get(mapperInterface);
     }

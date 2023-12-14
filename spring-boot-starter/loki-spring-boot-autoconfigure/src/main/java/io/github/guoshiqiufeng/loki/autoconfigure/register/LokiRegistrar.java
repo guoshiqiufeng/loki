@@ -43,9 +43,19 @@ import java.util.Optional;
 @Slf4j
 public class LokiRegistrar<T> {
 
+    /**
+     * 具体事件处理持有者
+     */
     private final HandlerHolder handlerHolder;
 
+    /**
+     * loki配置
+     */
     private final LokiProperties lokiProperties;
+
+    /**
+     * 消息监听器列表
+     */
     private final List<Listener<T>> listenerList;
 
     /**
@@ -84,7 +94,7 @@ public class LokiRegistrar<T> {
         // init listener
         // 创建监听
         if (!CollectionUtils.isEmpty(listenerList)) {
-           // initListener(listenerList);
+           initListener(listenerList);
         }
     }
 
@@ -130,7 +140,7 @@ public class LokiRegistrar<T> {
                     return;
                 }
 
-                handlerHolder.route(MqType.ROCKET_MQ.getCode()).pushMessageListener(consumerGroup,
+                handlerHolder.route(getMqType()).pushMessageListener(consumerGroup,
                         topic, tag, consumptionThreadCount,
                         maxCacheMessageCount, messageContent -> {
                             // log.debug("messageContent:{}", messageContent)
@@ -158,5 +168,13 @@ public class LokiRegistrar<T> {
                 log.warn("messageListener:{} init error", listener.getClass().getName(), e);
             }
         }
+    }
+
+    /**
+     * 获取mq类型
+     * @return mq类型
+     */
+    private MqType getMqType() {
+        return lokiProperties.getGlobalConfig().getMqConfig().getMqType();
     }
 }

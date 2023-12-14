@@ -17,6 +17,7 @@ package io.github.guoshiqiufeng.loki.core.mapper;
 
 import com.alibaba.fastjson2.JSON;
 import io.github.guoshiqiufeng.loki.annotation.SendMessage;
+import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.entity.MessageInfo;
 import io.github.guoshiqiufeng.loki.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
@@ -44,6 +45,12 @@ import java.util.concurrent.CompletableFuture;
  */
 @Slf4j
 public class BaseMapperImpl<T> implements BaseMapper<T> {
+
+    /**
+     * 配置
+     */
+    @Setter
+    private LokiProperties lokiProperties;
 
     /**
      * 具体事件处理持有者
@@ -97,10 +104,10 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
         // TODO 根据序列化方式序列化消息
         String message = JSON.toJSONString(entity);
         return async ?
-                handlerHolder.route(MqType.ROCKET_MQ.getCode()).sendAsync(messageInfo.getProducer(),
+                handlerHolder.route(getMqType()).sendAsync(messageInfo.getProducer(),
                     messageInfo.getTopic(), messageInfo.getTag(),
                     message, messageInfo.getDeliveryTimestamp(), messageKeys):
-                handlerHolder.route(MqType.ROCKET_MQ.getCode()).send(messageInfo.getProducer(),
+                handlerHolder.route(getMqType()).send(messageInfo.getProducer(),
                         messageInfo.getTopic(), messageInfo.getTag(),
                         message, messageInfo.getDeliveryTimestamp(), messageKeys);
     }
@@ -148,9 +155,9 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
             }
         }
 
-       Object messageId = async ? handlerHolder.route(MqType.ROCKET_MQ.getCode()).sendAsync(producer, topic, tag,
+       Object messageId = async ? handlerHolder.route(getMqType()).sendAsync(producer, topic, tag,
                 messageContent, deliveryTimestamp, messageKeys) :
-                handlerHolder.route(MqType.ROCKET_MQ.getCode()).send(producer, topic, tag,
+                handlerHolder.route(getMqType()).send(producer, topic, tag,
                         messageContent, deliveryTimestamp, messageKeys);
 
         Class<?> returnType = method.getReturnType();
@@ -165,4 +172,11 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
         }
     }
 
+    /**
+     * 获取mq类型
+     * @return mq类型
+     */
+    private MqType getMqType() {
+        return lokiProperties.getGlobalConfig().getMqConfig().getMqType();
+    }
 }
