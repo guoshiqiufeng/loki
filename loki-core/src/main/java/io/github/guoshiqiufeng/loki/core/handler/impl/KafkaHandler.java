@@ -20,15 +20,15 @@ import io.github.guoshiqiufeng.loki.constant.Constant;
 import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
+import io.github.guoshiqiufeng.loki.core.toolkit.KafkaConfigUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.apache.rocketmq.shaded.commons.lang3.StringUtils;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
-import org.springframework.util.concurrent.ListenableFuture;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -45,8 +45,6 @@ import java.util.function.Function;
  */
 @Slf4j
 public class KafkaHandler extends AbstractHandler {
-
-    private KafkaTemplate<String, String> kafkaTemplate;
 
     /**
      * 构造函数
@@ -95,9 +93,9 @@ public class KafkaHandler extends AbstractHandler {
             if (keys != null && keys.length > 0) {
                 key = keys[0];
             }
-            ListenableFuture<SendResult<String, String>> send = kafkaTemplate.send(new ProducerRecord<>(topic, null, timestamp, key, body, headers));
-            SendResult<String, String> stringStringSendResult = send.get();
-            return null;
+            KafkaProducer<String, String> producer = KafkaConfigUtils.getProducer(producerName, properties);
+            ProducerRecord<String, String> record = new ProducerRecord<>(topic, null, timestamp, key, body, headers);
+            return getMessageId(producer.send(record).get());
         } catch (Exception e) {
             log.error("KafkaHandler# send message error:{}", e.getMessage());
             throw new RuntimeException(e);
@@ -140,9 +138,10 @@ public class KafkaHandler extends AbstractHandler {
             if (keys != null && keys.length > 0) {
                 key = keys[0];
             }
-            ListenableFuture<SendResult<String, String>> send = kafkaTemplate.send(new ProducerRecord<>(topic, null, timestamp, key, body, headers));
-
-            return null;
+            KafkaProducer<String, String> producer = KafkaConfigUtils.getProducer(producerName, properties);
+            ProducerRecord<String, String> record = new ProducerRecord<>(topic, null, timestamp, key, body, headers);
+            CompletableFuture<RecordMetadata> completableFuture = (CompletableFuture<RecordMetadata>)producer.send(record);
+            return completableFuture.thenApply(this::getMessageId);
         } catch (Exception e) {
             log.error("KafkaHandler# send message error:{}", e.getMessage());
             throw new RuntimeException(e);
@@ -164,5 +163,14 @@ public class KafkaHandler extends AbstractHandler {
 
     }
 
+    /**
+     * 获取消息id<br>
+     * 使用partition和offset拼接
+     * @param recordMetadata recordMetadata
+     * @return 消息id
+     */
+    private String getMessageId(RecordMetadata recordMetadata) {
+        return recordMetadata.partition() + "_" + recordMetadata.offset();
+    }
 
 }

@@ -16,7 +16,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 - Gradle 8.5
 - RocketMQ 5.x
 - Spring Boot 2.7.18
-- kafka 2.8.9
+- kafka-clients 3.6.1
 
 ### 使用
 > 可参考 

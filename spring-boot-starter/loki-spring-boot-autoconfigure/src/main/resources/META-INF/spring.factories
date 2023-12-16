@@ -1,2 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.github.guoshiqiufeng.loki.autoconfigure.config.LokiAutoConfiguration
+  io.github.guoshiqiufeng.loki.autoconfigure.config.LokiAutoConfiguration,\
+  io.github.guoshiqiufeng.loki.autoconfigure.config.KafkaConfiguration,\
+  org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration

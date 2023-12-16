@@ -78,11 +78,11 @@ public class LokiAutoConfiguration {
     /**
      * LokiRegistrar Bean，用于注册处理器和消息监听器
      *
-     * @param handlerHolder       处理器持有者
-     * @param handler             处理器列表
-     * @param lokiProperties      Loki配置
-     * @param listenerList 消息监听器列表
-     * @param <T>                 监听器消息类型
+     * @param handlerHolder  处理器持有者
+     * @param handler        处理器列表
+     * @param lokiProperties Loki配置
+     * @param listenerList   消息监听器列表
+     * @param <T>            监听器消息类型
      * @return LokiRegistrar 实例
      */
     @Bean
@@ -109,12 +109,23 @@ public class LokiAutoConfiguration {
      * @return Handler 实例列表
      */
     @Bean
-    public List<Handler> handler(LokiProperties properties, HandlerHolder handlerHolder) {
+    @ConditionalOnProperty(prefix = "loki.global-config.mq-config", name = "mq-type", havingValue = "ROCKET_MQ")
+    public List<Handler> rocketHandler(LokiProperties properties, HandlerHolder handlerHolder) {
         ArrayList<Handler> handler = new ArrayList<Handler>(1);
-        if(properties.getGlobalConfig().getMqConfig().getMqType().equals(MqType.ROCKET_MQ)) {
+        if (properties.getGlobalConfig().getMqConfig().getMqType().equals(MqType.ROCKET_MQ)) {
             RocketMqHandler rocketMqHandler = new RocketMqHandler(properties, handlerHolder);
             handler.add(rocketMqHandler);
-        } else if (properties.getGlobalConfig().getMqConfig().getMqType().equals(MqType.KAFKA)) {
+        } else {
+            throw new LokiException("mq type is not support ");
+        }
+        return handler;
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "loki.global-config.mq-config", name = "mq-type", havingValue = "KAFKA")
+    public List<Handler> kafkaHandler(LokiProperties properties, HandlerHolder handlerHolder) {
+        ArrayList<Handler> handler = new ArrayList<Handler>(1);
+        if (properties.getGlobalConfig().getMqConfig().getMqType().equals(MqType.KAFKA)) {
             KafkaHandler kafkaHandler = new KafkaHandler(properties, handlerHolder);
             handler.add(kafkaHandler);
         } else {
@@ -126,5 +137,6 @@ public class LokiAutoConfiguration {
     /**
      * 构造函数
      */
-    public LokiAutoConfiguration() {}
+    public LokiAutoConfiguration() {
+    }
 }
