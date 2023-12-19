@@ -42,7 +42,9 @@ public class GlobalConfig implements Serializable {
      */
     private MqConfig mqConfig;
 
-
+    /**
+     * mq配置类
+     */
     @Data
     @Accessors(chain = true)
     public static class MqConfig {

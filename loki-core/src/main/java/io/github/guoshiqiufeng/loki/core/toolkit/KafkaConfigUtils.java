@@ -83,6 +83,8 @@ public class KafkaConfigUtils {
      * 获取 PushConsumerBuilder
      *
      * @param properties 配置
+     * @param groupId    消费分组id
+     * @param index      排序
      * @return PushConsumerBuilder
      */
     public KafkaConsumer<String, String> getPushConsumerBuilder(LokiProperties properties, String groupId, int index) {

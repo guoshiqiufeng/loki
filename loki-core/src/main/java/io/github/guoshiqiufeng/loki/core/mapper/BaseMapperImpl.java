@@ -47,18 +47,21 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
 
     /**
      * 配置
+     * @param lokiProperties loki配置
      */
     @Setter
     private LokiProperties lokiProperties;
 
     /**
      * 具体事件处理持有者
+     * @param handlerHolder 事件处理持有者
      */
     @Setter
     private HandlerHolder handlerHolder;
 
     /**
      * 实体类class
+     * @param entityClass 实体类class
      */
     @Setter
     private Class<?> entityClass;
@@ -111,7 +114,13 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
                         message, messageInfo.getDeliveryTimestamp(), messageKeys);
     }
 
-
+    /**
+     * 通过注解发送消息
+     * @param sendMessageAnnotation 注解
+     * @param method 方法
+     * @param args 参数
+     * @return messageId 消息id
+     */
     public Object sendByAnnotation(SendMessage sendMessageAnnotation, Method method, Object[] args) {
 
         // send message

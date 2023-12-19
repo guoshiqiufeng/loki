@@ -31,10 +31,20 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * kafka消费工具类
+ */
 @Slf4j
 @UtilityClass
 public class KafkaConsumeUtils {
 
+    /**
+     * 消费消息
+     * @param consumer 消费者
+     * @param topic 主题
+     * @param tag 标签
+     * @param function 回调方法
+     */
     public void consumeMessage(KafkaConsumer<String, String> consumer, String topic, String tag, Function<ConsumerRecord<String, String>, Void> function) {
         try {
             consumer.subscribe(Collections.singletonList(topic));
@@ -60,6 +70,11 @@ public class KafkaConsumeUtils {
         }
     }
 
+    /**
+     * 获取tag
+     * @param headers 头信息
+     * @return tag
+     */
     private String getTagFromHeaders(Headers headers) {
         return Optional.ofNullable(headers.headers(Constant.KAFKA_TAG))
                 .map(h -> StreamSupport.stream(h.spliterator(), false)
