@@ -41,6 +41,7 @@ import java.util.Set;
 
 /**
  * BaseMapper自动注册类
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/11/15 15:38

@@ -83,6 +83,7 @@ public class RocketMqConfigUtils {
 
     /**
      * 获取 PushConsumerBuilder
+     *
      * @param properties 配置
      * @return PushConsumerBuilder
      */
@@ -95,6 +96,7 @@ public class RocketMqConfigUtils {
 
     /**
      * 获取 ClientConfiguration
+     *
      * @param properties 配置
      * @return ClientConfiguration
      */

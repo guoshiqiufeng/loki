@@ -19,7 +19,6 @@ import com.alibaba.fastjson2.JSON;
 import io.github.guoshiqiufeng.loki.annotation.SendMessage;
 import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.entity.MessageInfo;
-import io.github.guoshiqiufeng.loki.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.EntityInfoHelper;
 import io.github.guoshiqiufeng.loki.enums.MqType;
@@ -105,8 +104,8 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
         String message = JSON.toJSONString(entity);
         return async ?
                 handlerHolder.route(getMqType()).sendAsync(messageInfo.getProducer(),
-                    messageInfo.getTopic(), messageInfo.getTag(),
-                    message, messageInfo.getDeliveryTimestamp(), messageKeys):
+                        messageInfo.getTopic(), messageInfo.getTag(),
+                        message, messageInfo.getDeliveryTimestamp(), messageKeys) :
                 handlerHolder.route(getMqType()).send(messageInfo.getProducer(),
                         messageInfo.getTopic(), messageInfo.getTag(),
                         message, messageInfo.getDeliveryTimestamp(), messageKeys);
@@ -155,7 +154,7 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
             }
         }
 
-       Object messageId = async ? handlerHolder.route(getMqType()).sendAsync(producer, topic, tag,
+        Object messageId = async ? handlerHolder.route(getMqType()).sendAsync(producer, topic, tag,
                 messageContent, deliveryTimestamp, messageKeys) :
                 handlerHolder.route(getMqType()).send(producer, topic, tag,
                         messageContent, deliveryTimestamp, messageKeys);
@@ -174,6 +173,7 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
 
     /**
      * 获取mq类型
+     *
      * @return mq类型
      */
     private MqType getMqType() {

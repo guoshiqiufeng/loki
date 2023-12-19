@@ -17,6 +17,7 @@ package io.github.guoshiqiufeng.loki.constant;
 
 /**
  * 常量
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/12/14 14:09

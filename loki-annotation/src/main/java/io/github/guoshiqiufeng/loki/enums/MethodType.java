@@ -20,6 +20,7 @@ import lombok.Getter;
 
 /**
  * 方法类型
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/11/21 13:48

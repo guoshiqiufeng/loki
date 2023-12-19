@@ -16,13 +16,13 @@
 package io.github.guoshiqiufeng.loki.core.handler;
 
 import io.github.guoshiqiufeng.loki.enums.MqType;
-import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Handler持有者，用于存储和获取Handler。
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/11/16 14:10
@@ -33,7 +33,8 @@ public class HandlerHolder {
 
     /**
      * 存储Handler
-     * @param type 类型
+     *
+     * @param type    类型
      * @param handler 事件
      */
     public void putHandler(Integer type, Handler handler) {
@@ -42,6 +43,7 @@ public class HandlerHolder {
 
     /**
      * 获取Handler
+     *
      * @param type 类型
      * @return 事件Handler
      */
@@ -51,6 +53,7 @@ public class HandlerHolder {
 
     /**
      * 获取Handler
+     *
      * @param mqType 类型
      * @return 事件Handler
      */
@@ -61,5 +64,6 @@ public class HandlerHolder {
     /**
      * 构造方法
      */
-    public HandlerHolder() {}
+    public HandlerHolder() {
+    }
 }

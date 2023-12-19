@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 
 /**
  * 工具类用于处理类型相关操作。
+ *
  * @author yanghq
  */
 @UtilityClass

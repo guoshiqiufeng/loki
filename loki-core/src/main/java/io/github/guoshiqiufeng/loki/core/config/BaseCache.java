@@ -52,7 +52,7 @@ public class BaseCache {
      * @param handlerHolder   具体事件处理持有者
      */
     public void initCache(Class<?> mapperInterface, Class<?> entityClass, LokiProperties lokiProperties,
-                                 HandlerHolder handlerHolder) {
+                          HandlerHolder handlerHolder) {
         // 初始化baseMapper的所有实现类实例
         BaseMapperImpl<?> baseMapper = new BaseMapperImpl<>();
         baseMapper.setHandlerHolder(handlerHolder);
@@ -64,6 +64,7 @@ public class BaseCache {
 
     /**
      * 获取实体class
+     *
      * @param mapperInterface mapper接口
      * @return 实体class
      */

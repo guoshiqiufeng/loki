@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * 异常类
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/11/10 14:17
@@ -30,8 +31,9 @@ public class LokiException extends RuntimeException {
 
     /**
      * 构造函数
+     *
      * @param message 消息
-     * @param args 参数
+     * @param args    参数
      */
     public LokiException(String message, Object... args) {
         super(String.format(message, args));

@@ -19,10 +19,11 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * 基础mapper
+ *
+ * @param <T> 消息类型
  * @author yanghq
  * @version 1.0
  * @since 2023/11/10 14:51
- * @param <T> 消息类型
  */
 public interface BaseMapper<T> extends Mapper<T> {
 

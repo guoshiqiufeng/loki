@@ -74,6 +74,7 @@ public @interface MessageName {
 
     /**
      * 最大缓存信息数
+     *
      * @return 最大缓存信息数
      */
     int maxCacheMessageCount() default 1024;

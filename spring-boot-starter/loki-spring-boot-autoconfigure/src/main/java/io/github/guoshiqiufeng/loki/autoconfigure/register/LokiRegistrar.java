@@ -94,7 +94,7 @@ public class LokiRegistrar<T> {
         // init listener
         // 创建监听
         if (!CollectionUtils.isEmpty(listenerList)) {
-           initListener(listenerList);
+            initListener(listenerList);
         }
     }
 
@@ -172,6 +172,7 @@ public class LokiRegistrar<T> {
 
     /**
      * 获取mq类型
+     *
      * @return mq类型
      */
     private MqType getMqType() {

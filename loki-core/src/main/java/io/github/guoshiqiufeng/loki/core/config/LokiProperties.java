@@ -20,6 +20,7 @@ import lombok.Data;
 
 /**
  * Loki配置类
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/11/16 09:47

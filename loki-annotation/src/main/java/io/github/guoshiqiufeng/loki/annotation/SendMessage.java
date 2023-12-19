@@ -19,6 +19,7 @@ import java.lang.annotation.*;
 
 /**
  * 消息发送注解
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/12/6 09:53
@@ -31,24 +32,28 @@ public @interface SendMessage {
     /**
      * 主题
      * 默认从BaseMapper关联的实体上获取topic
+     *
      * @return 主题
      */
     String topic() default "";
 
     /**
      * 是否异步发送
+     *
      * @return 是否异步发送
      */
     boolean async() default false;
 
     /**
      * 发送消息
+     *
      * @return 发送消息
      */
     String message() default "";
 
     /**
      * 消息key
+     *
      * @return 消息key
      */
     String messageKey() default "";

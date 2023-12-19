@@ -56,7 +56,8 @@ public abstract class AbstractHandler implements Handler {
 
     /**
      * 构造函数
-     * @param properties loki配置
+     *
+     * @param properties    loki配置
      * @param handlerHolder 具体事件处理持有者
      */
     public AbstractHandler(LokiProperties properties, HandlerHolder handlerHolder) {
