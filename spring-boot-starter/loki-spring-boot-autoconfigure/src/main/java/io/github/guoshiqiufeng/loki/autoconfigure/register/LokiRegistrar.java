@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2023-2023, fubluesky (fubluesky@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.github.guoshiqiufeng.loki.autoconfigure.register;
 
 import com.alibaba.fastjson2.JSON;
@@ -28,9 +43,19 @@ import java.util.Optional;
 @Slf4j
 public class LokiRegistrar<T> {
 
+    /**
+     * 具体事件处理持有者
+     */
     private final HandlerHolder handlerHolder;
 
+    /**
+     * loki配置
+     */
     private final LokiProperties lokiProperties;
+
+    /**
+     * 消息监听器列表
+     */
     private final List<Listener<T>> listenerList;
 
     /**
@@ -81,8 +106,8 @@ public class LokiRegistrar<T> {
      */
     @SuppressWarnings("unchecked")
     private void initListener(List<Listener<T>> listenerList) {
-        for (Listener<T> listener : listenerList) {
-            @SuppressWarnings("unchecked")
+        for (int i = 0; i < listenerList.size(); i++) {
+            Listener<T> listener = listenerList.get(i);
             Class<T> interfaceGenericType = (Class<T>) TypeUtils.getInterfaceGenericType(listener.getClass(), 0);
             try {
                 MessageInfo messageInfo = null;
@@ -115,8 +140,8 @@ public class LokiRegistrar<T> {
                     return;
                 }
 
-                handlerHolder.route(MqType.ROCKET_MQ.getCode()).pushMessageListener(consumerGroup,
-                        topic, tag, consumptionThreadCount,
+                handlerHolder.route(getMqType()).pushMessageListener(consumerGroup,
+                        i, topic, tag, consumptionThreadCount,
                         maxCacheMessageCount, messageContent -> {
                             // log.debug("messageContent:{}", messageContent)
                             String body = messageContent.getBody();
@@ -143,5 +168,14 @@ public class LokiRegistrar<T> {
                 log.warn("messageListener:{} init error", listener.getClass().getName(), e);
             }
         }
+    }
+
+    /**
+     * 获取mq类型
+     *
+     * @return mq类型
+     */
+    private MqType getMqType() {
+        return lokiProperties.getGlobalConfig().getMqConfig().getMqType();
     }
 }

@@ -8,6 +8,7 @@
 统一的消息发送、消费框架，简化mq使用。提供统一的消息发送、消费接口，支持多种mq实现，目前支持rocketmq 5.x
 
 ### 文档
+
 https://guoshiqiufeng.github.io/loki-doc/
 
 ### 开发框架
@@ -16,20 +17,24 @@ https://guoshiqiufeng.github.io/loki-doc/
 - Gradle 8.5
 - RocketMQ 5.x
 - Spring Boot 2.7.18
+- Kafka 3.X（kafka-clients 3.6.1）
 
 ### 使用
-> 可参考 
-> 
-> -  [loki-test](https://github.com/guoshiqiufeng/loki-test)
-> 
-> -  [loki-spring-boot-starter-test](spring-boot-starter%2Floki-spring-boot-starter-test)
+
+> 可参考
+>
+> - [loki-test](https://github.com/guoshiqiufeng/loki-test)
+>
+> - [loki-spring-boot-starter-test](spring-boot-starter%2Floki-spring-boot-starter-test)
 
 #### 1. 添加依赖
+
+##### 1.1 全部依赖
 
 - groovy
 
 ```groovy
-    api project("io.github.guoshiqiufeng:loki-spring-boot-starter:0.2.0")
+    api project("io.github.guoshiqiufeng:loki-spring-boot-starter:0.3.0")
 ```
 
 - maven
@@ -38,9 +43,46 @@ https://guoshiqiufeng.github.io/loki-doc/
    <dependency>
         <groupId>io.github.guoshiqiufeng</groupId>
         <artifactId>loki-spring-boot-starter</artifactId>
-        <version>0.2.0</version>
+        <version>0.3.0</version>
    </dependency>
 ```
+
+##### 1.2 只用rocketmq依赖
+
+- groovy
+
+```groovy
+    api project("io.github.guoshiqiufeng:loki-spring-boot-starter-rocketmq:0.3.0")
+```
+
+- maven
+
+```maven
+   <dependency>
+        <groupId>io.github.guoshiqiufeng</groupId>
+        <artifactId>loki-spring-boot-starter-rocketmq</artifactId>
+        <version>0.3.0</version>
+   </dependency>
+```
+
+##### 1.3 只用kafka依赖
+
+- groovy
+
+```groovy
+    api project("io.github.guoshiqiufeng:loki-spring-boot-starter-kafka:0.3.0")
+```
+
+- maven
+
+```maven
+   <dependency>
+        <groupId>io.github.guoshiqiufeng</groupId>
+        <artifactId>loki-spring-boot-starter-kafka</artifactId>
+        <version>0.3.0</version>
+   </dependency>
+```
+
 #### 2. 配置
 
 ```yaml
@@ -133,7 +175,9 @@ public class TestListener implements Listener<TestEntity> {
     }
 }
 ```
+
 或
+
 ```java
 @MessageListener(topic = "loki")
 @Component

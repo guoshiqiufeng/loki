@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2023-2023, fubluesky (fubluesky@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
@@ -28,7 +43,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 /**
- * rocketMq 5.x
+ * rocketMq 5.x消息处理器
  *
  * @author yanghq
  * @version 1.0
@@ -40,7 +55,8 @@ public class RocketMqHandler extends AbstractHandler {
 
     /**
      * 构造函数
-     * @param properties loki配置
+     *
+     * @param properties    loki配置
      * @param handlerHolder 具体事件处理持有者
      */
     public RocketMqHandler(LokiProperties properties, HandlerHolder handlerHolder) {
@@ -147,6 +163,7 @@ public class RocketMqHandler extends AbstractHandler {
      * 消息监听
      *
      * @param consumerGroup          消费分组
+     * @param index                  索引
      * @param topic                  消息主题
      * @param tag                    消息标签
      * @param consumptionThreadCount 消费线数
@@ -154,7 +171,7 @@ public class RocketMqHandler extends AbstractHandler {
      * @param function               消息处理函数
      */
     @Override
-    public void pushMessageListener(String consumerGroup, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
+    public void pushMessageListener(String consumerGroup, Integer index, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
         if (StringUtils.isEmpty(topic)) {
             log.error("RocketMqHandler# pushMessageListener error: topic is null");
             return;

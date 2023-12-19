@@ -1,9 +1,24 @@
+/*
+ * Copyright (c) 2023-2023, fubluesky (fubluesky@foxmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.github.guoshiqiufeng.loki.core.mapper;
 
 import com.alibaba.fastjson2.JSON;
 import io.github.guoshiqiufeng.loki.annotation.SendMessage;
+import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.entity.MessageInfo;
-import io.github.guoshiqiufeng.loki.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.EntityInfoHelper;
 import io.github.guoshiqiufeng.loki.enums.MqType;
@@ -31,13 +46,22 @@ import java.util.concurrent.CompletableFuture;
 public class BaseMapperImpl<T> implements BaseMapper<T> {
 
     /**
+     * 配置
+     * @param lokiProperties loki配置
+     */
+    @Setter
+    private LokiProperties lokiProperties;
+
+    /**
      * 具体事件处理持有者
+     * @param handlerHolder 事件处理持有者
      */
     @Setter
     private HandlerHolder handlerHolder;
 
     /**
      * 实体类class
+     * @param entityClass 实体类class
      */
     @Setter
     private Class<?> entityClass;
@@ -82,15 +106,21 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
         // TODO 根据序列化方式序列化消息
         String message = JSON.toJSONString(entity);
         return async ?
-                handlerHolder.route(MqType.ROCKET_MQ.getCode()).sendAsync(messageInfo.getProducer(),
-                    messageInfo.getTopic(), messageInfo.getTag(),
-                    message, messageInfo.getDeliveryTimestamp(), messageKeys):
-                handlerHolder.route(MqType.ROCKET_MQ.getCode()).send(messageInfo.getProducer(),
+                handlerHolder.route(getMqType()).sendAsync(messageInfo.getProducer(),
+                        messageInfo.getTopic(), messageInfo.getTag(),
+                        message, messageInfo.getDeliveryTimestamp(), messageKeys) :
+                handlerHolder.route(getMqType()).send(messageInfo.getProducer(),
                         messageInfo.getTopic(), messageInfo.getTag(),
                         message, messageInfo.getDeliveryTimestamp(), messageKeys);
     }
 
-
+    /**
+     * 通过注解发送消息
+     * @param sendMessageAnnotation 注解
+     * @param method 方法
+     * @param args 参数
+     * @return messageId 消息id
+     */
     public Object sendByAnnotation(SendMessage sendMessageAnnotation, Method method, Object[] args) {
 
         // send message
@@ -133,9 +163,9 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
             }
         }
 
-       Object messageId = async ? handlerHolder.route(MqType.ROCKET_MQ.getCode()).sendAsync(producer, topic, tag,
+        Object messageId = async ? handlerHolder.route(getMqType()).sendAsync(producer, topic, tag,
                 messageContent, deliveryTimestamp, messageKeys) :
-                handlerHolder.route(MqType.ROCKET_MQ.getCode()).send(producer, topic, tag,
+                handlerHolder.route(getMqType()).send(producer, topic, tag,
                         messageContent, deliveryTimestamp, messageKeys);
 
         Class<?> returnType = method.getReturnType();
@@ -150,4 +180,12 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
         }
     }
 
+    /**
+     * 获取mq类型
+     *
+     * @return mq类型
+     */
+    private MqType getMqType() {
+        return lokiProperties.getGlobalConfig().getMqConfig().getMqType();
+    }
 }

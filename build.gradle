@@ -14,13 +14,17 @@ ext {
             springBootVersion = '2.7.18',
             springBoot3Version = '3.2.0',
             springVersion = '5.3.31',
-            rocketMqVersion = '5.0.5'
+            rocketMqVersion = '5.0.5',
+            kafkaVersion = '2.8.9',
+            kafkaClientsVersion = '3.6.1',
     ]
 
     lib = [
             "slf4j-api"           : "org.slf4j:slf4j-api:1.7.36",
+            "spring-kafka"        : "org.springframework.kafka:spring-kafka:${kafkaVersion}",
+            "kafka-clients"       : "org.apache.kafka:kafka-clients:${kafkaClientsVersion}",
             "rocketmq-client-java": "org.apache.rocketmq:rocketmq-client-java:${rocketMqVersion}",
-            "spring-context": "org.springframework:spring-context:${springVersion}",
+            "spring-context"      : "org.springframework:spring-context:${springVersion}",
             "fastjson2"           : "com.alibaba.fastjson2:fastjson2:2.0.42",
             "logback-classic"     : "ch.qos.logback:logback-classic:1.4.14",
             "hutool-all"          : "cn.hutool:hutool-all:5.8.23",
@@ -90,7 +94,7 @@ subprojects {
 
     license {
         encoding = "UTF-8"
-        header = rootProject.file("license.txt")
+        header = rootProject.file("header.txt")
         includes(["**/*.java", "**/*.kt"])
         mapping {
             java = "SLASHSTAR_STYLE"

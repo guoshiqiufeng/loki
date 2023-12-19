@@ -13,30 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.core.config;
-
-import io.github.guoshiqiufeng.loki.core.toolkit.GlobalConfigUtils;
-import lombok.Data;
+package io.github.guoshiqiufeng.loki.constant;
 
 /**
- * Loki配置类
+ * 常量
  *
  * @author yanghq
  * @version 1.0
- * @since 2023/11/16 09:47
+ * @since 2023/12/14 14:09
  */
-@Data
-public class LokiProperties {
+public interface Constant {
 
     /**
-     * 是否启用
+     * kafaka 标签名
      */
-    private Boolean enabled = true;
-
-    /**
-     * 全局配置
-     */
-    private GlobalConfig globalConfig = GlobalConfigUtils.defaults();
-
-
+    String KAFKA_TAG = "kafka_tag_id";
 }
