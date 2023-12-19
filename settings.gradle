@@ -23,4 +23,6 @@ include 'spring-boot-starter'
 include 'spring-boot-starter:loki-spring-boot-autoconfigure'
 include 'spring-boot-starter:loki-spring-boot-starter-test'
 include 'spring-boot-starter:loki-spring-boot-starter'
+include 'spring-boot-starter:loki-spring-boot-starter-kafka'
+include 'spring-boot-starter:loki-spring-boot-starter-rocketmq'
 
