@@ -106,8 +106,8 @@ public class LokiRegistrar<T> {
      */
     @SuppressWarnings("unchecked")
     private void initListener(List<Listener<T>> listenerList) {
-        for (Listener<T> listener : listenerList) {
-            @SuppressWarnings("unchecked")
+        for (int i = 0; i < listenerList.size(); i++) {
+            Listener<T> listener = listenerList.get(i);
             Class<T> interfaceGenericType = (Class<T>) TypeUtils.getInterfaceGenericType(listener.getClass(), 0);
             try {
                 MessageInfo messageInfo = null;
@@ -141,7 +141,7 @@ public class LokiRegistrar<T> {
                 }
 
                 handlerHolder.route(getMqType()).pushMessageListener(consumerGroup,
-                        topic, tag, consumptionThreadCount,
+                        i, topic, tag, consumptionThreadCount,
                         maxCacheMessageCount, messageContent -> {
                             // log.debug("messageContent:{}", messageContent)
                             String body = messageContent.getBody();

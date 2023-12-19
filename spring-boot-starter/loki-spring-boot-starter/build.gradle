@@ -2,6 +2,5 @@ dependencies {
     api project(":loki")
     api project(":spring-boot-starter:loki-spring-boot-autoconfigure")
     api "${lib.'rocketmq-client-java'}"
-    //api "${lib.'spring-kafka'}"
     api "${lib.'kafka-clients'}"
 }

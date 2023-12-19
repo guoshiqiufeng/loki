@@ -21,8 +21,12 @@ import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.KafkaConfigUtils;
+import io.github.guoshiqiufeng.loki.core.toolkit.KafkaConsumeUtils;
+import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
@@ -32,8 +36,11 @@ import org.apache.rocketmq.shaded.commons.lang3.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 /**
@@ -140,8 +147,14 @@ public class KafkaHandler extends AbstractHandler {
             }
             KafkaProducer<String, String> producer = KafkaConfigUtils.getProducer(producerName, properties);
             ProducerRecord<String, String> record = new ProducerRecord<>(topic, null, timestamp, key, body, headers);
-            CompletableFuture<RecordMetadata> completableFuture = (CompletableFuture<RecordMetadata>)producer.send(record);
-            return completableFuture.thenApply(this::getMessageId);
+            return CompletableFuture.supplyAsync(() -> {
+                        try {
+                            return producer.send(record).get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .thenApplyAsync(this::getMessageId);
         } catch (Exception e) {
             log.error("KafkaHandler# send message error:{}", e.getMessage());
             throw new RuntimeException(e);
@@ -152,6 +165,7 @@ public class KafkaHandler extends AbstractHandler {
      * 消息监听
      *
      * @param consumerGroup          消费分组
+     * @param index                  索引
      * @param topic                  消息主题
      * @param tag                    消息标签
      * @param consumptionThreadCount 消费线数
@@ -159,17 +173,50 @@ public class KafkaHandler extends AbstractHandler {
      * @param function               消息处理函数
      */
     @Override
-    public void pushMessageListener(String consumerGroup, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
+    public void pushMessageListener(String consumerGroup, Integer index, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
+        if (StringUtils.isEmpty(topic)) {
+            log.error("RocketMqHandler# pushMessageListener error: topic is null");
+            return;
+        }
+        try {
+            KafkaConsumer<String, String> consumer = KafkaConfigUtils.getPushConsumerBuilder(properties, consumerGroup, index);
+            if (StringUtils.isEmpty(tag)) {
+                tag = "*";
+            }
+            ExecutorService executorService = ThreadPoolUtils.getSingleThreadPool();
+            String finalTag = tag;
+            CompletableFuture.runAsync(() -> {
+                KafkaConsumeUtils.consumeMessage(consumer, topic, finalTag, record -> function.apply(new MessageContent<String>()
+                        .setMessageId(getMessageId(record))
+                        // .setMessageGroup(messageGroup)
+                        .setTopic(record.topic())
+                        .setTag(record.topic())
+                        .setKeys(Collections.singletonList(record.key()))
+                        .setBody(record.value())
+                        .setBodyMessage(record.value())));
+            }, executorService).exceptionally(throwable -> {
+                log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());
+                return null;
+            });
 
+        } catch (Exception e) {
+            log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * 获取消息id<br>
      * 使用partition和offset拼接
+     *
      * @param recordMetadata recordMetadata
      * @return 消息id
      */
     private String getMessageId(RecordMetadata recordMetadata) {
+        return recordMetadata.partition() + "_" + recordMetadata.offset();
+    }
+
+    private String getMessageId(ConsumerRecord<String, String> recordMetadata) {
         return recordMetadata.partition() + "_" + recordMetadata.offset();
     }
 

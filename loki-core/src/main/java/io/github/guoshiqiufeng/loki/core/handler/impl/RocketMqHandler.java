@@ -55,7 +55,8 @@ public class RocketMqHandler extends AbstractHandler {
 
     /**
      * 构造函数
-     * @param properties loki配置
+     *
+     * @param properties    loki配置
      * @param handlerHolder 具体事件处理持有者
      */
     public RocketMqHandler(LokiProperties properties, HandlerHolder handlerHolder) {
@@ -162,6 +163,7 @@ public class RocketMqHandler extends AbstractHandler {
      * 消息监听
      *
      * @param consumerGroup          消费分组
+     * @param index                  索引
      * @param topic                  消息主题
      * @param tag                    消息标签
      * @param consumptionThreadCount 消费线数
@@ -169,7 +171,7 @@ public class RocketMqHandler extends AbstractHandler {
      * @param function               消息处理函数
      */
     @Override
-    public void pushMessageListener(String consumerGroup, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
+    public void pushMessageListener(String consumerGroup, Integer index, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
         if (StringUtils.isEmpty(topic)) {
             log.error("RocketMqHandler# pushMessageListener error: topic is null");
             return;
