@@ -121,6 +121,13 @@ public class LokiAutoConfiguration {
         return handler;
     }
 
+    /**
+     * Handler Bean列表，包含KafkaHandler
+     *
+     * @param properties    Loki配置
+     * @param handlerHolder 处理器持有者
+     * @return Handler 实例列表
+     */
     @Bean
     @ConditionalOnProperty(prefix = "loki.global-config.mq-config", name = "mq-type", havingValue = "KAFKA")
     public List<Handler> kafkaHandler(LokiProperties properties, HandlerHolder handlerHolder) {
