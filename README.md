@@ -5,7 +5,7 @@
 
 ### 介绍
 
-统一的消息发送、消费框架，简化mq使用。提供统一的消息发送、消费接口，支持多种mq实现，目前支持rocketmq 5.x
+统一的消息发送、消费框架，简化mq使用。提供统一的消息发送、消费接口，支持多种mq实现，目前支持rocketmq 5.x、Kafka 3.x
 
 ### 文档
 
@@ -17,7 +17,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 - Gradle 8.5
 - RocketMQ 5.x
 - Spring Boot 2.7.18
-- Kafka 3.X（kafka-clients 3.6.1）
+- Kafka 3.x（kafka-clients 3.6.1）
 
 ### 使用
 
