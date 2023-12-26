@@ -14,5 +14,6 @@ dependencyManagement {
     dependencies {
         dependency "io.github.guoshiqiufeng:loki-annotation:${APP_VERSION}"
         dependency "io.github.guoshiqiufeng:loki-core:${APP_VERSION}"
+        dependency "io.github.guoshiqiufeng:loki-support-redis:${APP_VERSION}"
     }
 }

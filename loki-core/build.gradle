@@ -5,5 +5,6 @@ dependencies {
     api "${lib.'hutool-all'}"
     implementation "${lib.'rocketmq-client-java'}"
     implementation "${lib.'kafka-clients'}"
+    implementation project(":loki-support:loki-support-redis")
     implementation "${lib."slf4j-api"}"
 }
