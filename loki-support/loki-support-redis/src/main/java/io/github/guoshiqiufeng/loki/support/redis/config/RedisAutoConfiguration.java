@@ -1,5 +1,8 @@
 package io.github.guoshiqiufeng.loki.support.redis.config;
 
+import io.github.guoshiqiufeng.loki.enums.MqType;
+import io.github.guoshiqiufeng.loki.support.core.config.GlobalConfig;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import io.github.guoshiqiufeng.loki.support.redis.impl.RedisClusterImpl;
 import io.github.guoshiqiufeng.loki.support.redis.impl.RedisDefaultImpl;
@@ -99,13 +102,35 @@ public class RedisAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(RedisClient.class)
-    public RedisClient redisClient(RedisProperties redisProperties) {
+    public RedisClient redisClient(LokiProperties lokiProperties, RedisProperties redisProperties) {
+        convert(lokiProperties, redisProperties);
         if (redisProperties.getSentinel() != null && !redisProperties.getSentinel().getMaster().isEmpty()) {
             return new RedisSentinelImpl(jedisSentinelPool(redisProperties));
         } else if (redisProperties.getCluster() != null && !redisProperties.getCluster().getNodes().isEmpty()) {
             return new RedisClusterImpl(getJedisCluster(redisProperties));
         } else {
             return new RedisDefaultImpl(redisPoolFactory(redisProperties));
+        }
+    }
+
+    /**
+     * 转换
+     * @param lokiProperties loki配置
+     * @param redisProperties redis配置
+     */
+    private void convert(LokiProperties lokiProperties, RedisProperties redisProperties) {
+        GlobalConfig globalConfig = lokiProperties.getGlobalConfig();
+        GlobalConfig.MqConfig mqConfig = globalConfig.getMqConfig();
+        if(mqConfig != null && mqConfig.getMqType().equals(MqType.REDIS)) {
+            // TODO
+//            String address = mqConfig.getAddress();
+//            Boolean auth = mqConfig.getAuth();
+//            String username = mqConfig.getUsername();
+//            String password = mqConfig.getPassword();
+//            if(address == null || address.isEmpty()) {
+//                return;
+//            }
+//            address.split("");
         }
     }
 }

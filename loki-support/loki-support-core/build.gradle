@@ -1,7 +1,5 @@
 dependencies {
-    api "${lib.'jedis'}"
-    api project(":loki-support:loki-support-core")
-    implementation "${lib."slf4j-api"}"
+    api project(":loki-annotation")
 
     implementation "org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"

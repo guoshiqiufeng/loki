@@ -17,7 +17,7 @@ package io.github.guoshiqiufeng.loki.core.mapper;
 
 import com.alibaba.fastjson2.JSON;
 import io.github.guoshiqiufeng.loki.annotation.SendMessage;
-import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.entity.MessageInfo;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.EntityInfoHelper;

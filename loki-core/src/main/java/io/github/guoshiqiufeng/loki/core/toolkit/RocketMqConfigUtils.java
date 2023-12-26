@@ -16,8 +16,8 @@
 package io.github.guoshiqiufeng.loki.core.toolkit;
 
 
-import io.github.guoshiqiufeng.loki.core.config.GlobalConfig;
-import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.config.GlobalConfig;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.*;

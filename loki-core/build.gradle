@@ -1,5 +1,6 @@
 dependencies {
-    api project(":loki-annotation")
+    // api project(":loki-annotation")
+    api project(":loki-support:loki-support-core")
     api "${lib.'fastjson2'}"
     api "${lib.'spring-context'}"
     api "${lib.'hutool-all'}"

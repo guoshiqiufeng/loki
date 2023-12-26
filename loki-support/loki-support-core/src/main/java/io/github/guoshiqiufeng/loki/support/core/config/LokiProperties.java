@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.core.config;
+package io.github.guoshiqiufeng.loki.support.core.config;
 
-import io.github.guoshiqiufeng.loki.core.toolkit.GlobalConfigUtils;
 import lombok.Data;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Loki配置类
@@ -36,7 +36,8 @@ public class LokiProperties {
     /**
      * 全局配置
      */
-    private GlobalConfig globalConfig = GlobalConfigUtils.defaults();
+    @NestedConfigurationProperty
+    private GlobalConfig globalConfig;
 
 
 }

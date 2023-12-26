@@ -21,7 +21,6 @@ import io.github.guoshiqiufeng.loki.core.entity.MessageInfo;
 import io.github.guoshiqiufeng.loki.core.exception.LokiException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.shaded.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;

@@ -2,7 +2,8 @@ package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.constant.Constant;
-import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
@@ -11,7 +12,6 @@ import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
-import org.apache.rocketmq.shaded.commons.lang3.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class RedisHandler extends AbstractHandler {
         // 发送消息
         try {
             List<Header> headers = new ArrayList<>();
-            if (StringUtils.isNoneBlank(tag)) {
+            if (StringUtils.isNotEmpty(tag)) {
                 headers.add(new RecordHeader(Constant.KAFKA_TAG, tag.getBytes(StandardCharsets.UTF_8)));
             }
             Long timestamp = null;
@@ -114,7 +114,7 @@ public class RedisHandler extends AbstractHandler {
         // 发送消息
         try {
             List<Header> headers = new ArrayList<>();
-            if (StringUtils.isNoneBlank(tag)) {
+            if (StringUtils.isNotEmpty(tag)) {
                 headers.add(new RecordHeader(Constant.KAFKA_TAG, tag.getBytes(StandardCharsets.UTF_8)));
             }
             Long timestamp = null;
