@@ -34,7 +34,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 - groovy
 
 ```groovy
-    api project("io.github.guoshiqiufeng:loki-spring-boot-starter:0.3.0")
+    api project("io.github.guoshiqiufeng:loki-spring-boot-starter:0.4.0")
 ```
 
 - maven
@@ -43,7 +43,7 @@ https://guoshiqiufeng.github.io/loki-doc/
    <dependency>
         <groupId>io.github.guoshiqiufeng</groupId>
         <artifactId>loki-spring-boot-starter</artifactId>
-        <version>0.3.0</version>
+        <version>0.4.0</version>
    </dependency>
 ```
 
@@ -52,7 +52,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 - groovy
 
 ```groovy
-    api project("io.github.guoshiqiufeng:loki-spring-boot-starter-rocketmq:0.3.0")
+    api project("io.github.guoshiqiufeng:loki-spring-boot-starter-rocketmq:0.4.0")
 ```
 
 - maven
@@ -61,7 +61,7 @@ https://guoshiqiufeng.github.io/loki-doc/
    <dependency>
         <groupId>io.github.guoshiqiufeng</groupId>
         <artifactId>loki-spring-boot-starter-rocketmq</artifactId>
-        <version>0.3.0</version>
+        <version>0.4.0</version>
    </dependency>
 ```
 
@@ -70,7 +70,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 - groovy
 
 ```groovy
-    api project("io.github.guoshiqiufeng:loki-spring-boot-starter-kafka:0.3.0")
+    api project("io.github.guoshiqiufeng:loki-spring-boot-starter-kafka:0.4.0")
 ```
 
 - maven
@@ -79,7 +79,25 @@ https://guoshiqiufeng.github.io/loki-doc/
    <dependency>
         <groupId>io.github.guoshiqiufeng</groupId>
         <artifactId>loki-spring-boot-starter-kafka</artifactId>
-        <version>0.3.0</version>
+        <version>0.4.0</version>
+   </dependency>
+```
+
+##### 1.4 只用redis依赖
+
+- groovy
+
+```groovy
+    api project("io.github.guoshiqiufeng:loki-spring-boot-starter-redis:0.4.0")
+```
+
+- maven
+
+```maven
+   <dependency>
+        <groupId>io.github.guoshiqiufeng</groupId>
+        <artifactId>loki-spring-boot-starter-redis</artifactId>
+        <version>0.4.0</version>
    </dependency>
 ```
 
