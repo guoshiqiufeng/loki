@@ -16,7 +16,8 @@
 package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
-import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.RocketMqConfigUtils;
@@ -34,7 +35,6 @@ import org.apache.rocketmq.client.apis.producer.Producer;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
 import org.apache.rocketmq.client.java.message.MessageBuilderImpl;
 import org.apache.rocketmq.shaded.com.google.common.base.Throwables;
-import org.apache.rocketmq.shaded.commons.lang3.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -91,7 +91,7 @@ public class RocketMqHandler extends AbstractHandler {
             Producer producer = RocketMqConfigUtils.getProducer(producerName, properties);
             MessageBuilder messageBuilder = new MessageBuilderImpl()
                     .setTopic(topic);
-            if (StringUtils.isNoneBlank(tag)) {
+            if (StringUtils.isNotEmpty(tag)) {
                 messageBuilder.setTag(tag);
             }
             if (deliveryTimestamp != null && deliveryTimestamp != 0) {
@@ -139,7 +139,7 @@ public class RocketMqHandler extends AbstractHandler {
             Producer producer = RocketMqConfigUtils.getProducer(producerName, properties);
             MessageBuilder messageBuilder = new MessageBuilderImpl()
                     .setTopic(topic);
-            if (StringUtils.isNoneBlank(tag)) {
+            if (StringUtils.isNotEmpty(tag)) {
                 messageBuilder.setTag(tag);
             }
             if (deliveryTimestamp != null && deliveryTimestamp != 0) {

@@ -14,5 +14,11 @@ dependencyManagement {
     dependencies {
         dependency "io.github.guoshiqiufeng:loki-annotation:${APP_VERSION}"
         dependency "io.github.guoshiqiufeng:loki-core:${APP_VERSION}"
+        dependency "io.github.guoshiqiufeng:loki-support-core:${APP_VERSION}"
+        dependency "io.github.guoshiqiufeng:loki-support-redis:${APP_VERSION}"
+        dependency "io.github.guoshiqiufeng:loki-spring-boot-starter:${APP_VERSION}"
+        dependency "io.github.guoshiqiufeng:loki-spring-boot-starter-kafka:${APP_VERSION}"
+        dependency "io.github.guoshiqiufeng:loki-spring-boot-starter-redis:${APP_VERSION}"
+        dependency "io.github.guoshiqiufeng:loki-spring-boot-starter-rocketmq:${APP_VERSION}"
     }
 }

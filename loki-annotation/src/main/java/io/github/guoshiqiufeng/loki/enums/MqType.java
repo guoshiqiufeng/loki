@@ -38,7 +38,15 @@ public enum MqType {
     /**
      * kafka
      */
-    KAFKA(20, "Kafka");
+    KAFKA(20, "Kafka"),
+
+    /**
+     * redis
+     */
+    REDIS(30, "Redis"),
+
+
+    ;
 
 
     /**

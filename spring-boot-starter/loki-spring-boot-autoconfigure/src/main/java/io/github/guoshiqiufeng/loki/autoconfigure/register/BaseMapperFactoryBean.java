@@ -17,7 +17,7 @@ package io.github.guoshiqiufeng.loki.autoconfigure.register;
 
 
 import io.github.guoshiqiufeng.loki.core.config.BaseCache;
-import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.proxy.MapperProxy;
 import io.github.guoshiqiufeng.loki.core.toolkit.TypeUtils;

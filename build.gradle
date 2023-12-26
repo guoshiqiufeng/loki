@@ -17,6 +17,7 @@ ext {
             rocketMqVersion = '5.0.5',
             kafkaVersion = '2.8.9',
             kafkaClientsVersion = '3.6.1',
+            jedisVersion = '5.1.0',
     ]
 
     lib = [
@@ -24,6 +25,7 @@ ext {
             "spring-kafka"        : "org.springframework.kafka:spring-kafka:${kafkaVersion}",
             "kafka-clients"       : "org.apache.kafka:kafka-clients:${kafkaClientsVersion}",
             "rocketmq-client-java": "org.apache.rocketmq:rocketmq-client-java:${rocketMqVersion}",
+            "jedis"               : "redis.clients:jedis:${jedisVersion}",
             "spring-context"      : "org.springframework:spring-context:${springVersion}",
             "fastjson2"           : "com.alibaba.fastjson2:fastjson2:2.0.42",
             "logback-classic"     : "ch.qos.logback:logback-classic:1.4.14",

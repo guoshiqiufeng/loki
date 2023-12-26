@@ -15,7 +15,7 @@
  */
 package io.github.guoshiqiufeng.loki.core.handler;
 
-import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 
 import javax.annotation.PostConstruct;
 

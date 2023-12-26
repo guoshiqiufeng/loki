@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.autoconfigure.config;
+package io.github.guoshiqiufeng.loki.support.core.config;
 
-import io.github.guoshiqiufeng.loki.core.config.GlobalConfig;
-import io.github.guoshiqiufeng.loki.core.config.LokiProperties;
-import io.github.guoshiqiufeng.loki.core.toolkit.GlobalConfigUtils;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
- * Loki配置类-springboot
+ * Loki配置类
  *
  * @author yanghq
  * @version 1.0
- * @since 2023/11/24 15:00
+ * @since 2023/11/16 09:47
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class AutoConfigurationProperties extends LokiProperties {
+public class LokiProperties {
 
     /**
      * 是否启用
@@ -42,11 +37,7 @@ public class AutoConfigurationProperties extends LokiProperties {
      * 全局配置
      */
     @NestedConfigurationProperty
-    private GlobalConfig globalConfig = GlobalConfigUtils.defaults();
+    private GlobalConfig globalConfig;
 
-    /**
-     * 构造函数
-     */
-    public AutoConfigurationProperties() {
-    }
+
 }
