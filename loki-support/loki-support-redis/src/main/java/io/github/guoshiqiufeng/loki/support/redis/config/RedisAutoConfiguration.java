@@ -28,9 +28,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.*;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * redis配置
@@ -130,22 +128,59 @@ public class RedisAutoConfiguration {
 
     /**
      * 转换
-     * @param lokiProperties loki配置
+     *
+     * @param lokiProperties  loki配置
      * @param redisProperties redis配置
      */
     private void convert(LokiProperties lokiProperties, RedisProperties redisProperties) {
         GlobalConfig globalConfig = lokiProperties.getGlobalConfig();
         GlobalConfig.MqConfig mqConfig = globalConfig.getMqConfig();
-        if(mqConfig != null && mqConfig.getMqType().equals(MqType.REDIS)) {
-            // TODO
-//            String address = mqConfig.getAddress();
-//            Boolean auth = mqConfig.getAuth();
-//            String username = mqConfig.getUsername();
-//            String password = mqConfig.getPassword();
-//            if(address == null || address.isEmpty()) {
-//                return;
-//            }
-//            address.split("");
+
+        if (isRedisMqConfigValid(mqConfig)) {
+            String address = mqConfig.getAddress();
+            if (address != null && !address.isEmpty()) {
+                List<String> addressList = Arrays.asList(address.split(","));
+
+                if (addressList.size() == 1) {
+                    // Single node configuration
+                    configureSingleNode(addressList.get(0), redisProperties);
+                } else if (addressList.size() > 1) {
+                    // Cluster or Sentinel configuration
+                    configureClusterOrSentinel(addressList, redisProperties);
+                }
+            }
+
+            // Set other related configurations such as auth, username, password, etc.
+            if (mqConfig.getAuth() != null) {
+                configureAuth(mqConfig.getUsername(), mqConfig.getPassword(), redisProperties);
+            }
+        }
+    }
+
+    private boolean isRedisMqConfigValid(GlobalConfig.MqConfig mqConfig) {
+        return mqConfig != null && MqType.REDIS.equals(mqConfig.getMqType());
+    }
+
+    private void configureSingleNode(String node, RedisProperties redisProperties) {
+        String[] nodeArr = node.split(":");
+        if (nodeArr.length == 1) {
+            redisProperties.setHost(nodeArr[0]);
+        } else if (nodeArr.length == 2) {
+            redisProperties.setHost(nodeArr[0]);
+            redisProperties.setPort(Integer.parseInt(nodeArr[1]));
+        }
+    }
+
+    private void configureClusterOrSentinel(List<String> nodes, RedisProperties redisProperties) {
+        redisProperties.setCluster(new RedisProperties.Cluster().setNodes(nodes));
+    }
+
+    private void configureAuth(String username, String password, RedisProperties redisProperties) {
+        if (username != null) {
+            redisProperties.setUsername(username);
+        }
+        if (password != null) {
+            redisProperties.setPassword(password);
         }
     }
 }
