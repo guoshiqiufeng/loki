@@ -60,14 +60,26 @@ public class RedisAutoConfiguration {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxIdle(pool.getMaxIdle());
         jedisPoolConfig.setMinEvictableIdleDuration(pool.getMaxWait());
-        if (redisProperties.getPassword() != null && !redisProperties.getPassword().isEmpty()) {
-            return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
-                    redisProperties.getPort(), redisProperties.getTimeout(),
-                    redisProperties.getPassword(), redisProperties.getDatabase());
+        if (redisProperties.getUsername() != null && !redisProperties.getUsername().isEmpty()) {
+            if (redisProperties.getPassword() != null && !redisProperties.getPassword().isEmpty()) {
+                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
+                        redisProperties.getPort(), redisProperties.getTimeout(), redisProperties.getUsername(),
+                        redisProperties.getPassword(), redisProperties.getDatabase());
+            } else {
+                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
+                        redisProperties.getPort(), redisProperties.getTimeout(), redisProperties.getUsername(),
+                        null, redisProperties.getDatabase());
+            }
         } else {
-            return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
-                    redisProperties.getPort(), redisProperties.getTimeout(),
-                    null, redisProperties.getDatabase());
+            if (redisProperties.getPassword() != null && !redisProperties.getPassword().isEmpty()) {
+                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
+                        redisProperties.getPort(), redisProperties.getTimeout(),
+                        redisProperties.getPassword(), redisProperties.getDatabase());
+            } else {
+                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
+                        redisProperties.getPort(), redisProperties.getTimeout(),
+                        null, redisProperties.getDatabase());
+            }
         }
     }
 
@@ -82,13 +94,11 @@ public class RedisAutoConfiguration {
         Set<String> nodes = new HashSet<>();
         // 循环数组把集群节点添加到set集合中
         Collections.addAll(nodes, sentinels);
-        if (redisProperties.getSentinel().getPassword() != null && !redisProperties.getSentinel().getPassword().isEmpty()) {
-            return new JedisSentinelPool(redisProperties.getSentinel().getMaster(), nodes, jedisPoolConfig, redisProperties.getTimeout(), redisProperties.getTimeout(),
-                    redisProperties.getPassword(), redisProperties.getDatabase(), null, redisProperties.getTimeout(), redisProperties.getTimeout(),
-                    redisProperties.getSentinel().getPassword(), null);
-        } else {
-            return new JedisSentinelPool(redisProperties.getSentinel().getMaster(), nodes, jedisPoolConfig, redisProperties.getTimeout(), redisProperties.getPassword());
-        }
+        return new JedisSentinelPool(redisProperties.getSentinel().getMaster(), nodes, jedisPoolConfig,
+                redisProperties.getTimeout(), redisProperties.getTimeout(),
+                redisProperties.getUsername(), redisProperties.getPassword(), redisProperties.getDatabase(),
+                null, redisProperties.getTimeout(), redisProperties.getTimeout(),
+                redisProperties.getSentinel().getUsername(), redisProperties.getSentinel().getPassword(), null);
     }
 
     public JedisCluster getJedisCluster(RedisProperties redisProperties) {
