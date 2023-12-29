@@ -35,7 +35,7 @@ public class RedisProperties {
     /**
      * 主机
      */
-    private String host;
+    private String host = "localhost";
 
     /**
      * 端口号

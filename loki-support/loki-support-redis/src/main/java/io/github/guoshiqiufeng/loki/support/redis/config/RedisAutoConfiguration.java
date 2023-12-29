@@ -145,8 +145,8 @@ public class RedisAutoConfiguration {
                     // Single node configuration
                     configureSingleNode(addressList.get(0), redisProperties);
                 } else if (addressList.size() > 1) {
-                    // Cluster or Sentinel configuration
-                    configureClusterOrSentinel(addressList, redisProperties);
+                    // Cluster configuration
+                    configureCluster(addressList, redisProperties);
                 }
             }
 
@@ -171,8 +171,12 @@ public class RedisAutoConfiguration {
         }
     }
 
-    private void configureClusterOrSentinel(List<String> nodes, RedisProperties redisProperties) {
+    private void configureCluster(List<String> nodes, RedisProperties redisProperties) {
         redisProperties.setCluster(new RedisProperties.Cluster().setNodes(nodes));
+    }
+
+    private void configureSentinel(List<String> nodes, RedisProperties redisProperties) {
+        redisProperties.setSentinel(new RedisProperties.Sentinel().setNodes(nodes));
     }
 
     private void configureAuth(String username, String password, RedisProperties redisProperties) {
