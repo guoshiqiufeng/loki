@@ -51,8 +51,6 @@ public class GlobalConfigUtils {
                                 .setMqType(MqType.ROCKET_MQ)
                                 .setAddress("127.0.0.1:8081")
                                 .setAuth(Boolean.FALSE)
-                                .setUsername("loki")
-                                .setPassword("loki")
                                 .setConnectTimeout(180)
                                 .setMaxAttempts(3)
                 );

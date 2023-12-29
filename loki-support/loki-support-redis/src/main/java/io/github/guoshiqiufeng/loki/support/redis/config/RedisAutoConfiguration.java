@@ -31,6 +31,7 @@ import redis.clients.jedis.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * redis配置
@@ -152,7 +153,8 @@ public class RedisAutoConfiguration {
             String address = mqConfig.getAddress();
             if (address != null && !address.isEmpty()) {
                 List<String> addressList = Arrays.asList(address.split(","));
-                boolean isSentinel = isOpenSentinel(address);
+                String sentinelMaster = getSentinelMaster(address);
+                boolean isSentinel = !sentinelMaster.isEmpty();
                 if (addressList.size() == 1) {
                     // Single node configuration
                     configureSingleNode(addressList.get(0), redisProperties);
@@ -161,7 +163,10 @@ public class RedisAutoConfiguration {
                     configureCluster(addressList, redisProperties);
                 } else if (addressList.size() > 1) {
                     // Sentinel configuration
-                    configureSentinel(addressList, redisProperties, getSentinelMaster(address));
+                    addressList = addressList.stream().filter(tmp -> !tmp.equals(sentinelMaster))
+                            .collect(Collectors.toList());
+                    configureSentinel(addressList, redisProperties, mqConfig, sentinelMaster);
+
                 }
             }
 
@@ -190,15 +195,17 @@ public class RedisAutoConfiguration {
         redisProperties.setCluster(new RedisProperties.Cluster().setNodes(nodes));
     }
 
-    private void configureSentinel(List<String> nodes, RedisProperties redisProperties, String master) {
-        redisProperties.setSentinel(new RedisProperties.Sentinel()
+    private void configureSentinel(List<String> nodes, RedisProperties redisProperties, GlobalConfig.MqConfig mqConfig, String master) {
+        RedisProperties.Sentinel sentinel = new RedisProperties.Sentinel()
                 .setNodes(nodes)
-                .setMaster(master)
-        );
-    }
-
-    private boolean isOpenSentinel(String address) {
-        return address.matches("(\\w+)");
+                .setMaster(master);
+        if (mqConfig.getUsername() != null) {
+            sentinel.setUsername(mqConfig.getUsername());
+        }
+        if (mqConfig.getPassword() != null) {
+            sentinel.setPassword(mqConfig.getPassword());
+        }
+        redisProperties.setSentinel(sentinel);
     }
 
     private String getSentinelMaster(String address) {
