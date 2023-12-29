@@ -29,6 +29,8 @@ import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.*;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * redis配置
@@ -140,13 +142,16 @@ public class RedisAutoConfiguration {
             String address = mqConfig.getAddress();
             if (address != null && !address.isEmpty()) {
                 List<String> addressList = Arrays.asList(address.split(","));
-
+                boolean isSentinel = isOpenSentinel(address);
                 if (addressList.size() == 1) {
                     // Single node configuration
                     configureSingleNode(addressList.get(0), redisProperties);
-                } else if (addressList.size() > 1) {
+                } else if (addressList.size() > 1 && !isSentinel) {
                     // Cluster configuration
                     configureCluster(addressList, redisProperties);
+                } else if (addressList.size() > 1) {
+                    // Sentinel configuration
+                    configureSentinel(addressList, redisProperties, getSentinelMaster(address));
                 }
             }
 
@@ -175,8 +180,22 @@ public class RedisAutoConfiguration {
         redisProperties.setCluster(new RedisProperties.Cluster().setNodes(nodes));
     }
 
-    private void configureSentinel(List<String> nodes, RedisProperties redisProperties) {
-        redisProperties.setSentinel(new RedisProperties.Sentinel().setNodes(nodes));
+    private void configureSentinel(List<String> nodes, RedisProperties redisProperties, String master) {
+        redisProperties.setSentinel(new RedisProperties.Sentinel()
+                .setNodes(nodes)
+                .setMaster(master)
+        );
+    }
+
+    private boolean isOpenSentinel(String address) {
+        return address.matches("(\\w+)");
+    }
+
+    private String getSentinelMaster(String address) {
+        String sentinelPattern = "(\\w+)";
+        Pattern pattern = Pattern.compile(sentinelPattern);
+        Matcher matcher = pattern.matcher(address);
+        return matcher.find() ? matcher.group(1) : "";
     }
 
     private void configureAuth(String username, String password, RedisProperties redisProperties) {
