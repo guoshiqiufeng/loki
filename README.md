@@ -22,6 +22,4 @@ https://guoshiqiufeng.github.io/loki-doc/
 
 ### 使用
 
-> 可参考
->
-> - [loki-test](https://github.com/guoshiqiufeng/loki-test)
+> 可参考 [loki-test](https://github.com/guoshiqiufeng/loki-test)
