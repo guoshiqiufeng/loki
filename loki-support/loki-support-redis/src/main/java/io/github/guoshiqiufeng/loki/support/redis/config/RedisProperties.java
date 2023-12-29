@@ -35,12 +35,17 @@ public class RedisProperties {
     /**
      * 主机
      */
-    private String host;
+    private String host = "localhost";
 
     /**
      * 端口号
      */
     private Integer port = 6379;
+
+    /**
+     * 用户名
+     */
+    private String username;
 
     /**
      * 密码

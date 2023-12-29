@@ -28,9 +28,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.*;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * redis配置
@@ -60,14 +61,26 @@ public class RedisAutoConfiguration {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxIdle(pool.getMaxIdle());
         jedisPoolConfig.setMinEvictableIdleDuration(pool.getMaxWait());
-        if (redisProperties.getPassword() != null && !redisProperties.getPassword().isEmpty()) {
-            return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
-                    redisProperties.getPort(), redisProperties.getTimeout(),
-                    redisProperties.getPassword(), redisProperties.getDatabase());
+        if (redisProperties.getUsername() != null && !redisProperties.getUsername().isEmpty()) {
+            if (redisProperties.getPassword() != null && !redisProperties.getPassword().isEmpty()) {
+                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
+                        redisProperties.getPort(), redisProperties.getTimeout(), redisProperties.getUsername(),
+                        redisProperties.getPassword(), redisProperties.getDatabase());
+            } else {
+                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
+                        redisProperties.getPort(), redisProperties.getTimeout(), redisProperties.getUsername(),
+                        null, redisProperties.getDatabase());
+            }
         } else {
-            return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
-                    redisProperties.getPort(), redisProperties.getTimeout(),
-                    null, redisProperties.getDatabase());
+            if (redisProperties.getPassword() != null && !redisProperties.getPassword().isEmpty()) {
+                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
+                        redisProperties.getPort(), redisProperties.getTimeout(),
+                        redisProperties.getPassword(), redisProperties.getDatabase());
+            } else {
+                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
+                        redisProperties.getPort(), redisProperties.getTimeout(),
+                        null, redisProperties.getDatabase());
+            }
         }
     }
 
@@ -82,13 +95,11 @@ public class RedisAutoConfiguration {
         Set<String> nodes = new HashSet<>();
         // 循环数组把集群节点添加到set集合中
         Collections.addAll(nodes, sentinels);
-        if (redisProperties.getSentinel().getPassword() != null && !redisProperties.getSentinel().getPassword().isEmpty()) {
-            return new JedisSentinelPool(redisProperties.getSentinel().getMaster(), nodes, jedisPoolConfig, redisProperties.getTimeout(), redisProperties.getTimeout(),
-                    redisProperties.getPassword(), redisProperties.getDatabase(), null, redisProperties.getTimeout(), redisProperties.getTimeout(),
-                    redisProperties.getSentinel().getPassword(), null);
-        } else {
-            return new JedisSentinelPool(redisProperties.getSentinel().getMaster(), nodes, jedisPoolConfig, redisProperties.getTimeout(), redisProperties.getPassword());
-        }
+        return new JedisSentinelPool(redisProperties.getSentinel().getMaster(), nodes, jedisPoolConfig,
+                redisProperties.getTimeout(), redisProperties.getTimeout(),
+                redisProperties.getUsername(), redisProperties.getPassword(), redisProperties.getDatabase(),
+                null, redisProperties.getTimeout(), redisProperties.getTimeout(),
+                redisProperties.getSentinel().getUsername(), redisProperties.getSentinel().getPassword(), null);
     }
 
     public JedisCluster getJedisCluster(RedisProperties redisProperties) {
@@ -130,22 +141,86 @@ public class RedisAutoConfiguration {
 
     /**
      * 转换
-     * @param lokiProperties loki配置
+     *
+     * @param lokiProperties  loki配置
      * @param redisProperties redis配置
      */
     private void convert(LokiProperties lokiProperties, RedisProperties redisProperties) {
         GlobalConfig globalConfig = lokiProperties.getGlobalConfig();
         GlobalConfig.MqConfig mqConfig = globalConfig.getMqConfig();
-        if(mqConfig != null && mqConfig.getMqType().equals(MqType.REDIS)) {
-            // TODO
-//            String address = mqConfig.getAddress();
-//            Boolean auth = mqConfig.getAuth();
-//            String username = mqConfig.getUsername();
-//            String password = mqConfig.getPassword();
-//            if(address == null || address.isEmpty()) {
-//                return;
-//            }
-//            address.split("");
+
+        if (isRedisMqConfigValid(mqConfig)) {
+            String address = mqConfig.getAddress();
+            if (address != null && !address.isEmpty()) {
+                List<String> addressList = Arrays.asList(address.split(","));
+                String sentinelMaster = getSentinelMaster(address);
+                boolean isSentinel = !sentinelMaster.isEmpty();
+                if (addressList.size() == 1) {
+                    // Single node configuration
+                    configureSingleNode(addressList.get(0), redisProperties);
+                } else if (addressList.size() > 1 && !isSentinel) {
+                    // Cluster configuration
+                    configureCluster(addressList, redisProperties);
+                } else if (addressList.size() > 1) {
+                    // Sentinel configuration
+                    addressList = addressList.stream().filter(tmp -> !tmp.equals(sentinelMaster))
+                            .collect(Collectors.toList());
+                    configureSentinel(addressList, redisProperties, mqConfig, sentinelMaster);
+
+                }
+            }
+
+            // Set other related configurations such as auth, username, password, etc.
+            if (mqConfig.getAuth() != null) {
+                configureAuth(mqConfig.getUsername(), mqConfig.getPassword(), redisProperties);
+            }
+        }
+    }
+
+    private boolean isRedisMqConfigValid(GlobalConfig.MqConfig mqConfig) {
+        return mqConfig != null && MqType.REDIS.equals(mqConfig.getMqType());
+    }
+
+    private void configureSingleNode(String node, RedisProperties redisProperties) {
+        String[] nodeArr = node.split(":");
+        if (nodeArr.length == 1) {
+            redisProperties.setHost(nodeArr[0]);
+        } else if (nodeArr.length == 2) {
+            redisProperties.setHost(nodeArr[0]);
+            redisProperties.setPort(Integer.parseInt(nodeArr[1]));
+        }
+    }
+
+    private void configureCluster(List<String> nodes, RedisProperties redisProperties) {
+        redisProperties.setCluster(new RedisProperties.Cluster().setNodes(nodes));
+    }
+
+    private void configureSentinel(List<String> nodes, RedisProperties redisProperties, GlobalConfig.MqConfig mqConfig, String master) {
+        RedisProperties.Sentinel sentinel = new RedisProperties.Sentinel()
+                .setNodes(nodes)
+                .setMaster(master);
+        if (mqConfig.getUsername() != null) {
+            sentinel.setUsername(mqConfig.getUsername());
+        }
+        if (mqConfig.getPassword() != null) {
+            sentinel.setPassword(mqConfig.getPassword());
+        }
+        redisProperties.setSentinel(sentinel);
+    }
+
+    private String getSentinelMaster(String address) {
+        String sentinelPattern = "(\\w+)";
+        Pattern pattern = Pattern.compile(sentinelPattern);
+        Matcher matcher = pattern.matcher(address);
+        return matcher.find() ? matcher.group(1) : "";
+    }
+
+    private void configureAuth(String username, String password, RedisProperties redisProperties) {
+        if (username != null) {
+            redisProperties.setUsername(username);
+        }
+        if (password != null) {
+            redisProperties.setPassword(password);
         }
     }
 }
