@@ -60,7 +60,9 @@ public class RedisProperties {
     /**
      * 链接时间
      */
-    private int timeout;
+    private Duration timeout;
+
+    private Duration connectTimeout;
 
     /**
      *
