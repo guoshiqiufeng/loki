@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2023, fubluesky (fubluesky@foxmail.com)
+ * Copyright (c) 2023-2024, fubluesky (fubluesky@foxmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,8 @@ public interface RedisClient {
 
             @Override
             public void onPMessage(String pattern, String channel, String message) {
-                log.debug("{} onPMessage : {}", channel, message);
+                log.debug("pattern: {}  channel: {} onPMessage : {}", pattern, channel, message);
+                function.apply(new ConsumerRecord().setTopic(channel).setMessage(message));
             }
 
             @Override
