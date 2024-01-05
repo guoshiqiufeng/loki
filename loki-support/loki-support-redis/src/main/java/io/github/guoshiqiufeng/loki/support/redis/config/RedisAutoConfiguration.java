@@ -22,13 +22,16 @@ import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import io.github.guoshiqiufeng.loki.support.redis.impl.RedisClusterImpl;
 import io.github.guoshiqiufeng.loki.support.redis.impl.RedisDefaultImpl;
 import io.github.guoshiqiufeng.loki.support.redis.impl.RedisSentinelImpl;
+import io.github.guoshiqiufeng.loki.support.redis.utils.RedisConfigUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -57,73 +60,38 @@ public class RedisAutoConfiguration {
 
 
     public JedisPool redisPoolFactory(RedisProperties redisProperties) {
-        RedisProperties.Pool pool = redisProperties.getJedis().getPool();
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxIdle(pool.getMaxIdle());
-        jedisPoolConfig.setMinEvictableIdleDuration(pool.getMaxWait());
-        if (redisProperties.getUsername() != null && !redisProperties.getUsername().isEmpty()) {
-            if (redisProperties.getPassword() != null && !redisProperties.getPassword().isEmpty()) {
-                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
-                        redisProperties.getPort(), redisProperties.getTimeout(), redisProperties.getUsername(),
-                        redisProperties.getPassword(), redisProperties.getDatabase());
-            } else {
-                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
-                        redisProperties.getPort(), redisProperties.getTimeout(), redisProperties.getUsername(),
-                        null, redisProperties.getDatabase());
-            }
-        } else {
-            if (redisProperties.getPassword() != null && !redisProperties.getPassword().isEmpty()) {
-                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
-                        redisProperties.getPort(), redisProperties.getTimeout(),
-                        redisProperties.getPassword(), redisProperties.getDatabase());
-            } else {
-                return new JedisPool(jedisPoolConfig, redisProperties.getHost(),
-                        redisProperties.getPort(), redisProperties.getTimeout(),
-                        null, redisProperties.getDatabase());
-            }
-        }
+        JedisPoolConfig jedisPoolConfig = RedisConfigUtils.getJedisPoolConfig(redisProperties);
+        JedisClientConfig clientConfig = RedisConfigUtils.getJedisClientConfig(redisProperties);
+        return new JedisPool(jedisPoolConfig, new HostAndPort(redisProperties.getHost(),
+                redisProperties.getPort()), clientConfig);
     }
 
     public JedisSentinelPool jedisSentinelPool(RedisProperties redisProperties) {
-        RedisProperties.Pool pool = redisProperties.getJedis().getPool();
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxIdle(pool.getMaxIdle());
-        jedisPoolConfig.setMinEvictableIdleDuration(pool.getMaxWait());
+        JedisPoolConfig jedisPoolConfig = RedisConfigUtils.getJedisPoolConfig(redisProperties);
         // 截取集群节点
         String[] sentinels = redisProperties.getSentinel().getNodes().toArray(new String[0]);
         // 创建set集合
-        Set<String> nodes = new HashSet<>();
+        Set<HostAndPort> nodes;
         // 循环数组把集群节点添加到set集合中
-        Collections.addAll(nodes, sentinels);
+        nodes = Arrays.stream(sentinels).map(HostAndPort::from).collect(Collectors.toSet());
+        JedisClientConfig clientConfig = RedisConfigUtils.getJedisClientConfig(redisProperties);
+        JedisClientConfig SentinelClientConfig = RedisConfigUtils.getJedisSentinelClientConfig(redisProperties);
         return new JedisSentinelPool(redisProperties.getSentinel().getMaster(), nodes, jedisPoolConfig,
-                redisProperties.getTimeout(), redisProperties.getTimeout(),
-                redisProperties.getUsername(), redisProperties.getPassword(), redisProperties.getDatabase(),
-                null, redisProperties.getTimeout(), redisProperties.getTimeout(),
-                redisProperties.getSentinel().getUsername(), redisProperties.getSentinel().getPassword(), null);
+                clientConfig, SentinelClientConfig);
     }
 
     public JedisCluster getJedisCluster(RedisProperties redisProperties) {
-        RedisProperties.Pool pool = redisProperties.getJedis().getPool();
-        ConnectionPoolConfig poolConfig = new ConnectionPoolConfig();
-        poolConfig.setMaxIdle(pool.getMaxIdle());
-        poolConfig.setMinEvictableIdleDuration(pool.getMaxWait());
-        poolConfig.setMinIdle(pool.getMinIdle());
-        poolConfig.setMaxTotal(pool.getMaxActive());
+        ConnectionPoolConfig poolConfig = RedisConfigUtils.getJedisConnectionPoolConfig(redisProperties);
         // 截取集群节点
         String[] cluster = redisProperties.getCluster().getNodes().toArray(new String[0]);
         // 创建set集合
-        Set<HostAndPort> nodes = new HashSet<>();
+        Set<HostAndPort> nodes;
         // 循环数组把集群节点添加到set集合中
-        for (String node : cluster) {
-            String[] host = node.split(":");
-            //添加集群节点
-            if (host.length > 1) {
-                nodes.add(new HostAndPort(host[0], Integer.parseInt(host[1])));
-            }
-        }
+        nodes = Arrays.stream(cluster).map(HostAndPort::from).collect(Collectors.toSet());
+        JedisClientConfig clientConfig = RedisConfigUtils.getJedisClientConfig(redisProperties);
         //需要密码连接的创建对象方式
-        return new JedisCluster(nodes, redisProperties.getTimeout(), 2000,
-                redisProperties.getCluster().getMaxRedirects(), redisProperties.getPassword(), poolConfig);
+        return new JedisCluster(nodes, clientConfig,
+                redisProperties.getCluster().getMaxRedirects(), poolConfig);
     }
 
     @Bean
@@ -166,7 +134,6 @@ public class RedisAutoConfiguration {
                     addressList = addressList.stream().filter(tmp -> !tmp.equals(sentinelMaster))
                             .collect(Collectors.toList());
                     configureSentinel(addressList, redisProperties, mqConfig, sentinelMaster);
-
                 }
             }
 

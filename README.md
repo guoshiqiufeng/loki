@@ -20,6 +20,14 @@ https://guoshiqiufeng.github.io/loki-doc/
 - Kafka 3.x（kafka-clients 3.6.1）
 - Redis 6.X (jedis 5.1.0)
 
+### 功能
+
+| Mq        | Send          | Listener      |
+|-----------|---------------|-----------|
+| RocketMQ    | 普通消息、定时/延时消息、顺序消息 | push      |
+| Kafka |   普通消息        |   poll        |
+| Redis      | publish       | subscribe |
+
 ### 使用
 
 > 可参考 [loki-test](https://github.com/guoshiqiufeng/loki-test)

@@ -59,7 +59,8 @@ public interface RedisClient {
 
             @Override
             public void onPMessage(String pattern, String channel, String message) {
-                log.debug("{} onPMessage : {}", channel, message);
+                log.debug("pattern: {}  channel: {} onPMessage : {}", pattern, channel, message);
+                function.apply(new ConsumerRecord().setTopic(channel).setMessage(message));
             }
 
             @Override
