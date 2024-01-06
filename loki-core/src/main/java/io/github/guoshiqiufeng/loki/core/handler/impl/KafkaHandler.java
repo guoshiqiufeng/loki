@@ -19,16 +19,14 @@ import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.constant.Constant;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.core.toolkit.KafkaConfigUtils;
-import io.github.guoshiqiufeng.loki.core.toolkit.KafkaConsumeUtils;
 import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
 import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
+import io.github.guoshiqiufeng.loki.support.kafka.utils.KafkaConsumeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
@@ -53,15 +51,18 @@ import java.util.function.Function;
 @Slf4j
 public class KafkaHandler extends AbstractHandler {
 
+    final KafkaClient kafkaClient;
+
     /**
      * 构造函数
      *
      * @param properties    loki配置
      * @param handlerHolder 具体事件处理持有者
      */
-    public KafkaHandler(LokiProperties properties, HandlerHolder handlerHolder) {
+    public KafkaHandler(LokiProperties properties, HandlerHolder handlerHolder, KafkaClient kafkaClient) {
         super(properties, handlerHolder);
         type = MqType.KAFKA.getCode();
+        this.kafkaClient = kafkaClient;
         super.init();
     }
 
@@ -104,9 +105,8 @@ public class KafkaHandler extends AbstractHandler {
             if (keys != null && keys.length > 0) {
                 key = keys[0];
             }
-            KafkaProducer<String, String> producer = KafkaConfigUtils.getProducer(producerName, properties);
             ProducerRecord<String, String> record = new ProducerRecord<>(topic, null, timestamp, key, body, headers);
-            return getMessageId(producer.send(record).get());
+            return getMessageId(kafkaClient.send(producerName, record).get());
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("KafkaHandler# send message error:{}", e.getMessage());
@@ -155,11 +155,10 @@ public class KafkaHandler extends AbstractHandler {
             if (keys != null && keys.length > 0) {
                 key = keys[0];
             }
-            KafkaProducer<String, String> producer = KafkaConfigUtils.getProducer(producerName, properties);
             ProducerRecord<String, String> record = new ProducerRecord<>(topic, null, timestamp, key, body, headers);
             return CompletableFuture.supplyAsync(() -> {
                         try {
-                            return producer.send(record).get();
+                            return kafkaClient.send(producerName, record).get();
                         } catch (InterruptedException | ExecutionException e) {
                             throw new RuntimeException(e);
                         }
@@ -193,21 +192,23 @@ public class KafkaHandler extends AbstractHandler {
             return;
         }
         try {
-            KafkaConsumer<String, String> consumer = KafkaConfigUtils.getPushConsumerBuilder(properties, consumerGroup, index);
             if (StringUtils.isEmpty(tag)) {
                 tag = "*";
             }
             ExecutorService executorService = ThreadPoolUtils.getSingleThreadPool();
             String finalTag = tag;
             CompletableFuture.runAsync(() -> {
-                KafkaConsumeUtils.consumeMessage(consumer, topic, finalTag, record -> function.apply(new MessageContent<String>()
-                        .setMessageId(getMessageId(record))
-                        // .setMessageGroup(messageGroup)
-                        .setTopic(record.topic())
-                        .setTag(record.topic())
-                        .setKeys(Collections.singletonList(record.key()))
-                        .setBody(record.value())
-                        .setBodyMessage(record.value())));
+                KafkaConsumeUtils.consumeMessage(
+                        kafkaClient.getConsumer(consumerGroup, index),
+                        topic, finalTag,
+                        record -> function.apply(new MessageContent<String>()
+                                .setMessageId(getMessageId(record))
+                                // .setMessageGroup(messageGroup)
+                                .setTopic(record.topic())
+                                .setTag(record.topic())
+                                .setKeys(Collections.singletonList(record.key()))
+                                .setBody(record.value())
+                                .setBodyMessage(record.value())));
             }, executorService).exceptionally(throwable -> {
                 if (log.isErrorEnabled()) {
                     log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.core.toolkit;
+package io.github.guoshiqiufeng.loki.support.kafka.utils;
 
-import cn.hutool.core.util.IdUtil;
 import io.github.guoshiqiufeng.loki.support.core.config.GlobalConfig;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import lombok.experimental.UtilityClass;
@@ -26,10 +25,10 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * kafka配置工具类
@@ -51,7 +50,7 @@ public class KafkaConfigUtils {
      * @param properties 配置
      * @return Producer
      */
-    public KafkaProducer<String, String> getProducer(String beanName, LokiProperties properties) {
+    public KafkaProducer<String, String> getProducer(String beanName, KafkaProperties properties) {
         if (beanName == null || beanName.isEmpty()) {
             beanName = "defaultProducer";
         }
@@ -70,9 +69,9 @@ public class KafkaConfigUtils {
      * @param properties 配置
      * @return Producer
      */
-    public KafkaProducer<String, String> producerBuilder(String beanName, LokiProperties properties) {
-        Properties clientConfiguration = getClientConfiguration(properties, beanName);
-        clientConfiguration.put(ProducerConfig.RETRIES_CONFIG, properties.getGlobalConfig().getMqConfig().getMaxAttempts());
+    public KafkaProducer<String, String> producerBuilder(String beanName, KafkaProperties properties) {
+        Properties clientConfiguration = new Properties();
+        clientConfiguration.putAll(properties.buildProducerProperties());
         KafkaProducer<String, String> producer = new KafkaProducer<>(clientConfiguration, new StringSerializer(), new StringSerializer());
         if (log.isInfoEnabled()) {
             log.info(String.format("%s started successful on bootstrap.servers %s", beanName, clientConfiguration.getProperty(ProducerConfig.CLIENT_ID_CONFIG)));
@@ -89,30 +88,18 @@ public class KafkaConfigUtils {
      * @param index      排序
      * @return PushConsumerBuilder
      */
-    public KafkaConsumer<String, String> getPushConsumerBuilder(LokiProperties properties, String groupId, int index) {
-        Properties config = getClientConfiguration(properties, groupId + "_" + index);
+    public KafkaConsumer<String, String> getConsumerBuilder(KafkaProperties properties, String groupId, int index) {
+        Properties config = new Properties();
+        config.putAll(properties.buildConsumerProperties());
         config.put(CommonClientConfigs.GROUP_ID_CONFIG, groupId);
-        config.put(CommonClientConfigs.GROUP_INSTANCE_ID_CONFIG, groupId + IdUtil.getSnowflake().nextIdStr());
+        config.put(CommonClientConfigs.GROUP_INSTANCE_ID_CONFIG, groupId + "_" + UUID.randomUUID());
         return new KafkaConsumer<String, String>(config, new StringDeserializer(), new StringDeserializer());
     }
 
-    /**
-     * 获取 ClientConfiguration
-     *
-     * @param properties 配置
-     * @return ClientConfiguration
-     */
-    private Properties getClientConfiguration(LokiProperties properties, String beanName) {
-        Properties config = new Properties();
-        String hostName = "unknown";
-        if (beanName != null && !beanName.isEmpty()) {
-            hostName = beanName;
-        }
-        GlobalConfig.MqConfig mqConfig = properties.getGlobalConfig().getMqConfig();
-        config.put(ProducerConfig.CLIENT_ID_CONFIG, hostName);
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, mqConfig.getAddress());
-        config.put(ProducerConfig.ACKS_CONFIG, "all");
-        return config;
-    }
 
+    public void convert(LokiProperties lokiProperties, KafkaProperties kafkaProperties) {
+        GlobalConfig.MqConfig mqConfig = lokiProperties.getGlobalConfig().getMqConfig();
+        kafkaProperties.setBootstrapServers(Arrays.stream(mqConfig.getAddress().split(",")).collect(Collectors.toList()));
+        // kafkaProperties.setClientId(mqConfig.getClientId());
+    }
 }

@@ -204,7 +204,7 @@ public class RocketMqHandler extends AbstractHandler {
             FilterExpression filterExpression = new FilterExpression(tag, FilterExpressionType.TAG);
             pushConsumerBuilder
                     .setConsumerGroup(consumerGroup)
-                    // Set the subscription for the consumer.
+                    // Set the subscription for the getConsumer.
                     .setSubscriptionExpressions(Collections.singletonMap(topic, filterExpression))
                     .setConsumptionThreadCount(consumptionThreadCount)
                     .setMaxCacheMessageCount(maxCacheMessageCount)
