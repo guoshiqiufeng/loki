@@ -45,6 +45,7 @@ public class KafkaAutoConfiguration {
      *
      * @param properties    Loki配置
      * @param handlerHolder 处理器持有者
+     * @param kafkaClient kafka客户端
      * @return Handler 实例列表
      */
     @Bean

@@ -17,6 +17,7 @@ package io.github.guoshiqiufeng.loki.support.kafka.utils;
 
 import io.github.guoshiqiufeng.loki.support.core.config.GlobalConfig;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.kafka.config.KafkaProperties;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
@@ -25,7 +26,6 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -72,6 +72,7 @@ public class KafkaConfigUtils {
     public KafkaProducer<String, String> producerBuilder(String beanName, KafkaProperties properties) {
         Properties clientConfiguration = new Properties();
         clientConfiguration.putAll(properties.buildProducerProperties());
+        clientConfiguration.put(ProducerConfig.CLIENT_ID_CONFIG, beanName);
         KafkaProducer<String, String> producer = new KafkaProducer<>(clientConfiguration, new StringSerializer(), new StringSerializer());
         if (log.isInfoEnabled()) {
             log.info(String.format("%s started successful on bootstrap.servers %s", beanName, clientConfiguration.getProperty(ProducerConfig.CLIENT_ID_CONFIG)));
@@ -91,15 +92,28 @@ public class KafkaConfigUtils {
     public KafkaConsumer<String, String> getConsumerBuilder(KafkaProperties properties, String groupId, int index) {
         Properties config = new Properties();
         config.putAll(properties.buildConsumerProperties());
+        config.put(ProducerConfig.CLIENT_ID_CONFIG, groupId + "_" + index);
         config.put(CommonClientConfigs.GROUP_ID_CONFIG, groupId);
         config.put(CommonClientConfigs.GROUP_INSTANCE_ID_CONFIG, groupId + "_" + UUID.randomUUID());
         return new KafkaConsumer<String, String>(config, new StringDeserializer(), new StringDeserializer());
     }
 
-
+    /**
+     * 转换配置
+     * @param lokiProperties loki配置
+     * @param kafkaProperties kafka配置
+     */
     public void convert(LokiProperties lokiProperties, KafkaProperties kafkaProperties) {
         GlobalConfig.MqConfig mqConfig = lokiProperties.getGlobalConfig().getMqConfig();
-        kafkaProperties.setBootstrapServers(Arrays.stream(mqConfig.getAddress().split(",")).collect(Collectors.toList()));
-        // kafkaProperties.setClientId(mqConfig.getClientId());
+        if (mqConfig.getAddress() != null && !mqConfig.getAddress().isEmpty()) {
+            kafkaProperties.setBootstrapServers(Arrays.stream(mqConfig.getAddress().split(",")).collect(Collectors.toList()));
+        }
+        String hostName = "unknown";
+        try {
+            hostName = java.net.InetAddress.getLocalHost().getHostName();
+        } catch (Exception e) {
+            log.error("get hostName error", e);
+        }
+        kafkaProperties.setClientId(hostName);
     }
 }

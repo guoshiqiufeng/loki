@@ -58,6 +58,7 @@ public class KafkaHandler extends AbstractHandler {
      *
      * @param properties    loki配置
      * @param handlerHolder 具体事件处理持有者
+     * @param kafkaClient kafka客户端
      */
     public KafkaHandler(LokiProperties properties, HandlerHolder handlerHolder, KafkaClient kafkaClient) {
         super(properties, handlerHolder);

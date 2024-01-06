@@ -51,6 +51,7 @@ public class RedisHandler extends AbstractHandler {
      *
      * @param properties    loki配置
      * @param handlerHolder 具体事件处理持有者
+     * @param redisClient redis客户端
      */
     public RedisHandler(LokiProperties properties, HandlerHolder handlerHolder, RedisClient redisClient) {
         super(properties, handlerHolder);
