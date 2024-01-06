@@ -17,6 +17,8 @@ package io.github.guoshiqiufeng.loki.support.redis.config;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * jedis连接池配置
  *
@@ -25,7 +27,8 @@ import lombok.Data;
  * @since 2023/12/25 14:25
  */
 @Data
-public class JedisPoolProperties {
+public class JedisPoolProperties implements Serializable {
+    private static final long serialVersionUID = -140625393606054583L;
     /**
      * 最大连接数
      */

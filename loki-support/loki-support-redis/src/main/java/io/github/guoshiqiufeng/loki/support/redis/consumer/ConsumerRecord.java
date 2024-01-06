@@ -30,6 +30,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class ConsumerRecord implements Serializable {
 
+    private static final long serialVersionUID = -8132453752436298723L;
     /**
      * topic
      */

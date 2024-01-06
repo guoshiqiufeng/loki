@@ -18,6 +18,8 @@ package io.github.guoshiqiufeng.loki.support.core.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
+import java.io.Serializable;
+
 /**
  * Loki配置类
  *
@@ -26,8 +28,9 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * @since 2023/11/16 09:47
  */
 @Data
-public class LokiProperties {
+public class LokiProperties implements Serializable {
 
+    private static final long serialVersionUID = -6036393369576832795L;
     /**
      * 是否启用
      */
