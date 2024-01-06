@@ -16,12 +16,12 @@
 package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
-import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
-import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.RocketMqConfigUtils;
+import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.apache.rocketmq.client.apis.consumer.ConsumeResult;
@@ -79,11 +79,15 @@ public class RocketMqHandler extends AbstractHandler {
     @Override
     public String send(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
         if (StringUtils.isEmpty(topic)) {
-            log.error("RocketMqHandler# send message error: topic is null");
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# send message error: topic is null");
+            }
             return null;
         }
         if (StringUtils.isEmpty(body)) {
-            log.error("RocketMqHandler# send message error: body is null");
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# send message error: body is null");
+            }
             return null;
         }
         // 发送消息
@@ -103,12 +107,18 @@ public class RocketMqHandler extends AbstractHandler {
             Message message = messageBuilder
                     .setBody(body.getBytes())
                     .build();
-            log.debug("RocketMqHandler# send message:{}", message);
+            if (log.isDebugEnabled()) {
+                log.debug("RocketMqHandler# send message:{}", message);
+            }
             SendReceipt send = producer.send(message);
-            log.debug("RocketMqHandler# send messageId:{}", send.getMessageId());
+            if (log.isDebugEnabled()) {
+                log.debug("RocketMqHandler# send messageId:{}", send.getMessageId());
+            }
             return send.getMessageId().toString();
         } catch (ClientException e) {
-            log.error("RocketMqHandler# send message error:{}", e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# send message error:{}", e.getMessage());
+            }
             throw new RuntimeException(e);
         }
     }
@@ -127,11 +137,15 @@ public class RocketMqHandler extends AbstractHandler {
     @Override
     public CompletableFuture<String> sendAsync(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
         if (StringUtils.isEmpty(topic)) {
-            log.error("RocketMqHandler# send message error: topic is null");
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# send message error: topic is null");
+            }
             return null;
         }
         if (StringUtils.isEmpty(body)) {
-            log.error("RocketMqHandler# send message error: body is null");
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# send message error: body is null");
+            }
             return null;
         }
         // 发送消息
@@ -151,10 +165,14 @@ public class RocketMqHandler extends AbstractHandler {
             Message message = messageBuilder
                     .setBody(body.getBytes())
                     .build();
-            log.debug("RocketMqHandler# send message:{}", message);
+            if (log.isDebugEnabled()) {
+                log.debug("RocketMqHandler# send message:{}", message);
+            }
             return producer.sendAsync(message).thenApply(m -> m.getMessageId().toString());
         } catch (ClientException e) {
-            log.error("RocketMqHandler# send message error:{}", e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# send message error:{}", e.getMessage());
+            }
             throw new RuntimeException(e);
         }
     }
@@ -173,7 +191,9 @@ public class RocketMqHandler extends AbstractHandler {
     @Override
     public void pushMessageListener(String consumerGroup, Integer index, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
         if (StringUtils.isEmpty(topic)) {
-            log.error("RocketMqHandler# pushMessageListener error: topic is null");
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error: topic is null");
+            }
             return;
         }
         try {
@@ -189,7 +209,9 @@ public class RocketMqHandler extends AbstractHandler {
                     .setConsumptionThreadCount(consumptionThreadCount)
                     .setMaxCacheMessageCount(maxCacheMessageCount)
                     .setMessageListener(messageView -> {
-                        log.debug("Consume message={}", messageView);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Consume message={}", messageView);
+                        }
                         MessageId messageId = messageView.getMessageId();
                         String messageGroup = messageView.getMessageGroup().orElse("");
                         String tagName = messageView.getTag().orElse("");
@@ -206,14 +228,18 @@ public class RocketMqHandler extends AbstractHandler {
                                     .setBody(body)
                                     .setBodyMessage(body));
                         } catch (Exception e) {
-                            log.error("RocketMqHandler# pushMessageListener error:{}", Throwables.getStackTraceAsString(e));
+                            if (log.isErrorEnabled()) {
+                                log.error("RocketMqHandler# pushMessageListener error:{}", Throwables.getStackTraceAsString(e));
+                            }
                             return ConsumeResult.FAILURE;
                         }
                         return ConsumeResult.SUCCESS;
                     })
                     .build();
         } catch (Exception e) {
-            log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
+            }
             throw new RuntimeException(e);
         }
     }

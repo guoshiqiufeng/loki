@@ -97,7 +97,9 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
         if (entity == null) {
             throw new IllegalArgumentException("send entity must not be null");
         }
-        log.debug("BaseMapperImpl# sendAsync message:{}", entity);
+        if (log.isDebugEnabled()) {
+            log.debug("BaseMapperImpl# sendAsync message:{}", entity);
+        }
         MessageInfo messageInfo = EntityInfoHelper.getMessageInfo(entityClass);
 
         // 遍历字段， 获取是否存在@MessageKey注解
@@ -138,7 +140,9 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
             MessageInfo messageInfo = EntityInfoHelper.getMessageInfo(entityClass);
             if (messageInfo != null && messageInfo.getTopic() != null && !messageInfo.getTopic().isEmpty()) {
                 topic = messageInfo.getTopic();
-                log.debug("BaseMapperImpl# sendByAnnotation set default topic:{}", topic);
+                if (log.isDebugEnabled()) {
+                    log.debug("BaseMapperImpl# sendByAnnotation set default topic:{}", topic);
+                }
             }
         }
 

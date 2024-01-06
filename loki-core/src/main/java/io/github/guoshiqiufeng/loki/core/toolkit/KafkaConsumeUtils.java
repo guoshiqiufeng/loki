@@ -64,7 +64,9 @@ public class KafkaConsumeUtils {
         } catch (WakeupException e) {
             // ignore, we're closing
         } catch (Exception e) {
-            log.error("Unexpected error", e);
+            if (log.isErrorEnabled()) {
+                log.error("Unexpected error", e);
+            }
         } finally {
             consumer.close();
         }

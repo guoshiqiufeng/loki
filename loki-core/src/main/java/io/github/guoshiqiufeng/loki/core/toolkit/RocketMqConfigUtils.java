@@ -76,7 +76,9 @@ public class RocketMqConfigUtils {
                 // 设置重试次数，默认为3
                 .setMaxAttempts(properties.getGlobalConfig().getMqConfig().getMaxAttempts())
                 .build();
-        log.info(String.format("%s started successful on endpoints %s", beanName, clientConfiguration.getEndpoints()));
+        if (log.isInfoEnabled()) {
+            log.info(String.format("%s started successful on endpoints %s", beanName, clientConfiguration.getEndpoints()));
+        }
         producerMap.put(beanName, producer);
         return producer;
     }

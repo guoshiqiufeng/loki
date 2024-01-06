@@ -74,7 +74,9 @@ public class KafkaConfigUtils {
         Properties clientConfiguration = getClientConfiguration(properties, beanName);
         clientConfiguration.put(ProducerConfig.RETRIES_CONFIG, properties.getGlobalConfig().getMqConfig().getMaxAttempts());
         KafkaProducer<String, String> producer = new KafkaProducer<>(clientConfiguration, new StringSerializer(), new StringSerializer());
-        log.info(String.format("%s started successful on bootstrap.servers %s", beanName, clientConfiguration.getProperty(ProducerConfig.CLIENT_ID_CONFIG)));
+        if (log.isInfoEnabled()) {
+            log.info(String.format("%s started successful on bootstrap.servers %s", beanName, clientConfiguration.getProperty(ProducerConfig.CLIENT_ID_CONFIG)));
+        }
         producerMap.put(beanName, producer);
         return producer;
     }
