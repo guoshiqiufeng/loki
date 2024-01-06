@@ -112,6 +112,16 @@ subprojects {
     }
 
     javadoc {
+        // Check for syntax during linting. 'none' doesn't seem to work in suppressing
+        // all linting warnings all the time (see/link references most notably).
+        options.addStringOption("Xdoclint:syntax", "-quiet")
+
+        // Suppress warnings due to cross-module @see and @link references.
+        // Note that global 'api' task does display all warnings, and
+        // checks for 'reference' on top of 'syntax'.
+        logging.captureStandardError LogLevel.INFO
+        logging.captureStandardOutput LogLevel.INFO  // suppress "## warnings" message
+
         afterEvaluate {
             configure(options) {
                 encoding "UTF-8"
@@ -119,7 +129,7 @@ subprojects {
                 author true
                 version true
                 failOnError false
-                links "http://docs.oracle.com/javase/8/docs/api"
+                links "https://docs.oracle.com/javase/8/docs/api"
             }
         }
     }
