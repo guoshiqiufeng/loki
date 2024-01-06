@@ -63,7 +63,7 @@ public class RocketMqAutoConfiguration {
      * @return Handler 实例列表
      */
     @Bean
-    @ConditionalOnProperty(prefix = "loki.global-config.mq-config", name = "mq-type", havingValue = "ROCKET_MQ")
+    @ConditionalOnMissingBean(Handler.class)
     public List<Handler> rocketHandler(LokiProperties properties, HandlerHolder handlerHolder) {
         ArrayList<Handler> handler = new ArrayList<Handler>(1);
         if (properties.getGlobalConfig().getMqConfig().getMqType().equals(MqType.ROCKET_MQ)) {
@@ -81,6 +81,7 @@ public class RocketMqAutoConfiguration {
      * @return HandlerHolder 实例
      */
     @Bean
+    @ConditionalOnMissingBean(HandlerHolder.class)
     public HandlerHolder handlerHolder() {
         return new HandlerHolder();
     }

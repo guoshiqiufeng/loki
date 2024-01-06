@@ -21,6 +21,7 @@ import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.handler.impl.KafkaHandler;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +47,7 @@ public class KafkaAutoConfiguration {
      * @return Handler 实例列表
      */
     @Bean
+    @ConditionalOnMissingBean(Handler.class)
     public List<Handler> kafkaHandler(LokiProperties properties, HandlerHolder handlerHolder) {
         ArrayList<Handler> handler = new ArrayList<Handler>(1);
         if (properties.getGlobalConfig().getMqConfig().getMqType().equals(MqType.KAFKA)) {
@@ -63,6 +65,7 @@ public class KafkaAutoConfiguration {
      * @return HandlerHolder 实例
      */
     @Bean
+    @ConditionalOnMissingBean(HandlerHolder.class)
     public HandlerHolder handlerHolder() {
         return new HandlerHolder();
     }

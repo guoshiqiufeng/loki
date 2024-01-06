@@ -37,7 +37,7 @@ public class LokiPropertiesAutoConfiguration {
      */
     @Bean
     @ConfigurationProperties(prefix = "loki")
-//    @ConditionalOnMissingBean(LokiProperties.class)
+    @ConditionalOnMissingBean(LokiProperties.class)
     public LokiProperties lokiProperties() {
         LokiProperties autoConfigurationProperties = new LokiProperties();
         autoConfigurationProperties.setGlobalConfig(GlobalConfigUtils.defaults());
