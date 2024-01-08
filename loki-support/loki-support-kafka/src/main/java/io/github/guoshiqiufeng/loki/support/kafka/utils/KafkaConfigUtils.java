@@ -21,6 +21,7 @@ import io.github.guoshiqiufeng.loki.support.kafka.config.KafkaProperties;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -73,7 +74,7 @@ public class KafkaConfigUtils {
         Properties clientConfiguration = new Properties();
         clientConfiguration.putAll(properties.buildProducerProperties());
         clientConfiguration.put(ProducerConfig.CLIENT_ID_CONFIG, beanName);
-        KafkaProducer<String, String> producer = new KafkaProducer<>(clientConfiguration, new StringSerializer(), new StringSerializer());
+        KafkaProducer<String, String> producer = new KafkaProducer<>(clientConfiguration);
         if (log.isInfoEnabled()) {
             log.info(String.format("%s started successful on bootstrap.servers %s", beanName, clientConfiguration.getProperty(ProducerConfig.CLIENT_ID_CONFIG)));
         }
@@ -95,7 +96,7 @@ public class KafkaConfigUtils {
         config.put(ProducerConfig.CLIENT_ID_CONFIG, groupId + "_" + index);
         config.put(CommonClientConfigs.GROUP_ID_CONFIG, groupId);
         config.put(CommonClientConfigs.GROUP_INSTANCE_ID_CONFIG, groupId + "_" + UUID.randomUUID());
-        return new KafkaConsumer<String, String>(config, new StringDeserializer(), new StringDeserializer());
+        return new KafkaConsumer<String, String>(config);
     }
 
     /**
