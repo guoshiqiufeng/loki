@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.core.toolkit;
+package io.github.guoshiqiufeng.loki.support.kafka.utils;
 
 import io.github.guoshiqiufeng.loki.constant.Constant;
 import lombok.experimental.UtilityClass;
@@ -64,7 +64,9 @@ public class KafkaConsumeUtils {
         } catch (WakeupException e) {
             // ignore, we're closing
         } catch (Exception e) {
-            log.error("Unexpected error", e);
+            if (log.isErrorEnabled()) {
+                log.error("Unexpected error", e);
+            }
         } finally {
             consumer.close();
         }

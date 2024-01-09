@@ -98,7 +98,9 @@ public class EntityInfoHelper {
                     Object value = declaredField.get(entity);
                     String messageKey = Optional.ofNullable(value)
                             .map(Object::toString).orElse(null);
-                    log.debug("EntityInfoHelper# send message key:{}", messageKey);
+                    if (log.isErrorEnabled()) {
+                        log.debug("EntityInfoHelper# send message key:{}", messageKey);
+                    }
                     if (messageKey != null) {
                         keys.add(messageKey);
                     }

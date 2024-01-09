@@ -1,11 +1,11 @@
 dependencies {
-    // api project(":loki-annotation")
     api project(":loki-support:loki-support-core")
     api "${lib.'fastjson2'}"
     api "${lib.'spring-context'}"
     api "${lib.'hutool-all'}"
     implementation "${lib.'rocketmq-client-java'}"
-    implementation "${lib.'kafka-clients'}"
+
     implementation project(":loki-support:loki-support-redis")
+    implementation project(":loki-support:loki-support-kafka")
     implementation "${lib."slf4j-api"}"
 }

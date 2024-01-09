@@ -18,6 +18,7 @@ package io.github.guoshiqiufeng.loki.support.redis.config;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.List;
 
@@ -30,8 +31,9 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-public class RedisProperties {
+public class RedisProperties implements Serializable {
 
+    private static final long serialVersionUID = -476275347945030744L;
     /**
      * 主机
      */

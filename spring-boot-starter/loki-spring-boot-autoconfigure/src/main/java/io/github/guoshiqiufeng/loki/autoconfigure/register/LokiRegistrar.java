@@ -90,7 +90,9 @@ public class LokiRegistrar<T> {
             );
         }
         GlobalConfig.MqConfig mqConfig = globalConfig.getMqConfig();
-        log.debug("mqConfig:{}", mqConfig);
+        if (log.isDebugEnabled()) {
+            log.debug("mqConfig:{}", mqConfig);
+        }
         // init listener
         // 创建监听
         if (!CollectionUtils.isEmpty(listenerList)) {
@@ -136,7 +138,9 @@ public class LokiRegistrar<T> {
                     maxCacheMessageCount = annotation.maxCacheMessageCount();
                 }
                 if (messageInfo == null && annotation == null) {
-                    log.warn("messageListener:{} init error", listener.getClass().getName());
+                    if (log.isWarnEnabled()) {
+                        log.warn("messageListener:{} init error", listener.getClass().getName());
+                    }
                     return;
                 }
 
@@ -165,7 +169,9 @@ public class LokiRegistrar<T> {
                             return null;
                         });
             } catch (Exception e) {
-                log.warn("messageListener:{} init error", listener.getClass().getName(), e);
+                if (log.isWarnEnabled()) {
+                    log.warn("messageListener:{} init error", listener.getClass().getName(), e);
+                }
             }
         }
     }

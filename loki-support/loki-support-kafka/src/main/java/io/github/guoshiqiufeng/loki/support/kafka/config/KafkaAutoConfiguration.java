@@ -13,22 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.core.config;
+package io.github.guoshiqiufeng.loki.support.kafka.config;
 
-import io.github.guoshiqiufeng.loki.support.core.util.GlobalConfigUtils;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
+import io.github.guoshiqiufeng.loki.support.kafka.impl.KafkaDefaultImpl;
+import io.github.guoshiqiufeng.loki.support.kafka.utils.KafkaConfigUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * loki配置
+ * kafka配置
+ *
  * @author yanghq
  * @version 1.0
- * @since 2023/12/26 15:49
+ * @since 2024/1/6 10:13
  */
 @Configuration
-public class LokiPropertiesAutoConfiguration {
+public class KafkaAutoConfiguration {
+
 
     /**
      * 配置文件
@@ -36,11 +41,17 @@ public class LokiPropertiesAutoConfiguration {
      * @return 配置文件
      */
     @Bean
-    @ConfigurationProperties(prefix = "loki")
-    @ConditionalOnMissingBean(LokiProperties.class)
-    public LokiProperties lokiProperties() {
-        LokiProperties autoConfigurationProperties = new LokiProperties();
-        autoConfigurationProperties.setGlobalConfig(GlobalConfigUtils.defaults());
-        return autoConfigurationProperties;
+    @ConfigurationProperties(prefix = "spring.kafka")
+    @ConditionalOnMissingBean(KafkaProperties.class)
+    public KafkaProperties kafkaProperties() {
+        return new KafkaProperties();
     }
+
+    @Bean
+    @ConditionalOnMissingBean(KafkaClient.class)
+    public KafkaClient kafkaClient(LokiProperties lokiProperties, KafkaProperties kafkaProperties) {
+        KafkaConfigUtils.convert(lokiProperties, kafkaProperties);
+        return new KafkaDefaultImpl(kafkaProperties);
+    }
+
 }

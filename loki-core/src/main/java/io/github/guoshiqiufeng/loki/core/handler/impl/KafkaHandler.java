@@ -17,18 +17,16 @@ package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.constant.Constant;
-import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
-import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.core.toolkit.KafkaConfigUtils;
-import io.github.guoshiqiufeng.loki.core.toolkit.KafkaConsumeUtils;
+import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
 import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
+import io.github.guoshiqiufeng.loki.support.kafka.utils.KafkaConsumeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
@@ -53,15 +51,19 @@ import java.util.function.Function;
 @Slf4j
 public class KafkaHandler extends AbstractHandler {
 
+    final KafkaClient kafkaClient;
+
     /**
      * 构造函数
      *
      * @param properties    loki配置
      * @param handlerHolder 具体事件处理持有者
+     * @param kafkaClient kafka客户端
      */
-    public KafkaHandler(LokiProperties properties, HandlerHolder handlerHolder) {
+    public KafkaHandler(LokiProperties properties, HandlerHolder handlerHolder, KafkaClient kafkaClient) {
         super(properties, handlerHolder);
         type = MqType.KAFKA.getCode();
+        this.kafkaClient = kafkaClient;
         super.init();
     }
 
@@ -79,11 +81,15 @@ public class KafkaHandler extends AbstractHandler {
     @Override
     public String send(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
         if (StringUtils.isEmpty(topic)) {
-            log.error("KafkaHandler# send message error: topic is null");
+            if (log.isErrorEnabled()) {
+                log.error("KafkaHandler# send message error: topic is null");
+            }
             return null;
         }
         if (StringUtils.isEmpty(body)) {
-            log.error("KafkaHandler# send message error: body is null");
+            if (log.isErrorEnabled()) {
+                log.error("KafkaHandler# send message error: body is null");
+            }
             return null;
         }
         // 发送消息
@@ -100,11 +106,12 @@ public class KafkaHandler extends AbstractHandler {
             if (keys != null && keys.length > 0) {
                 key = keys[0];
             }
-            KafkaProducer<String, String> producer = KafkaConfigUtils.getProducer(producerName, properties);
             ProducerRecord<String, String> record = new ProducerRecord<>(topic, null, timestamp, key, body, headers);
-            return getMessageId(producer.send(record).get());
+            return getMessageId(kafkaClient.send(producerName, record).get());
         } catch (Exception e) {
-            log.error("KafkaHandler# send message error:{}", e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("KafkaHandler# send message error:{}", e.getMessage());
+            }
             throw new RuntimeException(e);
         }
     }
@@ -124,11 +131,15 @@ public class KafkaHandler extends AbstractHandler {
     @Override
     public CompletableFuture<String> sendAsync(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
         if (StringUtils.isEmpty(topic)) {
-            log.error("KafkaHandler# send message error: topic is null");
+            if (log.isErrorEnabled()) {
+                log.error("KafkaHandler# send message error: topic is null");
+            }
             return null;
         }
         if (StringUtils.isEmpty(body)) {
-            log.error("KafkaHandler# send message error: body is null");
+            if (log.isErrorEnabled()) {
+                log.error("KafkaHandler# send message error: body is null");
+            }
             return null;
         }
         // 发送消息
@@ -145,18 +156,19 @@ public class KafkaHandler extends AbstractHandler {
             if (keys != null && keys.length > 0) {
                 key = keys[0];
             }
-            KafkaProducer<String, String> producer = KafkaConfigUtils.getProducer(producerName, properties);
             ProducerRecord<String, String> record = new ProducerRecord<>(topic, null, timestamp, key, body, headers);
             return CompletableFuture.supplyAsync(() -> {
                         try {
-                            return producer.send(record).get();
+                            return kafkaClient.send(producerName, record).get();
                         } catch (InterruptedException | ExecutionException e) {
                             throw new RuntimeException(e);
                         }
                     })
                     .thenApplyAsync(this::getMessageId);
         } catch (Exception e) {
-            log.error("KafkaHandler# send message error:{}", e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("KafkaHandler# send message error:{}", e.getMessage());
+            }
             throw new RuntimeException(e);
         }
     }
@@ -175,32 +187,40 @@ public class KafkaHandler extends AbstractHandler {
     @Override
     public void pushMessageListener(String consumerGroup, Integer index, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
         if (StringUtils.isEmpty(topic)) {
-            log.error("RocketMqHandler# pushMessageListener error: topic is null");
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error: topic is null");
+            }
             return;
         }
         try {
-            KafkaConsumer<String, String> consumer = KafkaConfigUtils.getPushConsumerBuilder(properties, consumerGroup, index);
             if (StringUtils.isEmpty(tag)) {
                 tag = "*";
             }
             ExecutorService executorService = ThreadPoolUtils.getSingleThreadPool();
             String finalTag = tag;
             CompletableFuture.runAsync(() -> {
-                KafkaConsumeUtils.consumeMessage(consumer, topic, finalTag, record -> function.apply(new MessageContent<String>()
-                        .setMessageId(getMessageId(record))
-                        // .setMessageGroup(messageGroup)
-                        .setTopic(record.topic())
-                        .setTag(record.topic())
-                        .setKeys(Collections.singletonList(record.key()))
-                        .setBody(record.value())
-                        .setBodyMessage(record.value())));
+                KafkaConsumeUtils.consumeMessage(
+                        kafkaClient.getConsumer(consumerGroup, index),
+                        topic, finalTag,
+                        record -> function.apply(new MessageContent<String>()
+                                .setMessageId(getMessageId(record))
+                                // .setMessageGroup(messageGroup)
+                                .setTopic(record.topic())
+                                .setTag(record.topic())
+                                .setKeys(Collections.singletonList(record.key()))
+                                .setBody(record.value())
+                                .setBodyMessage(record.value())));
             }, executorService).exceptionally(throwable -> {
-                log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());
+                if (log.isErrorEnabled()) {
+                    log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());
+                }
                 return null;
             });
 
         } catch (Exception e) {
-            log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
+            }
             throw new RuntimeException(e);
         }
     }

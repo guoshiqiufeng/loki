@@ -17,12 +17,12 @@ package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.constant.Constant;
-import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
-import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
+import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
 import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Header;
@@ -51,6 +51,7 @@ public class RedisHandler extends AbstractHandler {
      *
      * @param properties    loki配置
      * @param handlerHolder 具体事件处理持有者
+     * @param redisClient redis客户端
      */
     public RedisHandler(LokiProperties properties, HandlerHolder handlerHolder, RedisClient redisClient) {
         super(properties, handlerHolder);
@@ -74,11 +75,15 @@ public class RedisHandler extends AbstractHandler {
     @Override
     public String send(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
         if (StringUtils.isEmpty(topic)) {
-            log.error("RedisHandler# send message error: topic is null");
+            if (log.isErrorEnabled()) {
+                log.error("RedisHandler# send message error: topic is null");
+            }
             return null;
         }
         if (StringUtils.isEmpty(body)) {
-            log.error("RedisHandler# send message error: body is null");
+            if (log.isErrorEnabled()) {
+                log.error("RedisHandler# send message error: body is null");
+            }
             return null;
         }
         // 发送消息
@@ -97,10 +102,11 @@ public class RedisHandler extends AbstractHandler {
             }
 
             long publish = redisClient.publish(topic, body);
-            log.info("publish:{}", publish);
             return null;
         } catch (Exception e) {
-            log.error("RedisHandler# send message error:{}", e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("RedisHandler# send message error:{}", e.getMessage());
+            }
             throw new RuntimeException(e);
         }
     }
@@ -119,11 +125,15 @@ public class RedisHandler extends AbstractHandler {
     @Override
     public CompletableFuture<String> sendAsync(String producerName, String topic, String tag, String message, Long deliveryTimestamp, String... keys) {
         if (StringUtils.isEmpty(topic)) {
-            log.error("RedisHandler# send message error: topic is null");
+            if (log.isErrorEnabled()) {
+                log.error("RedisHandler# send message error: topic is null");
+            }
             return null;
         }
         if (StringUtils.isEmpty(message)) {
-            log.error("RedisHandler# send message error: body is null");
+            if (log.isErrorEnabled()) {
+                log.error("RedisHandler# send message error: body is null");
+            }
             return null;
         }
         // 发送消息
@@ -143,7 +153,9 @@ public class RedisHandler extends AbstractHandler {
 
             return CompletableFuture.supplyAsync(() -> "" + redisClient.publish(topic, message));
         } catch (Exception e) {
-            log.error("RedisHandler# send message error:{}", e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("RedisHandler# send message error:{}", e.getMessage());
+            }
             throw new RuntimeException(e);
         }
     }
@@ -162,7 +174,9 @@ public class RedisHandler extends AbstractHandler {
     @Override
     public void pushMessageListener(String consumerGroup, Integer index, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
         if (StringUtils.isEmpty(topic)) {
-            log.error("RocketMqHandler# pushMessageListener error: topic is null");
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error: topic is null");
+            }
             return;
         }
         try {
@@ -178,12 +192,16 @@ public class RedisHandler extends AbstractHandler {
                 ), topic);
 
             }, executorService).exceptionally(throwable -> {
-                log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());
+                if (log.isErrorEnabled()) {
+                    log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());
+                }
                 return null;
             });
 
         } catch (Exception e) {
-            log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
+            }
             throw new RuntimeException(e);
         }
     }

@@ -33,6 +33,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 基础mapper实现类
@@ -78,7 +79,14 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
      */
     @Override
     public String send(T entity) {
-        return (String) doSend(entity, false);
+        try {
+            return doSend(entity, false).get();
+        } catch (InterruptedException | ExecutionException e) {
+            if(log.isErrorEnabled()) {
+                log.error("BaseMapperImpl# send message error:{}", e.getMessage());
+            }
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -88,16 +96,17 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
      * @return messageId 消息id
      */
     @Override
-    @SuppressWarnings("all")
     public CompletableFuture<String> sendAsync(T entity) {
-        return (CompletableFuture<String>) doSend(entity, true);
+        return doSend(entity, true);
     }
 
-    private Object doSend(T entity, boolean async) {
+    private CompletableFuture<String> doSend(T entity, boolean async) {
         if (entity == null) {
             throw new IllegalArgumentException("send entity must not be null");
         }
-        log.debug("BaseMapperImpl# sendAsync message:{}", entity);
+        if (log.isDebugEnabled()) {
+            log.debug("BaseMapperImpl# sendAsync message:{}", entity);
+        }
         MessageInfo messageInfo = EntityInfoHelper.getMessageInfo(entityClass);
 
         // 遍历字段， 获取是否存在@MessageKey注解
@@ -105,13 +114,14 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
 
         // TODO 根据序列化方式序列化消息
         String message = JSON.toJSONString(entity);
-        return async ?
-                handlerHolder.route(getMqType()).sendAsync(messageInfo.getProducer(),
-                        messageInfo.getTopic(), messageInfo.getTag(),
-                        message, messageInfo.getDeliveryTimestamp(), messageKeys) :
-                handlerHolder.route(getMqType()).send(messageInfo.getProducer(),
-                        messageInfo.getTopic(), messageInfo.getTag(),
-                        message, messageInfo.getDeliveryTimestamp(), messageKeys);
+        if(async) {
+            return handlerHolder.route(getMqType()).sendAsync(messageInfo.getProducer(),
+                    messageInfo.getTopic(), messageInfo.getTag(),
+                    message, messageInfo.getDeliveryTimestamp(), messageKeys);
+        }
+        return CompletableFuture.supplyAsync(() -> handlerHolder.route(getMqType()).send(messageInfo.getProducer(),
+                messageInfo.getTopic(), messageInfo.getTag(),
+                message, messageInfo.getDeliveryTimestamp(), messageKeys));
     }
 
     /**
@@ -138,7 +148,9 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
             MessageInfo messageInfo = EntityInfoHelper.getMessageInfo(entityClass);
             if (messageInfo != null && messageInfo.getTopic() != null && !messageInfo.getTopic().isEmpty()) {
                 topic = messageInfo.getTopic();
-                log.debug("BaseMapperImpl# sendByAnnotation set default topic:{}", topic);
+                if (log.isDebugEnabled()) {
+                    log.debug("BaseMapperImpl# sendByAnnotation set default topic:{}", topic);
+                }
             }
         }
 
