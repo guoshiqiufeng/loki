@@ -29,7 +29,7 @@ jobs:
         with:
           gradle-version: 8.5
 
-      - name: Add gradle.properties
+      - name: Set Gradle Env
         run: |
           echo "storedUsername=${{secrets.STORED_USERNAME}}" > ~/.gradle/gradle.properties
           echo "storedPassword=${{secrets.STORED_PASSWORD}}" >> ~/.gradle/gradle.properties
@@ -38,8 +38,8 @@ jobs:
           echo "signing.secretKeyRingFile=$(echo ~/.gradle/secring.gpg)" >> ~/.gradle/gradle.properties
 
       # 构建项目
-      - name: Build with Gradle
-        run: ./gradlew build
+      #- name: Build with Gradle
+      #  run: ./gradlew build
 
       # 将秘钥解码后将文件放置 ~/.gradle/secring.gpg
       - name: Decode
