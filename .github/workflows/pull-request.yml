@@ -1,9 +1,9 @@
 on:
   push:
     branches:
-      - main
+      - dev
 
-name: Release please
+name: Pull request
 
 jobs:
   release-please:
@@ -19,8 +19,8 @@ jobs:
         id: release
         with:
           release-type: java
-          default-branch: main
-          skip-github-pull-request: true
+          default-branch: dev
+          skip-github-release: true
           package-name: standard-version
           # include-v-in-tag: false
           config-file: ~/.release-please-config.json
