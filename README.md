@@ -22,11 +22,11 @@ https://guoshiqiufeng.github.io/loki-doc/
 
 ### 功能
 
-| Mq        | Send          | Listener      |
-|-----------|---------------|-----------|
-| RocketMQ    | 普通消息、定时/延时消息、顺序消息 | push      |
-| Kafka |   普通消息        |   poll        |
-| Redis      | publish       | subscribe |
+| Mq        | Send          | Listener      | Listener  TopicPattern |
+|-----------|---------------|-----------|------------------------|
+| RocketMQ    | 普通消息、定时/延时消息、顺序消息 | push      |                        |
+| Kafka |   普通消息        |   poll        | 支持                     |
+| Redis      | publish       | subscribe |                        |
 
 ### 使用
 
