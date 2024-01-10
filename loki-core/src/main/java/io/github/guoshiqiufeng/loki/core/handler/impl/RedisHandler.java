@@ -170,11 +170,12 @@ public class RedisHandler extends AbstractHandler {
     @Override
     public void pushMessageListener(ConsumerConfig consumerConfig, Function<MessageContent<String>, Void> function) {
         String topic = consumerConfig.getTopic();
+        String topicPattern = consumerConfig.getTopicPattern();
         String tag = consumerConfig.getTag();
 
-        if (StringUtils.isEmpty(topic)) {
+        if (StringUtils.isEmpty(topic) && StringUtils.isEmpty(topicPattern)) {
             if (log.isErrorEnabled()) {
-                log.error("RocketMqHandler# pushMessageListener error: topic is null");
+                log.error("RocketMqHandler# pushMessageListener error: topic and topicPattern is both null");
             }
             return;
         }
@@ -184,12 +185,19 @@ public class RedisHandler extends AbstractHandler {
             }
             ExecutorService executorService = ThreadPoolUtils.getSingleThreadPool();
             CompletableFuture.runAsync(() -> {
-                redisClient.subscribe(record -> function.apply(new MessageContent<String>()
-                        .setTopic(record.getTopic())
-                        .setBody(record.getMessage())
-                        .setBodyMessage(record.getMessage())
-                ), topic);
-
+                if (!StringUtils.isEmpty(topicPattern)) {
+                    redisClient.psubscribe(record -> function.apply(new MessageContent<String>()
+                            .setTopic(record.getTopic())
+                            .setBody(record.getMessage())
+                            .setBodyMessage(record.getMessage())
+                    ), topic);
+                } else {
+                    redisClient.subscribe(record -> function.apply(new MessageContent<String>()
+                            .setTopic(record.getTopic())
+                            .setBody(record.getMessage())
+                            .setBodyMessage(record.getMessage())
+                    ), topic);
+                }
             }, executorService).exceptionally(throwable -> {
                 if (log.isErrorEnabled()) {
                     log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());

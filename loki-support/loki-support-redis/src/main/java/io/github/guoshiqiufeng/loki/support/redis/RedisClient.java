@@ -16,6 +16,7 @@
 package io.github.guoshiqiufeng.loki.support.redis;
 
 import io.github.guoshiqiufeng.loki.support.redis.consumer.ConsumerRecord;
+import io.github.guoshiqiufeng.loki.support.redis.consumer.DefaultJedisPubSub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.JedisPubSub;
@@ -48,53 +49,18 @@ public interface RedisClient {
      */
     public void subscribe(JedisPubSub jedisPubSub, String... channels);
 
+    /**
+     * 订阅消息
+     * @param jedisPubSub 消息处理器
+     * @param patterns 规则
+     */
+    public void psubscribe(JedisPubSub jedisPubSub, String... patterns);
+
     default public void subscribe(Function<ConsumerRecord, Void> function, String... channels) {
-        subscribe(new JedisPubSub() {
-            private final Logger log = LoggerFactory.getLogger(RedisClient.class);
+        subscribe(new DefaultJedisPubSub(function), channels);
+    }
 
-            @Override
-            public void onMessage(String channel, String message) {
-                if (log.isDebugEnabled()) {
-                    log.debug("{} onMessage : {}", channel, message);
-                }
-                function.apply(new ConsumerRecord().setTopic(channel).setMessage(message));
-            }
-
-            @Override
-            public void onPMessage(String pattern, String channel, String message) {
-                if (log.isDebugEnabled()) {
-                    log.debug("pattern: {}  channel: {} onPMessage : {}", pattern, channel, message);
-                }
-                function.apply(new ConsumerRecord().setTopic(channel).setMessage(message));
-            }
-
-            @Override
-            public void onSubscribe(String channel, int subscribedChannels) {
-                if (log.isDebugEnabled()) {
-                    log.debug("{} subscribe success", channel);
-                }
-            }
-
-            @Override
-            public void onUnsubscribe(String channel, int subscribedChannels) {
-                if (log.isDebugEnabled()) {
-                    log.debug("{} unsubscribe success", channel);
-                }
-            }
-
-            @Override
-            public void onPUnsubscribe(String pattern, int subscribedChannels) {
-                if (log.isDebugEnabled()) {
-                    log.debug("{} PUnsubscribe success", pattern);
-                }
-            }
-
-            @Override
-            public void onPSubscribe(String pattern, int subscribedChannels) {
-                if (log.isDebugEnabled()) {
-                    log.debug("{} PSubscribe success", pattern);
-                }
-            }
-        }, channels);
+    default public void psubscribe(Function<ConsumerRecord, Void> function, String... patterns) {
+        subscribe(new DefaultJedisPubSub(function), patterns);
     }
 }
