@@ -17,6 +17,7 @@ package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.constant.Constant;
+import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
@@ -58,7 +59,7 @@ public class KafkaHandler extends AbstractHandler {
      *
      * @param properties    loki配置
      * @param handlerHolder 具体事件处理持有者
-     * @param kafkaClient kafka客户端
+     * @param kafkaClient   kafka客户端
      */
     public KafkaHandler(LokiProperties properties, HandlerHolder handlerHolder, KafkaClient kafkaClient) {
         super(properties, handlerHolder);
@@ -176,19 +177,17 @@ public class KafkaHandler extends AbstractHandler {
     /**
      * 消息监听
      *
-     * @param consumerGroup          消费分组
-     * @param index                  索引
-     * @param topic                  消息主题
-     * @param tag                    消息标签
-     * @param consumptionThreadCount 消费线数
-     * @param maxCacheMessageCount   最大缓存信息数
-     * @param function               消息处理函数
+     * @param consumerConfig 消费配置
+     * @param function       消息处理函数
      */
     @Override
-    public void pushMessageListener(String consumerGroup, Integer index, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
-        if (StringUtils.isEmpty(topic)) {
+    public void pushMessageListener(ConsumerConfig consumerConfig, Function<MessageContent<String>, Void> function) {
+        String topic = consumerConfig.getTopic();
+        String topicPattern = consumerConfig.getTopicPattern();
+        String tag = consumerConfig.getTag();
+        if (StringUtils.isEmpty(topic) && StringUtils.isEmpty(topicPattern)) {
             if (log.isErrorEnabled()) {
-                log.error("RocketMqHandler# pushMessageListener error: topic is null");
+                log.error("RocketMqHandler# pushMessageListener error: topic and topicPattern is both null");
             }
             return;
         }
@@ -199,17 +198,32 @@ public class KafkaHandler extends AbstractHandler {
             ExecutorService executorService = ThreadPoolUtils.getSingleThreadPool();
             String finalTag = tag;
             CompletableFuture.runAsync(() -> {
-                KafkaConsumeUtils.consumeMessage(
-                        kafkaClient.getConsumer(consumerGroup, index),
-                        topic, finalTag,
-                        record -> function.apply(new MessageContent<String>()
-                                .setMessageId(getMessageId(record))
-                                // .setMessageGroup(messageGroup)
-                                .setTopic(record.topic())
-                                .setTag(record.topic())
-                                .setKeys(Collections.singletonList(record.key()))
-                                .setBody(record.value())
-                                .setBodyMessage(record.value())));
+                if(!StringUtils.isEmpty(topicPattern)) {
+                    KafkaConsumeUtils.consumeMessageForPattern(
+                            kafkaClient.getConsumer(consumerConfig.getConsumerGroup(), consumerConfig.getIndex()),
+                            topicPattern, finalTag,
+                            record -> function.apply(new MessageContent<String>()
+                                    .setMessageId(getMessageId(record))
+                                    // .setMessageGroup(messageGroup)
+                                    .setTopic(record.topic())
+                                    .setTag(record.topic())
+                                    .setKeys(Collections.singletonList(record.key()))
+                                    .setBody(record.value())
+                                    .setBodyMessage(record.value())));
+                } else {
+                    KafkaConsumeUtils.consumeMessage(
+                            kafkaClient.getConsumer(consumerConfig.getConsumerGroup(), consumerConfig.getIndex()),
+                            topic, finalTag,
+                            record -> function.apply(new MessageContent<String>()
+                                    .setMessageId(getMessageId(record))
+                                    // .setMessageGroup(messageGroup)
+                                    .setTopic(record.topic())
+                                    .setTag(record.topic())
+                                    .setKeys(Collections.singletonList(record.key()))
+                                    .setBody(record.value())
+                                    .setBodyMessage(record.value())));
+                }
+
             }, executorService).exceptionally(throwable -> {
                 if (log.isErrorEnabled()) {
                     log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());

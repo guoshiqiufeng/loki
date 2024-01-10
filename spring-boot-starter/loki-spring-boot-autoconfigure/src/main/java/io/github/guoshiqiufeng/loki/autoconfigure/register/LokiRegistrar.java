@@ -19,13 +19,15 @@ import com.alibaba.fastjson2.JSON;
 import io.github.guoshiqiufeng.loki.Listener;
 import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.annotation.MessageListener;
-import io.github.guoshiqiufeng.loki.support.core.config.GlobalConfig;
-import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.entity.MessageInfo;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.EntityInfoHelper;
+import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
 import io.github.guoshiqiufeng.loki.core.toolkit.TypeUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
+import io.github.guoshiqiufeng.loki.support.core.config.GlobalConfig;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
@@ -118,7 +120,7 @@ public class LokiRegistrar<T> {
                 } catch (Exception ignored) {
                 }
 
-                String consumerGroup = null, topic = null, tag = null;
+                String consumerGroup = null, topic = null, topicPattern = null, tag = null;
                 Integer consumptionThreadCount = null, maxCacheMessageCount = null;
 
                 if (messageInfo != null) {
@@ -134,6 +136,7 @@ public class LokiRegistrar<T> {
                     consumerGroup = annotation.consumerGroup();
                     topic = annotation.topic();
                     tag = annotation.tag();
+                    topicPattern = annotation.topicPattern();
                     consumptionThreadCount = annotation.consumptionThreadCount();
                     maxCacheMessageCount = annotation.maxCacheMessageCount();
                 }
@@ -143,10 +146,22 @@ public class LokiRegistrar<T> {
                     }
                     return;
                 }
-
-                handlerHolder.route(getMqType()).pushMessageListener(consumerGroup,
-                        i, topic, tag, consumptionThreadCount,
-                        maxCacheMessageCount, messageContent -> {
+                if (StringUtils.isEmpty(topic) && StringUtils.isEmpty(topicPattern)) {
+                    if (log.isWarnEnabled()) {
+                        log.warn("messageListener:{} topic and topicPattern is both empty skip", listener.getClass().getName());
+                    }
+                    return;
+                }
+                handlerHolder.route(getMqType()).pushMessageListener(
+                        new ConsumerConfig()
+                                .setTopic(topic)
+                                .setTopicPattern(topicPattern)
+                                .setTag(tag)
+                                .setConsumerGroup(consumerGroup)
+                                .setIndex(i)
+                                .setConsumptionThreadCount(consumptionThreadCount)
+                                .setMaxCacheMessageCount(maxCacheMessageCount)
+                        , messageContent -> {
                             // log.debug("messageContent:{}", messageContent)
                             String body = messageContent.getBody();
                             // TODO 序列化

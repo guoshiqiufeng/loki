@@ -16,8 +16,10 @@
 package io.github.guoshiqiufeng.loki.support.kafka.utils;
 
 import io.github.guoshiqiufeng.loki.constant.Constant;
+import io.github.guoshiqiufeng.loki.support.kafka.SaveOffsetsOnRebalance;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -28,6 +30,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -37,6 +40,47 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @UtilityClass
 public class KafkaConsumeUtils {
+
+//    public void consumeMessageListener(KafkaConsumer<String, String> consumer, String topicPattern, String tag, Function<ConsumerRecord<String, String>, Void> function) {
+//        try {
+//            consumer.subscribe(Pattern.compile(topicPattern), new SaveOffsetsOnRebalance(consumer, function));
+//        } catch (WakeupException e) {
+//            // ignore, we're closing
+//        } catch (Exception e) {
+//            if (log.isErrorEnabled()) {
+//                log.error("Unexpected error", e);
+//            }
+//        } finally {
+//            consumer.close();
+//        }
+//    }
+
+    public void consumeMessageForPattern(KafkaConsumer<String, String> consumer, String topicPattern, String tag, Function<ConsumerRecord<String, String>, Void> function) {
+        try {
+            consumer.subscribe(Pattern.compile(topicPattern));
+            while (true) {
+                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(Long.MAX_VALUE));
+                records.forEach(record -> {
+                    if (tag == null || tag.isEmpty() || "*".equals(tag)) {
+                        function.apply(record);
+                    } else {
+                        String recordTag = getTagFromHeaders(record.headers());
+                        if (tag.equals(recordTag)) {
+                            function.apply(record);
+                        }
+                    }
+                });
+            }
+        } catch (WakeupException e) {
+            // ignore, we're closing
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error("Unexpected error", e);
+            }
+        } finally {
+            consumer.close();
+        }
+    }
 
     /**
      * 消费消息
