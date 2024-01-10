@@ -1,0 +1,32 @@
+on:
+  push:
+    branches:
+      - main
+
+name: Release please
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Init release-please-config
+        run: |
+          echo '{"packages":{".":{"changelog-path":"CHANGELOG.md","release-type":"java","bump-minor-pre-major":false,"bump-patch-for-minor-pre-major":false,"draft":false,"prerelease":false,"include-component-in-tag":false,"include-v-in-tag":false,"extra-files":["build.gradle"]}},"$schema":"https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"}' > ~/release-please-config.json
+      - name: Init release-please-manifest
+        run: |
+          echo '{".": ""}' > ~/.release-please-manifest.json
+      - uses: GoogleCloudPlatform/release-please-action@v3
+        id: release
+        with:
+          release-type: java
+          default-branch: main
+          skip-github-pull-request: true
+          package-name: standard-version
+          # include-v-in-tag: false
+          config-file: ~/.release-please-config.json
+          # optional. customize path to .release-please-manifest.json
+          manifest-file: ~/.release-please-manifest.json
+          extra-files: gradle.properties
+          changelog-types: '[{"type":"dependency","section":"🔨 Dependency Upgrades","hidden":false},{"type":"feat","section":"⭐ New Features","hidden":false},{"type":"fix","section":"🐞 Bug Fixes","hidden":false},{"type":"docs","section":"📔 Documentation","hidden":false},{"type":"noteworthy","section":"️Noteworthy Changes","hidden":false},{"type":"refactor","section":"Code Refactoring","hidden":false},{"type":"perf","section":"Performance Improvements","hidden":false},{"type":"test","section":"Tests","hidden":false}]'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
