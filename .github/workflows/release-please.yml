@@ -19,6 +19,7 @@ jobs:
         id: release
         with:
           release-type: java
+          target-branch: dev
           package-name: standard-version
           # include-v-in-tag: false
           config-file: ~/.release-please-config.json
