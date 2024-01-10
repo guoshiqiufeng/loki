@@ -14,7 +14,7 @@ jobs:
           echo '{"packages":{".":{"changelog-path":"CHANGELOG.md","release-type":"java","bump-minor-pre-major":false,"bump-patch-for-minor-pre-major":false,"draft":false,"prerelease":false,"include-component-in-tag":false,"include-v-in-tag":false,"extra-files":["build.gradle"]}},"$schema":"https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"}' > ~/release-please-config.json
       - name: Init release-please-manifest
         run: |
-          echo '{".": ""}' > ~/.release-please-manifest.json
+          echo '{".": "0.5.0"}' > ~/.release-please-manifest.json
       - uses: GoogleCloudPlatform/release-please-action@v3
         id: release
         with:
