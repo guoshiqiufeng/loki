@@ -19,9 +19,10 @@ jobs:
         id: release
         with:
           release-type: java
+          target-branch: dev
           package-name: standard-version
           # include-v-in-tag: false
-          config-file: release-please-config.json
+          config-file: ~/.release-please-config.json
           # optional. customize path to .release-please-manifest.json
           manifest-file: ~/.release-please-manifest.json
           extra-files: gradle.properties
