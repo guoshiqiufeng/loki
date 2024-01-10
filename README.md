@@ -26,7 +26,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 |-----------|---------------|-----------|------------------------|
 | RocketMQ    | 普通消息、定时/延时消息、顺序消息 | push      |                        |
 | Kafka |   普通消息        |   poll        | 支持                     |
-| Redis      | publish       | subscribe |                        |
+| Redis      | publish       | subscribe | psubscribe             |
 
 ### 使用
 
