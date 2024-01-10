@@ -3,7 +3,7 @@ on:
     branches:
       - dev
 
-name: Release please
+name: Pull request
 
 jobs:
   release-please:
@@ -14,12 +14,13 @@ jobs:
           echo '{"packages":{".":{"changelog-path":"CHANGELOG.md","release-type":"java","bump-minor-pre-major":false,"bump-patch-for-minor-pre-major":false,"draft":false,"prerelease":false,"include-component-in-tag":false,"include-v-in-tag":false,"extra-files":["build.gradle"]}},"$schema":"https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"}' > ~/release-please-config.json
       - name: Init release-please-manifest
         run: |
-          echo '{".": "0.5.0"}' > ~/.release-please-manifest.json
+          echo '{".": ""}' > ~/.release-please-manifest.json
       - uses: GoogleCloudPlatform/release-please-action@v3
         id: release
         with:
           release-type: java
           default-branch: dev
+          skip-github-release: true
           package-name: standard-version
           # include-v-in-tag: false
           config-file: ~/.release-please-config.json
