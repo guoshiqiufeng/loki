@@ -206,7 +206,7 @@ public class KafkaHandler extends AbstractHandler {
                                     .setMessageId(getMessageId(record))
                                     // .setMessageGroup(messageGroup)
                                     .setTopic(record.topic())
-                                    .setTag(record.topic())
+                                    .setTag(record.tag())
                                     .setKeys(Collections.singletonList(record.key()))
                                     .setBody(record.value())
                                     .setBodyMessage(record.value())));
@@ -218,7 +218,7 @@ public class KafkaHandler extends AbstractHandler {
                                     .setMessageId(getMessageId(record))
                                     // .setMessageGroup(messageGroup)
                                     .setTopic(record.topic())
-                                    .setTag(record.topic())
+                                    .setTag(record.tag())
                                     .setKeys(Collections.singletonList(record.key()))
                                     .setBody(record.value())
                                     .setBodyMessage(record.value())));
