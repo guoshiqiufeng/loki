@@ -28,6 +28,7 @@ import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
 import io.github.guoshiqiufeng.loki.support.kafka.utils.KafkaConsumeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
@@ -197,10 +198,11 @@ public class KafkaHandler extends AbstractHandler {
             }
             ExecutorService executorService = ThreadPoolUtils.getSingleThreadPool();
             String finalTag = tag;
+            KafkaConsumer<String, String> consumer = kafkaClient.getConsumer(consumerConfig.getConsumerGroup(), consumerConfig.getIndex());
             CompletableFuture.runAsync(() -> {
                 if(!StringUtils.isEmpty(topicPattern)) {
                     KafkaConsumeUtils.consumeMessageForPattern(
-                            kafkaClient.getConsumer(consumerConfig.getConsumerGroup(), consumerConfig.getIndex()),
+                            consumer,
                             topicPattern, finalTag,
                             record -> function.apply(new MessageContent<String>()
                                     .setMessageId(getMessageId(record))
@@ -212,7 +214,7 @@ public class KafkaHandler extends AbstractHandler {
                                     .setBodyMessage(record.value())));
                 } else {
                     KafkaConsumeUtils.consumeMessage(
-                            kafkaClient.getConsumer(consumerConfig.getConsumerGroup(), consumerConfig.getIndex()),
+                            consumer,
                             topic, finalTag,
                             record -> function.apply(new MessageContent<String>()
                                     .setMessageId(getMessageId(record))
