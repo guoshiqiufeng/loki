@@ -16,7 +16,6 @@
 package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
-import io.github.guoshiqiufeng.loki.constant.Constant;
 import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
@@ -26,12 +25,7 @@ import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.header.internals.RecordHeader;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
@@ -89,10 +83,6 @@ public class RedisHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            List<Header> headers = new ArrayList<>();
-            if (StringUtils.isNotEmpty(tag)) {
-                headers.add(new RecordHeader(Constant.KAFKA_TAG, tag.getBytes(StandardCharsets.UTF_8)));
-            }
             Long timestamp = null;
             if (deliveryTimestamp != null && deliveryTimestamp != 0) {
                 timestamp = System.currentTimeMillis() + deliveryTimestamp;
@@ -139,10 +129,6 @@ public class RedisHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            List<Header> headers = new ArrayList<>();
-            if (StringUtils.isNotEmpty(tag)) {
-                headers.add(new RecordHeader(Constant.KAFKA_TAG, tag.getBytes(StandardCharsets.UTF_8)));
-            }
             Long timestamp = null;
             if (deliveryTimestamp != null && deliveryTimestamp != 0) {
                 timestamp = System.currentTimeMillis() + deliveryTimestamp;
@@ -190,7 +176,7 @@ public class RedisHandler extends AbstractHandler {
                             .setTopic(record.getTopic())
                             .setBody(record.getMessage())
                             .setBodyMessage(record.getMessage())
-                    ), topic);
+                    ), topicPattern);
                 } else {
                     redisClient.subscribe(record -> function.apply(new MessageContent<String>()
                             .setTopic(record.getTopic())
