@@ -12,7 +12,7 @@ ext {
 
     libraries = [
             springBootVersion = '2.7.18',
-            springBoot3Version = '3.2.0',
+            springBoot3Version = '3.2.1',
             springVersion = '5.3.31',
             rocketMqVersion = '5.0.5',
             kafkaVersion = '2.8.9',
