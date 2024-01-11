@@ -145,7 +145,7 @@ subprojects {
     }
 
     tasks.whenTaskAdded { task ->
-        if (task.name.contains('signMavenJavaPublication')) {
+        if (task.name.contains('signMavenJavaPublication') && project.hasProperty('signing.secretKeyRingFile')) {
             task.enabled = new File(project.property('signing.secretKeyRingFile') as String).isFile()
         }
     }
