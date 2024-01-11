@@ -33,6 +33,6 @@ public class TestMessageListener implements Listener<String> {
 
     @Override
     public void onMessage(MessageContent<String> messageContent) {
-        log.debug("messageContent:{}", messageContent);
+        log.debug("TestMessageListener messageContent:{}", messageContent);
     }
 }

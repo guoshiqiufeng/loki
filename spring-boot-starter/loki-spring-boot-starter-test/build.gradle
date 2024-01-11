@@ -1,6 +1,6 @@
 dependencies {
     api project(":spring-boot-starter:loki-spring-boot-starter")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-web:${springBoot3Version}")
-    testImplementation("${lib.'fastjson2'}")
+    api("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    api("${lib.'fastjson2'}")
 }
