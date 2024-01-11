@@ -61,6 +61,6 @@ public interface RedisClient {
     }
 
     default public void psubscribe(Function<ConsumerRecord, Void> function, String... patterns) {
-        subscribe(new DefaultJedisPubSub(function), patterns);
+        psubscribe(new DefaultJedisPubSub(function), patterns);
     }
 }
