@@ -2,6 +2,7 @@
 
 [![Maven central](https://img.shields.io/maven-central/v/io.github.guoshiqiufeng/loki.svg?style=flat-square)](https://search.maven.org/search?q=g:io.github.guoshiqiufeng%20AND%20a:loki)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![CodeQL](https://github.com/guoshiqiufeng/loki/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/guoshiqiufeng/loki/actions/workflows/github-code-scanning/codeql)
 
 ### 介绍
 
@@ -24,7 +25,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 
 | Mq        | Send          | Listener      | Listener  TopicPattern |
 |-----------|---------------|-----------|------------------------|
-| RocketMQ    | 普通消息、定时/延时消息、顺序消息 | push      |                        |
+| RocketMQ    | 普通消息、定时/延时消息、顺序消息 | push      | 暂不支持                   |
 | Kafka |   普通消息        |   poll        | 支持                     |
 | Redis      | publish       | subscribe | psubscribe             |
 
