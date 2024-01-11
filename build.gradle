@@ -145,7 +145,7 @@ subprojects {
     }
 
     tasks.whenTaskAdded { task ->
-        if (task.name.contains('signMavenJavaPublication')) {
+        if (task.name.contains('signMavenJavaPublication') && project.hasProperty('signing.secretKeyRingFile')) {
             task.enabled = new File(project.property('signing.secretKeyRingFile') as String).isFile()
         }
     }
@@ -158,8 +158,10 @@ subprojects {
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 
                 credentials {
-                    username project.storedUsername
-                    password project.storedPassword
+                    if (project.hasProperty('storedUsername') && project.hasProperty('storedPassword')) {
+                        username project.storedUsername
+                        password project.storedPassword
+                    }
                 }
             }
         }
