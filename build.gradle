@@ -158,8 +158,10 @@ subprojects {
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 
                 credentials {
-                    username project.storedUsername
-                    password project.storedPassword
+                    if (project.hasProperty('storedUsername') && project.hasProperty('storedPassword')) {
+                        username project.storedUsername
+                        password project.storedPassword
+                    }
                 }
             }
         }
