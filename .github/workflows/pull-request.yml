@@ -27,6 +27,6 @@ jobs:
           # optional. customize path to .release-please-manifest.json
           manifest-file: ~/.release-please-manifest.json
           extra-files: gradle.properties
-          changelog-types: '[{"type":"dependency","section":"🔨 Dependency Upgrades","hidden":false},{"type":"feat","section":"⭐ New Features","hidden":false},{"type":"fix","section":"🐞 Bug Fixes","hidden":false},{"type":"docs","section":"📔 Documentation","hidden":false},{"type":"noteworthy","section":"️Noteworthy Changes","hidden":false},{"type":"refactor","section":"Code Refactoring","hidden":false},{"type":"perf","section":"Performance Improvements","hidden":false},{"type":"test","section":"Tests","hidden":false}]'
+          changelog-types: '[{"type":"feat","section":"⭐ New Features","hidden":false},{"type":"fix","section":"🐞 Bug Fixes","hidden":false},{"type":"docs","section":"📔 Documentation","hidden":false},{"type":"dependency","section":"🔨 Dependency Upgrades","hidden":false},{"type":"noteworthy","section":"️Noteworthy Changes","hidden":false},{"type":"refactor","section":"Code Refactoring","hidden":false},{"type":"perf","section":"Performance Improvements","hidden":false},{"type":"test","section":"Tests","hidden":false}]'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
