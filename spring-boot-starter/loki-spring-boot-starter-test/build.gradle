@@ -4,3 +4,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     testImplementation("${lib.'fastjson2'}")
 }
+
+test {
+    compileJava {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+}
