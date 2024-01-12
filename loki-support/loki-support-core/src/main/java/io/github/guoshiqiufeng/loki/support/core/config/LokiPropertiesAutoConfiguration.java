@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * loki配置
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/12/26 15:49

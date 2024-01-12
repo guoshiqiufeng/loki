@@ -1,11 +1,11 @@
 name: Update Contributors
 
 on:
-#  push:
-#    branches:
-#      - main
+  #  push:
+  #    branches:
+  #      - main
   release:
-    types: [created]
+    types: [ created ]
 
 jobs:
   update-contributors:

@@ -15,25 +15,17 @@
  */
 package io.github.guoshiqiufeng.loki.support.kafka.utils;
 
-import io.github.guoshiqiufeng.loki.constant.Constant;
-import io.github.guoshiqiufeng.loki.support.kafka.SaveOffsetsOnRebalance;
 import io.github.guoshiqiufeng.loki.support.kafka.consumer.KafkaConsumerRecord;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
-import org.apache.kafka.common.header.Headers;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * kafka消费工具类
@@ -41,20 +33,6 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @UtilityClass
 public class KafkaConsumeUtils {
-
-//    public void consumeMessageListener(KafkaConsumer<String, String> consumer, String topicPattern, String tag, Function<ConsumerRecord<String, String>, Void> function) {
-//        try {
-//            consumer.subscribe(Pattern.compile(topicPattern), new SaveOffsetsOnRebalance(consumer, function));
-//        } catch (WakeupException e) {
-//            // ignore, we're closing
-//        } catch (Exception e) {
-//            if (log.isErrorEnabled()) {
-//                log.error("Unexpected error", e);
-//            }
-//        } finally {
-//            consumer.close();
-//        }
-//    }
 
     public void consumeMessageForPattern(KafkaConsumer<String, String> consumer, String topicPattern, String tag, Function<KafkaConsumerRecord<String, String>, Void> function) {
         try {
@@ -85,9 +63,10 @@ public class KafkaConsumeUtils {
 
     /**
      * 消费消息
+     *
      * @param consumer 消费者
-     * @param topic 主题
-     * @param tag 标签
+     * @param topic    主题
+     * @param tag      标签
      * @param function 回调方法
      */
     public void consumeMessage(KafkaConsumer<String, String> consumer, String topic, String tag, Function<KafkaConsumerRecord<String, String>, Void> function) {
@@ -115,19 +94,5 @@ public class KafkaConsumeUtils {
         } finally {
             consumer.close();
         }
-    }
-
-    /**
-     * 获取tag
-     * @param headers 头信息
-     * @return tag
-     */
-    private String getTagFromHeaders(Headers headers) {
-        return Optional.ofNullable(headers.headers(Constant.KAFKA_TAG))
-                .map(h -> StreamSupport.stream(h.spliterator(), false)
-                        .collect(Collectors.toList()))
-                .filter(list -> !list.isEmpty())
-                .map(list -> new String(list.get(0).value()))
-                .orElse(null);
     }
 }

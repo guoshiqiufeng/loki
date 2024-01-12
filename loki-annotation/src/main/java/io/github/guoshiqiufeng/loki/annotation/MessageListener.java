@@ -38,6 +38,7 @@ public @interface MessageListener {
 
     /**
      * 订阅topic正则匹配
+     *
      * @return topic正则
      */
     String topicPattern() default "";

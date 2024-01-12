@@ -22,6 +22,7 @@ import java.io.Serializable;
 
 /**
  * 消费记录
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/12/26 10:44
