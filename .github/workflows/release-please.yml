@@ -30,3 +30,64 @@ jobs:
           changelog-types: '[{"type":"noteworthy","section":"⚠️ Noteworthy Changes","hidden":false},{"type":"feat","section":"⭐ New Features","hidden":false},{"type":"fix","section":"🐞 Bug Fixes","hidden":false},{"type":"docs","section":"📔 Documentation","hidden":false},{"type":"dependency","section":"🔨 Dependency Upgrades","hidden":false},{"type":"refactor","section":"Code Refactoring","hidden":false},{"type":"perf","section":"Performance Improvements","hidden":false},{"type":"test","section":"Tests","hidden":false}]'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Append Contributors to GitHub Release
+        id: appendContributors
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: |
+          release_list=$(curl -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/${{ github.repository }}/releases)
+          # echo "Release List: ${release_list}"
+          # 判断release_list是否为空
+          if [[ "$release_list" == "[]" ]]; then
+              echo "No releases found."
+              exit 0
+          fi
+          latest_release=$(echo "$release_list" | jq -r '.[0]')
+          # echo "Latest Release: ${latest_release}"
+          previous_release=$(echo "$release_list" | jq -r '.[1]')
+          previous_release_tag=$(echo "$previous_release" | jq -r '.tag_name')
+          # echo "Previous Release: ${previous_release}"
+          # 提取所需的信息
+          release_id=$(echo "$latest_release" | jq -r '.id')
+          release_tag=$(echo "$latest_release" | jq -r '.tag_name')
+          release_body=$(echo "$latest_release" | jq -r '.body')
+          release_commitish=$(echo "$latest_release" | jq -r '.commitish')
+          release_name=$(echo "$latest_release" | jq -r '.name')
+          release_draft=$(echo "$latest_release" | jq -r '.draft')
+          release_prerelease=$(echo "$latest_release" | jq -r '.prerelease')
+          echo "Latest Release ID: ${release_id}"
+          echo "Latest Release Tag: ${release_tag}"
+          # echo "Latest Release Body: ${release_body}"
+          echo "-------------------------------------"
+          if [[ ! "$release_body" == *"❤️ Contributors"* ]]; then
+            # 获取贡献者 
+            #contributors=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/compare/${previous_release_tag}...${release_tag}/commits" | jq -r '.[].commit.author.name' | sort -u)
+            contributors_list=$(curl -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${{ github.repository }}/compare/${previous_release_tag}...${release_tag}")
+            #echo "Contributors List: ${contributors_list}"
+            contributors=$(echo "$contributors_list" | jq -r '.commits[].author.login' | sed -e 's/^/ @/' | sort -u | paste -sd, -)
+            echo "Latest Release Contributors: ${contributors}"
+
+            contributors_line="## ❤️ Contributors"$'\n\n'"Thank you to all the contributors who worked on this release:"$'\n\n'"$contributors"
+            release_body="$release_body"$'\n\n'"$contributors_line"
+
+            # 拼接json
+            release_json=$(jq -n \
+              --arg body "$release_body" \
+              '{body: $body'})
+            # 更新 Release 说明
+            curl -L \
+              -X PATCH \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/$release_id" \
+              -d "$release_json"
+            echo "Updated Release Body with Contributors."
+            #echo "Latest Release Body: ${release_body}"
+          else
+            echo "Release Body already contains Contributors."
+          fi
+          # echo "Latest Release Tag: ${release_tag}"
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
