@@ -16,7 +16,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 
 - Java 21
 - Gradle 8.5
-- RocketMQ 5.x
+- RocketMQ 5.x (RocketMQ-grpc)
 - Spring Boot 2.7.18
 - Kafka 3.x（kafka-clients 3.6.1）
 - Redis 6.X (jedis 5.1.0)
