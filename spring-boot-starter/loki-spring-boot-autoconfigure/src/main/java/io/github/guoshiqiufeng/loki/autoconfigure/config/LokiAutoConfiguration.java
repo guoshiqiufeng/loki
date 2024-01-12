@@ -17,25 +17,13 @@ package io.github.guoshiqiufeng.loki.autoconfigure.config;
 
 import io.github.guoshiqiufeng.loki.Listener;
 import io.github.guoshiqiufeng.loki.autoconfigure.register.LokiRegistrar;
-import io.github.guoshiqiufeng.loki.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.core.handler.Handler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.core.handler.impl.KafkaHandler;
-import io.github.guoshiqiufeng.loki.core.handler.impl.RedisHandler;
-import io.github.guoshiqiufeng.loki.core.handler.impl.RocketMqHandler;
-import io.github.guoshiqiufeng.loki.core.toolkit.RocketMqConfigUtils;
-import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
-import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.client.apis.ClientException;
-import org.apache.rocketmq.client.apis.producer.Producer;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

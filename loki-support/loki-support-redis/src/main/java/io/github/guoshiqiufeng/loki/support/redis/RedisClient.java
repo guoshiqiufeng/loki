@@ -17,8 +17,6 @@ package io.github.guoshiqiufeng.loki.support.redis;
 
 import io.github.guoshiqiufeng.loki.support.redis.consumer.ConsumerRecord;
 import io.github.guoshiqiufeng.loki.support.redis.consumer.DefaultJedisPubSub;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import redis.clients.jedis.JedisPubSub;
 
 import java.util.function.Function;
@@ -51,8 +49,9 @@ public interface RedisClient {
 
     /**
      * 订阅消息
+     *
      * @param jedisPubSub 消息处理器
-     * @param patterns 规则
+     * @param patterns    规则
      */
     public void psubscribe(JedisPubSub jedisPubSub, String... patterns);
 

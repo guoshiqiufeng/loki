@@ -96,8 +96,8 @@ public interface Handler {
     /**
      * 消息监听
      *
-     * @param consumerConfig         消费配置
-     * @param function               消息处理函数
+     * @param consumerConfig 消费配置
+     * @param function       消息处理函数
      */
     void pushMessageListener(ConsumerConfig consumerConfig,
                              Function<MessageContent<String>, Void> function);

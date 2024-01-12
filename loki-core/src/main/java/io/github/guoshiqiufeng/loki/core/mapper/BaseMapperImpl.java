@@ -17,11 +17,11 @@ package io.github.guoshiqiufeng.loki.core.mapper;
 
 import com.alibaba.fastjson2.JSON;
 import io.github.guoshiqiufeng.loki.annotation.SendMessage;
-import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.core.entity.MessageInfo;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.EntityInfoHelper;
 import io.github.guoshiqiufeng.loki.enums.MqType;
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
@@ -48,6 +48,7 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
 
     /**
      * 配置
+     *
      * @param lokiProperties loki配置
      */
     @Setter
@@ -55,6 +56,7 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
 
     /**
      * 具体事件处理持有者
+     *
      * @param handlerHolder 事件处理持有者
      */
     @Setter
@@ -62,6 +64,7 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
 
     /**
      * 实体类class
+     *
      * @param entityClass 实体类class
      */
     @Setter
@@ -82,7 +85,7 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
         try {
             return doSend(entity, false).get();
         } catch (InterruptedException | ExecutionException e) {
-            if(log.isErrorEnabled()) {
+            if (log.isErrorEnabled()) {
                 log.error("BaseMapperImpl# send message error:{}", e.getMessage());
             }
             throw new RuntimeException(e);
@@ -114,7 +117,7 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
 
         // TODO 根据序列化方式序列化消息
         String message = JSON.toJSONString(entity);
-        if(async) {
+        if (async) {
             return handlerHolder.route(getMqType()).sendAsync(messageInfo.getProducer(),
                     messageInfo.getTopic(), messageInfo.getTag(),
                     message, messageInfo.getDeliveryTimestamp(), messageKeys);
@@ -126,9 +129,10 @@ public class BaseMapperImpl<T> implements BaseMapper<T> {
 
     /**
      * 通过注解发送消息
+     *
      * @param sendMessageAnnotation 注解
-     * @param method 方法
-     * @param args 参数
+     * @param method                方法
+     * @param args                  参数
      * @return messageId 消息id
      */
     public Object sendByAnnotation(SendMessage sendMessageAnnotation, Method method, Object[] args) {

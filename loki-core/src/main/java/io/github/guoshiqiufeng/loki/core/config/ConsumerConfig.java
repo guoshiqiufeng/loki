@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * 消费配置
+ *
  * @author yanghq
  * @version 1.0
  * @since 2024/1/10 16:44

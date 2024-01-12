@@ -15,8 +15,8 @@
  */
 package io.github.guoshiqiufeng.loki.support.core.util;
 
-import io.github.guoshiqiufeng.loki.support.core.config.GlobalConfig;
 import io.github.guoshiqiufeng.loki.enums.MqType;
+import io.github.guoshiqiufeng.loki.support.core.config.GlobalConfig;
 import lombok.experimental.UtilityClass;
 
 import java.util.Map;

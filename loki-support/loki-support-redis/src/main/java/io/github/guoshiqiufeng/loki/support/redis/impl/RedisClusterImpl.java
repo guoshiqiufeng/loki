@@ -60,8 +60,9 @@ public class RedisClusterImpl implements RedisClient {
 
     /**
      * 订阅消息
+     *
      * @param jedisPubSub 消息处理器
-     * @param patterns 规则
+     * @param patterns    规则
      */
     @Override
     public void psubscribe(JedisPubSub jedisPubSub, String... patterns) {

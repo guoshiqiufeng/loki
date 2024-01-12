@@ -200,7 +200,7 @@ public class KafkaHandler extends AbstractHandler {
             String finalTag = tag;
             KafkaConsumer<String, String> consumer = kafkaClient.getConsumer(consumerConfig.getConsumerGroup(), consumerConfig.getIndex());
             CompletableFuture.runAsync(() -> {
-                if(!StringUtils.isEmpty(topicPattern)) {
+                if (!StringUtils.isEmpty(topicPattern)) {
                     KafkaConsumeUtils.consumeMessageForPattern(
                             consumer,
                             topicPattern, finalTag,
