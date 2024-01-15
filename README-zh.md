@@ -5,17 +5,17 @@
 [![CodeQL](https://github.com/guoshiqiufeng/loki/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/guoshiqiufeng/loki/actions/workflows/github-code-scanning/codeql)
 [![Commit-Activity](https://img.shields.io/github/commit-activity/m/guoshiqiufeng/loki)](https://github.com/guoshiqiufeng/loki/graphs/commit-activity)
 
-Read in other languages: [简体中文](README-zh.md)
+阅读其他语言版本: [English](README.md)
 
-### Introduction
+### 介绍
 
-Unified message sending and consumption framework that simplifies the use of message queues. Provides unified message sending and consumption interfaces, supports multiple message queue implementations, and currently supports RocketMQ 5.x, Kafka 3.x, and Redis 5.X and above
+统一的消息发送、消费框架，简化mq使用。提供统一的消息发送、消费接口，支持多种mq实现，目前支持rocketmq 5.x、Kafka 3.x、Redis 5.X 以上
 
-### Documentation
+### 文档
 
-https://guoshiqiufeng.github.io/loki-doc/en/
+https://guoshiqiufeng.github.io/loki-doc/
 
-### Development Framework
+### 开发框架
 
 - Java 21
 - Gradle 8.5
@@ -24,12 +24,12 @@ https://guoshiqiufeng.github.io/loki-doc/en/
 - kafka-clients 3.6.1
 - jedis 5.1.0
 
-### Features
+### 功能
 
-* Available - ✅
-* In progress - 🚧
+* 可用 - ✅
+* 进行中 - 🚧
 
-| Features                                         | Rocketmq-gRPC | Rocketmq-Remoting | Kafka | Redis |   
+| 功能                                         | Rocketmq-gRPC | Rocketmq-Remoting | Kafka | Redis |   
 | -------------------------------------------- |:-------------:| :---: |-------|-------| 
 | Send standard messages                |       ✅       |   🚧   |    ✅   |   ✅    |    
 | Send async messages                   |       ✅       |   🚧   |  ✅     |   ✅    |    
@@ -38,6 +38,6 @@ https://guoshiqiufeng.github.io/loki-doc/en/
 |【Topic】 consumer with message listener |       ✅       |    🚧 |    ✅   |    ✅   |    
 |【Topic-Pattern】 consumer with message listener     |      🚧       |   🚧   |   ✅    |  ✅     |    
 
-### Use
+### 使用
 
-> Can be referred to [loki-test](https://github.com/guoshiqiufeng/loki-test)
+> 可参考 [loki-test](https://github.com/guoshiqiufeng/loki-test)
