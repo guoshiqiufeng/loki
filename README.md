@@ -3,6 +3,7 @@
 [![Maven central](https://img.shields.io/maven-central/v/io.github.guoshiqiufeng/loki.svg?style=flat-square)](https://search.maven.org/search?q=g:io.github.guoshiqiufeng%20AND%20a:loki)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![CodeQL](https://github.com/guoshiqiufeng/loki/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/guoshiqiufeng/loki/actions/workflows/github-code-scanning/codeql)
+[![Commit-Activity](https://img.shields.io/github/commit-activity/m/guoshiqiufeng/loki)](https://github.com/guoshiqiufeng/loki/graphs/commit-activity)
 
 ### 介绍
 
