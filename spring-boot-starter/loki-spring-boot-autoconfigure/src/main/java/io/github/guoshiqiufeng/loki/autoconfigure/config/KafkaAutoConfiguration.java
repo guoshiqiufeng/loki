@@ -32,6 +32,7 @@ import java.util.List;
 
 /**
  * kafka自动配置
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/12/26 17:14
@@ -45,7 +46,7 @@ public class KafkaAutoConfiguration {
      *
      * @param properties    Loki配置
      * @param handlerHolder 处理器持有者
-     * @param kafkaClient kafka客户端
+     * @param kafkaClient   kafka客户端
      * @return Handler 实例列表
      */
     @Bean

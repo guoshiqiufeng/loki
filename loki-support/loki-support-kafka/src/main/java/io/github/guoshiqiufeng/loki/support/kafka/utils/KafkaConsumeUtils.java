@@ -15,21 +15,17 @@
  */
 package io.github.guoshiqiufeng.loki.support.kafka.utils;
 
-import io.github.guoshiqiufeng.loki.constant.Constant;
+import io.github.guoshiqiufeng.loki.support.kafka.consumer.KafkaConsumerRecord;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
-import org.apache.kafka.common.header.Headers;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.regex.Pattern;
 
 /**
  * kafka消费工具类
@@ -38,25 +34,18 @@ import java.util.stream.StreamSupport;
 @UtilityClass
 public class KafkaConsumeUtils {
 
-    /**
-     * 消费消息
-     * @param consumer 消费者
-     * @param topic 主题
-     * @param tag 标签
-     * @param function 回调方法
-     */
-    public void consumeMessage(KafkaConsumer<String, String> consumer, String topic, String tag, Function<ConsumerRecord<String, String>, Void> function) {
+    public void consumeMessageForPattern(KafkaConsumer<String, String> consumer, String topicPattern, String tag, Function<KafkaConsumerRecord<String, String>, Void> function) {
         try {
-            consumer.subscribe(Collections.singletonList(topic));
+            consumer.subscribe(Pattern.compile(topicPattern));
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(Long.MAX_VALUE));
                 records.forEach(record -> {
+                    KafkaConsumerRecord<String, String> kafkaConsumerRecord = new KafkaConsumerRecord<String, String>(record);
                     if (tag == null || tag.isEmpty() || "*".equals(tag)) {
-                        function.apply(record);
+                        function.apply(kafkaConsumerRecord);
                     } else {
-                        String recordTag = getTagFromHeaders(record.headers());
-                        if (tag.equals(recordTag)) {
-                            function.apply(record);
+                        if (tag.equals(kafkaConsumerRecord.tag())) {
+                            function.apply(kafkaConsumerRecord);
                         }
                     }
                 });
@@ -73,16 +62,37 @@ public class KafkaConsumeUtils {
     }
 
     /**
-     * 获取tag
-     * @param headers 头信息
-     * @return tag
+     * 消费消息
+     *
+     * @param consumer 消费者
+     * @param topic    主题
+     * @param tag      标签
+     * @param function 回调方法
      */
-    private String getTagFromHeaders(Headers headers) {
-        return Optional.ofNullable(headers.headers(Constant.KAFKA_TAG))
-                .map(h -> StreamSupport.stream(h.spliterator(), false)
-                        .collect(Collectors.toList()))
-                .filter(list -> !list.isEmpty())
-                .map(list -> new String(list.get(0).value()))
-                .orElse(null);
+    public void consumeMessage(KafkaConsumer<String, String> consumer, String topic, String tag, Function<KafkaConsumerRecord<String, String>, Void> function) {
+        try {
+            consumer.subscribe(Collections.singletonList(topic));
+            while (true) {
+                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(Long.MAX_VALUE));
+                records.forEach(record -> {
+                    KafkaConsumerRecord<String, String> kafkaConsumerRecord = new KafkaConsumerRecord<String, String>(record);
+                    if (tag == null || tag.isEmpty() || "*".equals(tag)) {
+                        function.apply(kafkaConsumerRecord);
+                    } else {
+                        if (tag.equals(kafkaConsumerRecord.tag())) {
+                            function.apply(kafkaConsumerRecord);
+                        }
+                    }
+                });
+            }
+        } catch (WakeupException e) {
+            // ignore, we're closing
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error("Unexpected error", e);
+            }
+        } finally {
+            consumer.close();
+        }
     }
 }

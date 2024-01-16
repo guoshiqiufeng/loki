@@ -16,7 +16,7 @@
 package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
-import io.github.guoshiqiufeng.loki.constant.Constant;
+import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
@@ -25,12 +25,7 @@ import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.header.internals.RecordHeader;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
@@ -51,7 +46,7 @@ public class RedisHandler extends AbstractHandler {
      *
      * @param properties    loki配置
      * @param handlerHolder 具体事件处理持有者
-     * @param redisClient redis客户端
+     * @param redisClient   redis客户端
      */
     public RedisHandler(LokiProperties properties, HandlerHolder handlerHolder, RedisClient redisClient) {
         super(properties, handlerHolder);
@@ -88,10 +83,6 @@ public class RedisHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            List<Header> headers = new ArrayList<>();
-            if (StringUtils.isNotEmpty(tag)) {
-                headers.add(new RecordHeader(Constant.KAFKA_TAG, tag.getBytes(StandardCharsets.UTF_8)));
-            }
             Long timestamp = null;
             if (deliveryTimestamp != null && deliveryTimestamp != 0) {
                 timestamp = System.currentTimeMillis() + deliveryTimestamp;
@@ -138,10 +129,6 @@ public class RedisHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            List<Header> headers = new ArrayList<>();
-            if (StringUtils.isNotEmpty(tag)) {
-                headers.add(new RecordHeader(Constant.KAFKA_TAG, tag.getBytes(StandardCharsets.UTF_8)));
-            }
             Long timestamp = null;
             if (deliveryTimestamp != null && deliveryTimestamp != 0) {
                 timestamp = System.currentTimeMillis() + deliveryTimestamp;
@@ -163,19 +150,18 @@ public class RedisHandler extends AbstractHandler {
     /**
      * 消息监听
      *
-     * @param consumerGroup          消费分组
-     * @param index                  索引
-     * @param topic                  消息主题
-     * @param tag                    消息标签
-     * @param consumptionThreadCount 消费线数
-     * @param maxCacheMessageCount   最大缓存信息数
-     * @param function               消息处理函数
+     * @param consumerConfig 消费配置
+     * @param function       消息处理函数
      */
     @Override
-    public void pushMessageListener(String consumerGroup, Integer index, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
-        if (StringUtils.isEmpty(topic)) {
+    public void pushMessageListener(ConsumerConfig consumerConfig, Function<MessageContent<String>, Void> function) {
+        String topic = consumerConfig.getTopic();
+        String topicPattern = consumerConfig.getTopicPattern();
+        String tag = consumerConfig.getTag();
+
+        if (StringUtils.isEmpty(topic) && StringUtils.isEmpty(topicPattern)) {
             if (log.isErrorEnabled()) {
-                log.error("RocketMqHandler# pushMessageListener error: topic is null");
+                log.error("RocketMqHandler# pushMessageListener error: topic and topicPattern is both null");
             }
             return;
         }
@@ -185,12 +171,19 @@ public class RedisHandler extends AbstractHandler {
             }
             ExecutorService executorService = ThreadPoolUtils.getSingleThreadPool();
             CompletableFuture.runAsync(() -> {
-                redisClient.subscribe(record -> function.apply(new MessageContent<String>()
-                        .setTopic(record.getTopic())
-                        .setBody(record.getMessage())
-                        .setBodyMessage(record.getMessage())
-                ), topic);
-
+                if (!StringUtils.isEmpty(topicPattern)) {
+                    redisClient.psubscribe(record -> function.apply(new MessageContent<String>()
+                            .setTopic(record.getTopic())
+                            .setBody(record.getMessage())
+                            .setBodyMessage(record.getMessage())
+                    ), topicPattern);
+                } else {
+                    redisClient.subscribe(record -> function.apply(new MessageContent<String>()
+                            .setTopic(record.getTopic())
+                            .setBody(record.getMessage())
+                            .setBodyMessage(record.getMessage())
+                    ), topic);
+                }
             }, executorService).exceptionally(throwable -> {
                 if (log.isErrorEnabled()) {
                     log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());

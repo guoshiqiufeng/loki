@@ -16,6 +16,7 @@
 package io.github.guoshiqiufeng.loki.core.handler;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
+import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -95,15 +96,10 @@ public interface Handler {
     /**
      * 消息监听
      *
-     * @param consumerGroup          消费分组
-     * @param index                  索引
-     * @param topic                  消息主题
-     * @param tag                    消息标签
-     * @param consumptionThreadCount 消费线数
-     * @param maxCacheMessageCount   最大缓存信息数
-     * @param function               消息处理函数
+     * @param consumerConfig 消费配置
+     * @param function       消息处理函数
      */
-    void pushMessageListener(String consumerGroup, Integer index, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount,
+    void pushMessageListener(ConsumerConfig consumerConfig,
                              Function<MessageContent<String>, Void> function);
 
 }

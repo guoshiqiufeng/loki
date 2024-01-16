@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.redis.consumer;
+package io.github.guoshiqiufeng.loki.core.config;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -21,24 +21,49 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * 消费记录
+ * 消费配置
  *
  * @author yanghq
  * @version 1.0
- * @since 2023/12/26 10:44
+ * @since 2024/1/10 16:44
  */
 @Data
 @Accessors(chain = true)
-public class ConsumerRecord implements Serializable {
+public class ConsumerConfig implements Serializable {
 
-    private static final long serialVersionUID = -8132453752436298723L;
     /**
-     * topic
+     * 消费分组
+     */
+    private String consumerGroup;
+
+    /**
+     * 序号
+     */
+    private Integer index;
+
+    /**
+     * 主题
      */
     private String topic;
 
     /**
-     * message
+     * 主题正则匹配
      */
-    private String message;
+    private String topicPattern;
+
+    /**
+     * 标签
+     */
+    private String tag;
+
+    /**
+     * 消费线数
+     */
+    private Integer consumptionThreadCount = 20;
+
+    /**
+     * 最大缓存信息数
+     */
+    private Integer maxCacheMessageCount = 1024;
+
 }

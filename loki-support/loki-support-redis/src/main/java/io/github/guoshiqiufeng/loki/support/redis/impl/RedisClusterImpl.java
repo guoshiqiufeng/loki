@@ -57,4 +57,15 @@ public class RedisClusterImpl implements RedisClient {
     public void subscribe(JedisPubSub jedisPubSub, String... channels) {
         jedisCluster.subscribe(jedisPubSub, channels);
     }
+
+    /**
+     * 订阅消息
+     *
+     * @param jedisPubSub 消息处理器
+     * @param patterns    规则
+     */
+    @Override
+    public void psubscribe(JedisPubSub jedisPubSub, String... patterns) {
+        jedisCluster.psubscribe(jedisPubSub, patterns);
+    }
 }

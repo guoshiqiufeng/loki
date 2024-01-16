@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 /**
  * redis配置工具类
+ *
  * @author yanghq
  * @version 1.0
  * @since 2024/1/5 14:26
@@ -60,10 +61,10 @@ public class RedisConfigUtils {
         }
 
         // 设置超时时间和数据库
-        if(redisProperties.getTimeout() != null) {
+        if (redisProperties.getTimeout() != null) {
             builder.timeoutMillis((int) redisProperties.getTimeout().toMillis());
         }
-        if(redisProperties.getConnectTimeout() != null) {
+        if (redisProperties.getConnectTimeout() != null) {
             builder.connectionTimeoutMillis((int) redisProperties.getConnectTimeout().toMillis());
         }
         builder.database(redisProperties.getDatabase());
@@ -124,10 +125,10 @@ public class RedisConfigUtils {
         }
 
         // 设置超时时间
-        if(redisProperties.getTimeout() != null) {
+        if (redisProperties.getTimeout() != null) {
             builder.timeoutMillis((int) redisProperties.getTimeout().toMillis());
         }
-        if(redisProperties.getConnectTimeout() != null) {
+        if (redisProperties.getConnectTimeout() != null) {
             builder.connectionTimeoutMillis((int) redisProperties.getConnectTimeout().toMillis());
         }
 

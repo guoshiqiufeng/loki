@@ -34,13 +34,14 @@ public @interface MessageListener {
      *
      * @return topic
      */
-    String topic();
+    String topic() default "";
 
     /**
      * 订阅topic正则匹配
+     *
      * @return topic正则
      */
-    // String topicPattern() default "";
+    String topicPattern() default "";
 
     /**
      * 过滤标签

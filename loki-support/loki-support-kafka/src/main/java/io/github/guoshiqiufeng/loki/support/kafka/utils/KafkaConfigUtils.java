@@ -21,12 +21,9 @@ import io.github.guoshiqiufeng.loki.support.kafka.config.KafkaProperties;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -101,7 +98,8 @@ public class KafkaConfigUtils {
 
     /**
      * 转换配置
-     * @param lokiProperties loki配置
+     *
+     * @param lokiProperties  loki配置
      * @param kafkaProperties kafka配置
      */
     public void convert(LokiProperties lokiProperties, KafkaProperties kafkaProperties) {

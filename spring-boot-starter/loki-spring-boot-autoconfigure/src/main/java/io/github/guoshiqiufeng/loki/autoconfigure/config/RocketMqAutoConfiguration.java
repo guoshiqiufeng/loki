@@ -34,6 +34,7 @@ import java.util.List;
 
 /**
  * rocketmq自动配置
+ *
  * @author yanghq
  * @version 1.0
  * @since 2023/12/26 17:13

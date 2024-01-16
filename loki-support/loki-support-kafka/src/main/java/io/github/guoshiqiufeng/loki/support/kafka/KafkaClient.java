@@ -23,6 +23,7 @@ import java.util.concurrent.Future;
 
 /**
  * kafka客户端
+ *
  * @author yanghq
  * @version 1.0
  * @since 2024/1/6 10:35
@@ -31,16 +32,18 @@ public interface KafkaClient {
 
     /**
      * 发送消息
+     *
      * @param producerName 生产者名称
-     * @param record 消息
+     * @param record       消息
      * @return Future
      */
     Future<RecordMetadata> send(String producerName, ProducerRecord<String, String> record);
 
     /**
      * 获取消费者
+     *
      * @param consumerGroup 消费者组
-     * @param index 消费者索引
+     * @param index         消费者索引
      * @return 消费者
      */
     KafkaConsumer<String, String> getConsumer(String consumerGroup, Integer index);

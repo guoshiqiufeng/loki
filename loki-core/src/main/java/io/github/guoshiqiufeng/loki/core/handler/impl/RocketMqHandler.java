@@ -16,6 +16,7 @@
 package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
+import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.RocketMqConfigUtils;
@@ -180,16 +181,14 @@ public class RocketMqHandler extends AbstractHandler {
     /**
      * 消息监听
      *
-     * @param consumerGroup          消费分组
-     * @param index                  索引
-     * @param topic                  消息主题
-     * @param tag                    消息标签
-     * @param consumptionThreadCount 消费线数
-     * @param maxCacheMessageCount   最大缓存信息数
-     * @param function               消息处理函数
+     * @param consumerConfig 消费配置
+     * @param function       消息处理函数
      */
     @Override
-    public void pushMessageListener(String consumerGroup, Integer index, String topic, String tag, Integer consumptionThreadCount, Integer maxCacheMessageCount, Function<MessageContent<String>, Void> function) {
+    public void pushMessageListener(ConsumerConfig consumerConfig, Function<MessageContent<String>, Void> function) {
+        String topic = consumerConfig.getTopic();
+        String tag = consumerConfig.getTag();
+
         if (StringUtils.isEmpty(topic)) {
             if (log.isErrorEnabled()) {
                 log.error("RocketMqHandler# pushMessageListener error: topic is null");
@@ -203,11 +202,11 @@ public class RocketMqHandler extends AbstractHandler {
             }
             FilterExpression filterExpression = new FilterExpression(tag, FilterExpressionType.TAG);
             pushConsumerBuilder
-                    .setConsumerGroup(consumerGroup)
+                    .setConsumerGroup(consumerConfig.getConsumerGroup())
                     // Set the subscription for the getConsumer.
                     .setSubscriptionExpressions(Collections.singletonMap(topic, filterExpression))
-                    .setConsumptionThreadCount(consumptionThreadCount)
-                    .setMaxCacheMessageCount(maxCacheMessageCount)
+                    .setConsumptionThreadCount(consumerConfig.getConsumptionThreadCount())
+                    .setMaxCacheMessageCount(consumerConfig.getMaxCacheMessageCount())
                     .setMessageListener(messageView -> {
                         if (log.isDebugEnabled()) {
                             log.debug("Consume message={}", messageView);

@@ -1,38 +1,18 @@
-on:
-  push:
-    branches:
-      - main
+name: Update Contributors
 
-name: Release please
+on:
+  #  push:
+  #    branches:
+  #      - main
+  release:
+    types: [ created ]
 
 jobs:
-  release-please:
+  update-contributors:
     runs-on: ubuntu-latest
     steps:
-      - name: Init release-please-config
-        run: |
-          echo '{"packages":{".":{"changelog-path":"CHANGELOG.md","release-type":"java","bump-minor-pre-major":false,"bump-patch-for-minor-pre-major":false,"draft":false,"prerelease":false,"include-component-in-tag":false,"include-v-in-tag":false,"extra-files":["build.gradle"]}},"$schema":"https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"}' > ~/release-please-config.json
-      - name: Init release-please-manifest
-        run: |
-          echo '{".": ""}' > ~/.release-please-manifest.json
-      - uses: GoogleCloudPlatform/release-please-action@v3
-        id: release
-        with:
-          release-type: java
-          default-branch: main
-          skip-github-pull-request: true
-          package-name: standard-version
-          # include-v-in-tag: false
-          config-file: ~/.release-please-config.json
-          # optional. customize path to .release-please-manifest.json
-          manifest-file: ~/.release-please-manifest.json
-          extra-files: gradle.properties
-          changelog-types: '[{"type":"noteworthy","section":"⚠️ Noteworthy Changes","hidden":false},{"type":"feat","section":"⭐ New Features","hidden":false},{"type":"fix","section":"🐞 Bug Fixes","hidden":false},{"type":"docs","section":"📔 Documentation","hidden":false},{"type":"dependency","section":"🔨 Dependency Upgrades","hidden":false},{"type":"refactor","section":"Code Refactoring","hidden":false},{"type":"perf","section":"Performance Improvements","hidden":false},{"type":"test","section":"Tests","hidden":false}]'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Append Contributors to GitHub Release
-        id: appendContributors
-        if: ${{ steps.release.outputs.releases_created == 'true' }}
+      - name: Get latest release
+        id: get_release
         run: |
           release_list=$(curl -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/${{ github.repository }}/releases)
           # echo "Release List: ${release_list}"
@@ -65,10 +45,10 @@ jobs:
             #echo "Contributors List: ${contributors_list}"
             contributors=$(echo "$contributors_list" | jq -r '.commits[].author.login' | sed -e 's/^/ @/' | sort -u | paste -sd, -)
             echo "Latest Release Contributors: ${contributors}"
-
+          
             contributors_line="## ❤️ Contributors"$'\n\n'"Thank you to all the contributors who worked on this release:"$'\n\n'"$contributors"
             release_body="$release_body"$'\n\n'"$contributors_line"
-
+          
             # 拼接json
             release_json=$(jq -n \
               --arg body "$release_body" \
@@ -90,4 +70,3 @@ jobs:
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
