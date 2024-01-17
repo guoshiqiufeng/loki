@@ -50,9 +50,3 @@ jobs:
       # 发布项目
       - name: Publish
         run: gradle publish
-
-      - name: Release on nexus
-        uses: monkeyWie/maven-nexus-release@v1.0.0
-        with:
-          maven-repo-server-username: ${{secrets.STORED_USERNAME}}
-          maven-repo-server-password: ${{ secrets.STORED_PASSWORD }}
