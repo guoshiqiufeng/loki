@@ -15,14 +15,12 @@ ext {
             springBoot3Version = '3.2.1',
             springVersion = '5.3.31',
             rocketMqVersion = '5.0.5',
-            kafkaVersion = '2.8.9',
             kafkaClientsVersion = '3.6.1',
             jedisVersion = '5.1.0',
     ]
 
     lib = [
             "slf4j-api"           : "org.slf4j:slf4j-api:1.7.36",
-            "spring-kafka"        : "org.springframework.kafka:spring-kafka:${kafkaVersion}",
             "kafka-clients"       : "org.apache.kafka:kafka-clients:${kafkaClientsVersion}",
             "rocketmq-client-java": "org.apache.rocketmq:rocketmq-client-java:${rocketMqVersion}",
             "jedis"               : "redis.clients:jedis:${jedisVersion}",
