@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/guoshiqiufeng/loki/compare/v0.6.0...v0.6.1) (2024-01-17)
+
+
+### 🐞 Bug Fixes
+
+* remove test module (Moved to (Test Project) [https://github.com/guoshiqiufeng/loki-test]) ([02640f0](https://github.com/guoshiqiufeng/loki/commit/02640f06e5cff5e5142f152a6aa896f62a270c35))
+
 ## [0.6.0](https://github.com/guoshiqiufeng/loki/compare/v0.5.0...v0.6.0)
 
 
