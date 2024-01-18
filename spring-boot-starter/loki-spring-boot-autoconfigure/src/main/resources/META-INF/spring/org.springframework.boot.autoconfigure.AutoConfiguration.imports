@@ -1,4 +1,5 @@
 io.github.guoshiqiufeng.loki.autoconfigure.config.RocketMqAutoConfiguration
 io.github.guoshiqiufeng.loki.autoconfigure.config.KafkaAutoConfiguration
 io.github.guoshiqiufeng.loki.autoconfigure.config.RedisAutoConfiguration
+io.github.guoshiqiufeng.loki.autoconfigure.config.RocketRemotingAutoConfiguration
 io.github.guoshiqiufeng.loki.autoconfigure.config.LokiAutoConfiguration

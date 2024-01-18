@@ -106,6 +106,7 @@ public class RocketMqHandler extends AbstractHandler {
                 messageBuilder.setKeys(keys);
             }
             Message message = messageBuilder
+                    .setMessageGroup(producerName)
                     .setBody(body.getBytes())
                     .build();
             if (log.isDebugEnabled()) {
@@ -164,6 +165,7 @@ public class RocketMqHandler extends AbstractHandler {
                 messageBuilder.setKeys(keys);
             }
             Message message = messageBuilder
+                    .setMessageGroup(producerName)
                     .setBody(body.getBytes())
                     .build();
             if (log.isDebugEnabled()) {

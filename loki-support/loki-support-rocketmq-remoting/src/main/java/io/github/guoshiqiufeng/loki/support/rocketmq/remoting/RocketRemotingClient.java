@@ -13,53 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.enums;
+package io.github.guoshiqiufeng.loki.support.rocketmq.remoting;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.common.message.Message;
 
 /**
- * 支持的mq类型
- *
  * @author yanghq
  * @version 1.0
- * @since 2023/11/10 13:27
+ * @since 2024/1/18 10:13
  */
-@Getter
-@AllArgsConstructor
-public enum MqType {
-
-    /**
-     * rocketmq (support 5.x)
-     */
-    ROCKET_MQ(10, "RocketMQ"),
-
-    /**
-     * rocketmq remoting (support 4.x,5.x)
-     */
-    ROCKET_MQ_REMOTING(11, "RocketMQRemoting"),
-
-    /**
-     * kafka
-     */
-    KAFKA(20, "Kafka"),
-
-    /**
-     * redis
-     */
-    REDIS(30, "Redis"),
-
-
-    ;
+public interface RocketRemotingClient {
 
 
     /**
-     * 编码
+     * 发送消息
      */
-    private final Integer code;
+    String send(String producerName, Message message);
 
     /**
-     * 描述
+     * 获取消费者
+     *
+     * @param consumerGroup 消费者组
+     * @param index         消费者索引
+     * @return 消费者
      */
-    private final String desc;
+    DefaultMQPushConsumer getConsumer(String consumerGroup, Integer index);
 }

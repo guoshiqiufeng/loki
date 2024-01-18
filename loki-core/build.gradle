@@ -7,5 +7,7 @@ dependencies {
 
     implementation project(":loki-support:loki-support-redis")
     implementation project(":loki-support:loki-support-kafka")
+    implementation project(":loki-support:loki-support-rocketmq")
+    implementation project(":loki-support:loki-support-rocketmq-remoting")
     implementation "${lib."slf4j-api"}"
 }

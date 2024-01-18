@@ -13,53 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.enums;
+package io.github.guoshiqiufeng.loki.support.rocketmq.impl;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * 支持的mq类型
- *
  * @author yanghq
  * @version 1.0
- * @since 2023/11/10 13:27
+ * @since 2024/1/18 10:08
  */
-@Getter
-@AllArgsConstructor
-public enum MqType {
-
-    /**
-     * rocketmq (support 5.x)
-     */
-    ROCKET_MQ(10, "RocketMQ"),
-
-    /**
-     * rocketmq remoting (support 4.x,5.x)
-     */
-    ROCKET_MQ_REMOTING(11, "RocketMQRemoting"),
-
-    /**
-     * kafka
-     */
-    KAFKA(20, "Kafka"),
-
-    /**
-     * redis
-     */
-    REDIS(30, "Redis"),
-
-
-    ;
-
-
-    /**
-     * 编码
-     */
-    private final Integer code;
-
-    /**
-     * 描述
-     */
-    private final String desc;
+@Slf4j
+public class RocketDefaultImpl implements RocketClient {
 }

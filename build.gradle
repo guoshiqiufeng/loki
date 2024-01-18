@@ -14,7 +14,8 @@ ext {
             springBootVersion = '2.7.18',
             springBoot3Version = '3.2.1',
             springVersion = '5.3.31',
-            rocketMqVersion = '5.0.5',
+            rocketMqClientVersion = '5.1.4',
+            rocketMqClientJavaVersion = '5.0.5',
             kafkaClientsVersion = '3.6.1',
             jedisVersion = '5.1.0',
     ]
@@ -22,7 +23,8 @@ ext {
     lib = [
             "slf4j-api"           : "org.slf4j:slf4j-api:1.7.36",
             "kafka-clients"       : "org.apache.kafka:kafka-clients:${kafkaClientsVersion}",
-            "rocketmq-client-java": "org.apache.rocketmq:rocketmq-client-java:${rocketMqVersion}",
+            "rocketmq-client": "org.apache.rocketmq:rocketmq-client:${rocketMqClientVersion}",
+            "rocketmq-client-java": "org.apache.rocketmq:rocketmq-client-java:${rocketMqClientJavaVersion}",
             "jedis"               : "redis.clients:jedis:${jedisVersion}",
             "spring-context"      : "org.springframework:spring-context:${springVersion}",
             "fastjson2"           : "com.alibaba.fastjson2:fastjson2:2.0.42",

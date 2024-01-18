@@ -1,10 +1,7 @@
 dependencies {
-    implementation project(":loki")
-    implementation("${lib.'logback-classic'}")
-    implementation "${lib.'rocketmq-client-java'}"
-    implementation project(":loki-support:loki-support-kafka")
-    implementation project(":loki-support:loki-support-redis")
-    implementation project(":loki-support:loki-support-rocketmq-remoting")
+    api "${lib.'rocketmq-client'}"
+    api project(":loki-support:loki-support-core")
+    implementation "${lib."slf4j-api"}"
 
     implementation "org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"

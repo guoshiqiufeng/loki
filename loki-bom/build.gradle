@@ -20,5 +20,6 @@ dependencyManagement {
         dependency "io.github.guoshiqiufeng:loki-spring-boot-starter-kafka:${APP_VERSION}"
         dependency "io.github.guoshiqiufeng:loki-spring-boot-starter-redis:${APP_VERSION}"
         dependency "io.github.guoshiqiufeng:loki-spring-boot-starter-rocketmq:${APP_VERSION}"
+        dependency "io.github.guoshiqiufeng:loki-spring-boot-starter-rocketmq-remoting:${APP_VERSION}"
     }
 }
