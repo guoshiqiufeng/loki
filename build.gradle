@@ -18,6 +18,7 @@ ext {
             rocketMqClientJavaVersion = '5.0.5',
             kafkaClientsVersion = '3.6.1',
             jedisVersion = '5.1.0',
+            hutoolVersion = '5.8.25',
     ]
 
     lib = [
@@ -29,7 +30,7 @@ ext {
             "spring-context"      : "org.springframework:spring-context:${springVersion}",
             "fastjson2"           : "com.alibaba.fastjson2:fastjson2:2.0.42",
             "logback-classic"     : "ch.qos.logback:logback-classic:1.4.14",
-            "hutool-all"          : "cn.hutool:hutool-all:5.8.23",
+            "hutool-all"          : "cn.hutool:hutool-all:${hutoolVersion}",
     ]
 }
 
