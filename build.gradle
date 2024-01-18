@@ -23,7 +23,7 @@ ext {
     lib = [
             "slf4j-api"           : "org.slf4j:slf4j-api:1.7.36",
             "kafka-clients"       : "org.apache.kafka:kafka-clients:${kafkaClientsVersion}",
-            "rocketmq-client": "org.apache.rocketmq:rocketmq-client:${rocketMqClientVersion}",
+            "rocketmq-client"     : "org.apache.rocketmq:rocketmq-client:${rocketMqClientVersion}",
             "rocketmq-client-java": "org.apache.rocketmq:rocketmq-client-java:${rocketMqClientJavaVersion}",
             "jedis"               : "redis.clients:jedis:${jedisVersion}",
             "spring-context"      : "org.springframework:spring-context:${springVersion}",

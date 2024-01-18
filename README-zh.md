@@ -9,7 +9,8 @@
 
 ### 介绍
 
-统一的消息发送、消费框架，简化mq使用。提供统一的消息发送、消费接口，支持多种mq实现，目前支持rocketmq 5.x、Kafka 3.x、Redis 5.X 以上
+统一的消息发送、消费框架，简化mq使用。提供统一的消息发送、消费接口，支持多种mq实现，目前支持rocketmq 5.x、Kafka 3.x、Redis 5.X
+以上
 
 ### 文档
 
@@ -29,14 +30,14 @@ https://guoshiqiufeng.github.io/loki-doc/
 * 可用 - ✅
 * 进行中 - 🚧
 
-| 功能                                         | Rocketmq-gRPC | Rocketmq-Remoting | Kafka | Redis |   
-| -------------------------------------------- |:-------------:| :---: |-------|-------| 
-| Send standard messages                |       ✅       |   🚧   |    ✅   |   ✅    |    
-| Send async messages                   |       ✅       |   🚧   |  ✅     |   ✅    |    
-| Send timed/delay messages             |       ✅       |   🚧   |      🚧  |    🚧    |    
-| Producer with transactional messages         |      🚧       |   🚧   |    🚧    |      🚧  |
-|【Topic】 consumer with message listener |       ✅       |    🚧 |    ✅   |    ✅   |    
-|【Topic-Pattern】 consumer with message listener     |      🚧       |   🚧   |   ✅    |  ✅     |    
+| 功能                                             | Rocketmq-gRPC | Rocketmq-Remoting | Kafka | Redis |   
+|------------------------------------------------|:-------------:|:-----------------:|-------|-------| 
+| Send standard messages                         |       ✅       |        🚧         | ✅     | ✅     |    
+| Send async messages                            |       ✅       |        🚧         | ✅     | ✅     |    
+| Send timed/delay messages                      |       ✅       |        🚧         | 🚧    | 🚧    |    
+| Producer with transactional messages           |      🚧       |        🚧         | 🚧    | 🚧    |
+| 【Topic】 consumer with message listener         |       ✅       |        🚧         | ✅     | ✅     |    
+| 【Topic-Pattern】 consumer with message listener |      🚧       |        🚧         | ✅     | ✅     |    
 
 ### 使用
 

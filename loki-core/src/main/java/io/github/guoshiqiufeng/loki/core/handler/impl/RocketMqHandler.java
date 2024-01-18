@@ -19,10 +19,10 @@ import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.core.toolkit.RocketMqConfigUtils;
 import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.apis.ClientException;
 import org.apache.rocketmq.client.apis.consumer.ConsumeResult;
@@ -32,7 +32,6 @@ import org.apache.rocketmq.client.apis.consumer.PushConsumerBuilder;
 import org.apache.rocketmq.client.apis.message.Message;
 import org.apache.rocketmq.client.apis.message.MessageBuilder;
 import org.apache.rocketmq.client.apis.message.MessageId;
-import org.apache.rocketmq.client.apis.producer.Producer;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
 import org.apache.rocketmq.client.java.message.MessageBuilderImpl;
 import org.apache.rocketmq.shaded.com.google.common.base.Throwables;
@@ -53,6 +52,7 @@ import java.util.function.Function;
 @Slf4j
 public class RocketMqHandler extends AbstractHandler {
 
+    private final RocketClient rocketClient;
 
     /**
      * 构造函数
@@ -60,9 +60,10 @@ public class RocketMqHandler extends AbstractHandler {
      * @param properties    loki配置
      * @param handlerHolder 具体事件处理持有者
      */
-    public RocketMqHandler(LokiProperties properties, HandlerHolder handlerHolder) {
+    public RocketMqHandler(LokiProperties properties, HandlerHolder handlerHolder, RocketClient rocketClient) {
         super(properties, handlerHolder);
         type = MqType.ROCKET_MQ.getCode();
+        this.rocketClient = rocketClient;
         super.init();
     }
 
@@ -93,7 +94,6 @@ public class RocketMqHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            Producer producer = RocketMqConfigUtils.getProducer(producerName, properties);
             MessageBuilder messageBuilder = new MessageBuilderImpl()
                     .setTopic(topic);
             if (StringUtils.isNotEmpty(tag)) {
@@ -112,7 +112,7 @@ public class RocketMqHandler extends AbstractHandler {
             if (log.isDebugEnabled()) {
                 log.debug("RocketMqHandler# send message:{}", message);
             }
-            SendReceipt send = producer.send(message);
+            SendReceipt send = rocketClient.send(producerName, message);
             if (log.isDebugEnabled()) {
                 log.debug("RocketMqHandler# send messageId:{}", send.getMessageId());
             }
@@ -152,7 +152,6 @@ public class RocketMqHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            Producer producer = RocketMqConfigUtils.getProducer(producerName, properties);
             MessageBuilder messageBuilder = new MessageBuilderImpl()
                     .setTopic(topic);
             if (StringUtils.isNotEmpty(tag)) {
@@ -171,7 +170,7 @@ public class RocketMqHandler extends AbstractHandler {
             if (log.isDebugEnabled()) {
                 log.debug("RocketMqHandler# send message:{}", message);
             }
-            return producer.sendAsync(message).thenApply(m -> m.getMessageId().toString());
+            return rocketClient.sendAsync(producerName, message).thenApply(m -> m.getMessageId().toString());
         } catch (ClientException e) {
             if (log.isErrorEnabled()) {
                 log.error("RocketMqHandler# send message error:{}", e.getMessage());
@@ -198,7 +197,7 @@ public class RocketMqHandler extends AbstractHandler {
             return;
         }
         try {
-            PushConsumerBuilder pushConsumerBuilder = RocketMqConfigUtils.getPushConsumerBuilder(properties);
+            PushConsumerBuilder pushConsumerBuilder = rocketClient.getConsumer(consumerConfig.getConsumerGroup(), consumerConfig.getIndex());
             if (StringUtils.isEmpty(tag)) {
                 tag = "*";
             }

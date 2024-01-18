@@ -20,7 +20,6 @@ import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.RocketRemotingClie
 import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.impl.RocketRemotingDefaultImpl;
 import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.util.RocketRemotingConfigUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

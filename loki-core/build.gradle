@@ -3,7 +3,6 @@ dependencies {
     api "${lib.'fastjson2'}"
     api "${lib.'spring-context'}"
     api "${lib.'hutool-all'}"
-    implementation "${lib.'rocketmq-client-java'}"
 
     implementation project(":loki-support:loki-support-redis")
     implementation project(":loki-support:loki-support-kafka")

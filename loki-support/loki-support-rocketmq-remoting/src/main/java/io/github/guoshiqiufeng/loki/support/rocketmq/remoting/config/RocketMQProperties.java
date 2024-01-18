@@ -47,6 +47,7 @@ public class RocketMQProperties {
         private boolean enableMsgTrace = true;
         private String customizedTraceTopic = "RMQ_SYS_TRACE_TOPIC";
     }
+
     @Data
     public static final class Consumer {
         private String group;

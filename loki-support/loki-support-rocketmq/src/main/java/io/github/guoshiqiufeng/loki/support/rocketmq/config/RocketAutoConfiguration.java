@@ -15,6 +15,11 @@
  */
 package io.github.guoshiqiufeng.loki.support.rocketmq.config;
 
+import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;
+import io.github.guoshiqiufeng.loki.support.rocketmq.impl.RocketDefaultImpl;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -24,4 +29,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class RocketAutoConfiguration {
+
+
+    @Bean
+    @ConditionalOnMissingBean(RocketClient.class)
+    public RocketClient rocketClient(LokiProperties lokiProperties) {
+        return new RocketDefaultImpl(lokiProperties);
+    }
 }
