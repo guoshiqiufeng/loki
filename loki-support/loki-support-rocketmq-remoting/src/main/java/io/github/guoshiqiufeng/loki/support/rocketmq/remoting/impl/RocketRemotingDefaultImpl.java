@@ -24,6 +24,7 @@ import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.common.message.Message;
 
 /**
+ * rocketmq remoting client 默认实现
  * @author yanghq
  * @version 1.0
  * @since 2024/1/18 10:15
@@ -41,8 +42,8 @@ public class RocketRemotingDefaultImpl implements RocketRemotingClient {
     /**
      * 发送消息
      *
-     * @param producerName
-     * @param message
+     * @param producerName 生产者名称
+     * @param message      消息
      */
     @Override
     public String send(String producerName, Message message) {
