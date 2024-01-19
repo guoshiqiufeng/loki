@@ -19,6 +19,10 @@ import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.common.message.Message;
 
 /**
+ * rocketmq remoting client
+ * <p>
+ * 支持rocketmq 4.x,5.x的客户端
+ *
  * @author yanghq
  * @version 1.0
  * @since 2024/1/18 10:13
@@ -28,6 +32,9 @@ public interface RocketRemotingClient {
 
     /**
      * 发送消息
+     *
+     * @param producerName 生产者名称
+     * @param message      消息
      */
     String send(String producerName, Message message);
 
