@@ -8,6 +8,7 @@ name: Pull request
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - name: Init release-please-config
         run: |
