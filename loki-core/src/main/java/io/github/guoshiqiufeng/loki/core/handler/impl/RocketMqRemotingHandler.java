@@ -29,6 +29,7 @@ import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.common.message.MessageConst;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.shaded.com.google.common.base.Throwables;
 
@@ -85,6 +86,12 @@ public class RocketMqRemotingHandler extends AbstractHandler {
             if (keys != null && keys.length > 0) {
                 message.setKeys(Arrays.asList(keys));
             }
+            if (deliveryTimestamp != null && deliveryTimestamp != 0) {
+                message.setDeliverTimeMs(System.currentTimeMillis() + deliveryTimestamp);
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("RocketMqRemotingHandler# send message:{}", message);
+            }
             return rocketRemotingClient.send(producerName, message);
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
@@ -125,6 +132,12 @@ public class RocketMqRemotingHandler extends AbstractHandler {
                 Message message = new Message(topic, tag, body.getBytes());
                 if (keys != null && keys.length > 0) {
                     message.setKeys(Arrays.asList(keys));
+                }
+                if (deliveryTimestamp != null && deliveryTimestamp != 0) {
+                    message.setDeliverTimeMs(System.currentTimeMillis() + deliveryTimestamp);
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("RocketMqRemotingHandler# sendAsync message:{}", message);
                 }
                 return rocketRemotingClient.send(producerName, message);
             });

@@ -101,12 +101,13 @@ public class RocketMqHandler extends AbstractHandler {
             }
             if (deliveryTimestamp != null && deliveryTimestamp != 0) {
                 messageBuilder.setDeliveryTimestamp(System.currentTimeMillis() + deliveryTimestamp);
+            } else {
+                messageBuilder.setMessageGroup(producerName);
             }
             if (keys != null && keys.length > 0) {
                 messageBuilder.setKeys(keys);
             }
             Message message = messageBuilder
-                    .setMessageGroup(producerName)
                     .setBody(body.getBytes())
                     .build();
             if (log.isDebugEnabled()) {
@@ -159,12 +160,13 @@ public class RocketMqHandler extends AbstractHandler {
             }
             if (deliveryTimestamp != null && deliveryTimestamp != 0) {
                 messageBuilder.setDeliveryTimestamp(System.currentTimeMillis() + deliveryTimestamp);
+            } else {
+                messageBuilder.setMessageGroup(producerName);
             }
             if (keys != null && keys.length > 0) {
                 messageBuilder.setKeys(keys);
             }
             Message message = messageBuilder
-                    .setMessageGroup(producerName)
                     .setBody(body.getBytes())
                     .build();
             if (log.isDebugEnabled()) {

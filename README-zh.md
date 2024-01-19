@@ -34,10 +34,12 @@ https://guoshiqiufeng.github.io/loki-doc/
 |------------------------------------------------|:-------------:|:-----------------:|-------|-------| 
 | Send standard messages                         |       ✅       |         ✅         | ✅     | ✅     |    
 | Send async messages                            |       ✅       |         ✅         | ✅     | ✅     |    
-| Send timed/delay messages                      |       ✅       |        🚧         | 🚧    | 🚧    |    
+| Send timed/delay messages                      |       ✅       |        ✅         | 🚧    | 🚧    |    
 | Producer with transactional messages           |      🚧       |        🚧         | 🚧    | 🚧    |
 | 【Topic】 consumer with message listener         |       ✅       |         ✅         | ✅     | ✅     |    
 | 【Topic-Pattern】 consumer with message listener |      🚧       |        🚧         | ✅     | ✅     |    
+
+注：Rocketmq-Remoting `Send timed/delay messages` 仅支持 `rocketmq 5.0` 以上版本
 
 ### 使用
 
