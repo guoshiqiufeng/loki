@@ -20,7 +20,7 @@ jobs:
         with:
           release-type: java
           default-branch: dev
-          skip-github-release: true
+          # skip-github-release: true
           package-name: standard-version
           # include-v-in-tag: false
           config-file: ~/.release-please-config.json
