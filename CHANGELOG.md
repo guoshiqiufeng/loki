@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.7.0](https://github.com/guoshiqiufeng/loki/compare/v0.6.1...v0.7.0) (2024-01-19)
+
+
+### ⭐ New Features
+
+* rocketmq-gRPC ([ecda4d7](https://github.com/guoshiqiufeng/loki/commit/ecda4d7106ddba2c91e13ad042593ed91a59ead3))
+* rocketmq-remoting ([1af7499](https://github.com/guoshiqiufeng/loki/commit/1af74997aa03a672f6fc9dba32e6c7277cd830e2))
+* rocketmq-remoting ([40e0138](https://github.com/guoshiqiufeng/loki/commit/40e01381b1a3224d0cd49c43acf475e329bc8abe))
+
+
+### 🐞 Bug Fixes
+
+* bom add support dependency ([8ba36c3](https://github.com/guoshiqiufeng/loki/commit/8ba36c3101fa95696d11dfad35e55f9bda52ad6f))
+
+
+### 🔨 Dependency Upgrades
+
+* Update hutool to 5.8.25 ([30f72db](https://github.com/guoshiqiufeng/loki/commit/30f72db9a48250518d7990f8449976ae19227651))
+
 ## [0.6.1](https://github.com/guoshiqiufeng/loki/compare/v0.6.0...v0.6.1)
 
 ### 🐞 Bug Fixes
