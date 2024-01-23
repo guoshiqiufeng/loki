@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.core.toolkit;
+package io.github.guoshiqiufeng.loki.support.rocketmq.util;
 
 
 import io.github.guoshiqiufeng.loki.support.core.config.GlobalConfig;

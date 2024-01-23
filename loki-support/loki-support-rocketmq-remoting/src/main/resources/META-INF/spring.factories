@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  io.github.guoshiqiufeng.loki.support.rocketmq.remoting.config.RocketRemotingConfig

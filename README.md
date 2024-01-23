@@ -9,7 +9,9 @@ Read in other languages: [简体中文](README-zh.md)
 
 ### Introduction
 
-Unified message sending and consumption framework that simplifies the use of message queues. Provides unified message sending and consumption interfaces, supports multiple message queue implementations, and currently supports RocketMQ 5.x, Kafka 3.x, and Redis 5.X and above
+Unified message sending and consumption framework that simplifies the use of message queues. Provides unified message
+sending and consumption interfaces, supports multiple message queue implementations, and currently supports RocketMQ
+5.x, Kafka 3.x, and Redis 5.X and above
 
 ### Documentation
 
@@ -29,14 +31,16 @@ https://guoshiqiufeng.github.io/loki-doc/en/
 * Available - ✅
 * In progress - 🚧
 
-| Features                                         | Rocketmq-gRPC | Rocketmq-Remoting | Kafka | Redis |   
-| -------------------------------------------- |:-------------:| :---: |-------|-------| 
-| Send standard messages                |       ✅       |   🚧   |    ✅   |   ✅    |    
-| Send async messages                   |       ✅       |   🚧   |  ✅     |   ✅    |    
-| Send timed/delay messages             |       ✅       |   🚧   |      🚧  |    🚧    |    
-| Producer with transactional messages         |      🚧       |   🚧   |    🚧    |      🚧  |
-|【Topic】 consumer with message listener |       ✅       |    🚧 |    ✅   |    ✅   |    
-|【Topic-Pattern】 consumer with message listener     |      🚧       |   🚧   |   ✅    |  ✅     |    
+| Features                                       | Rocketmq-gRPC | Rocketmq-Remoting | Kafka | Redis |   
+|------------------------------------------------|:-------------:|:-----------------:|-------|-------| 
+| Send standard messages                         |       ✅       |         ✅         | ✅     | ✅     |    
+| Send async messages                            |       ✅       |         ✅         | ✅     | ✅     |    
+| Send timed/delay messages                      |       ✅       |        ✅         | 🚧    | 🚧    |    
+| Producer with transactional messages           |      🚧       |        🚧         | 🚧    | 🚧    |
+| 【Topic】 consumer with message listener         |       ✅       |         ✅         | ✅     | ✅     |    
+| 【Topic-Pattern】 consumer with message listener |      🚧       |        🚧         | ✅     | ✅     |    
+
+Note: Rocketmq-Remoting `Send timed/delay messages` is only supported in `rocketmq 5.0` and above
 
 ### Use
 

@@ -18,13 +18,10 @@ package io.github.guoshiqiufeng.loki.autoconfigure.config;
 import io.github.guoshiqiufeng.loki.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.core.handler.Handler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.core.handler.impl.RocketMqHandler;
+import io.github.guoshiqiufeng.loki.core.handler.impl.RocketMqRemotingHandler;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
-import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;
-import io.github.guoshiqiufeng.loki.support.rocketmq.util.RocketMqConfigUtils;
-import org.apache.rocketmq.client.apis.ClientException;
-import org.apache.rocketmq.client.apis.producer.Producer;
+import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.RocketRemotingClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -34,31 +31,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * rocketmq自动配置
+ * rocketmq-remoting自动配置
  *
  * @author yanghq
  * @version 1.0
- * @since 2023/12/26 17:13
+ * @since 2024/1/18 17:13
  */
 @Configuration
-@ConditionalOnProperty(prefix = "loki.global-config.mq-config", name = "mq-type", havingValue = "ROCKET_MQ")
-public class RocketMqAutoConfiguration {
+@ConditionalOnProperty(prefix = "loki.global-config.mq-config", name = "mq-type", havingValue = "ROCKET_MQ_REMOTING")
+public class RocketRemotingAutoConfiguration {
 
     /**
-     * 默认生产者
-     *
-     * @param properties loki配置
-     * @return 默认生产者
-     * @throws ClientException 异常
-     */
-    @Bean
-    @ConditionalOnMissingBean(Producer.class)
-    public Producer defaultProducer(LokiProperties properties) throws ClientException {
-        return RocketMqConfigUtils.producerBuilder("defaultProducer", properties);
-    }
-
-    /**
-     * Handler Bean列表，包含RocketMqHandler
+     * Handler Bean列表，包含RocketMqRemotingHandler
      *
      * @param properties    Loki配置
      * @param handlerHolder 处理器持有者
@@ -66,11 +50,11 @@ public class RocketMqAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(Handler.class)
-    public List<Handler> rocketHandler(LokiProperties properties, HandlerHolder handlerHolder, RocketClient rocketClient) {
+    public List<Handler> rocketHandler(LokiProperties properties, HandlerHolder handlerHolder, RocketRemotingClient rocketRemotingClient) {
         ArrayList<Handler> handler = new ArrayList<Handler>(1);
-        if (properties.getGlobalConfig().getMqConfig().getMqType().equals(MqType.ROCKET_MQ)) {
-            RocketMqHandler rocketMqHandler = new RocketMqHandler(properties, handlerHolder, rocketClient);
-            handler.add(rocketMqHandler);
+        if (properties.getGlobalConfig().getMqConfig().getMqType().equals(MqType.ROCKET_MQ_REMOTING)) {
+            RocketMqRemotingHandler rocketMqRemotingHandler = new RocketMqRemotingHandler(properties, handlerHolder, rocketRemotingClient);
+            handler.add(rocketMqRemotingHandler);
         } else {
             throw new LokiException("mq type is not support ");
         }
