@@ -21,6 +21,7 @@ import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.util.RocketRemotin
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 
 /**
@@ -46,10 +47,10 @@ public class RocketRemotingDefaultImpl implements RocketRemotingClient {
      * @param message      消息
      */
     @Override
-    public String send(String producerName, Message message) {
+    public SendResult send(String producerName, Message message) {
         DefaultMQProducer producer = RocketRemotingConfigUtils.getProducer(producerName, rocketProperties);
         try {
-            return producer.send(message).getMsgId();
+            return producer.send(message);
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("send message error, producerName:{}, message:{} ", producerName, message, e);

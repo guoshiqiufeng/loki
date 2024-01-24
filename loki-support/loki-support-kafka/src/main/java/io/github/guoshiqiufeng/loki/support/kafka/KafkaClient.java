@@ -15,10 +15,22 @@
  */
 package io.github.guoshiqiufeng.loki.support.kafka;
 
+import io.github.guoshiqiufeng.loki.constant.Constant;
+import io.github.guoshiqiufeng.loki.support.core.LokiClient;
+import io.github.guoshiqiufeng.loki.support.core.ProducerResult;
+import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
+import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.internals.RecordHeader;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -28,7 +40,45 @@ import java.util.concurrent.Future;
  * @version 1.0
  * @since 2024/1/6 10:35
  */
-public interface KafkaClient {
+public interface KafkaClient extends LokiClient {
+
+    /**
+     * 发送消息
+     *
+     * @param groupName 组名称
+     * @param record    发送信息
+     * @return 发送消息结果
+     */
+    @Override
+    default CompletableFuture<ProducerResult> sendAsync(String groupName, io.github.guoshiqiufeng.loki.support.core.ProducerRecord record) {
+        if (record == null) {
+            throw new LokiException("sendAsync fail : record is null!");
+        }
+        List<Header> headers = new ArrayList<>();
+        String tag = record.getTag();
+        if (StringUtils.isNotEmpty(tag)) {
+            headers.add(new RecordHeader(Constant.KAFKA_TAG, tag.getBytes(StandardCharsets.UTF_8)));
+        }
+        String key = null;
+        if (record.getKeys() != null && !record.getKeys().isEmpty()) {
+            key = record.getKeys().get(0);
+        }
+        ProducerRecord<String, String> kafkaRecord = new ProducerRecord<>(record.getTopic(),
+                null, record.getDeliveryTimestamp(), key, record.getMessage(), headers);
+        return CompletableFuture.supplyAsync(() -> {
+                    try {
+                        return send(groupName, kafkaRecord).get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new LokiException(e.getMessage());
+                    }
+                })
+                .thenApplyAsync(recordMetadata -> {
+                    ProducerResult result = new ProducerResult();
+                    result.setTopic(recordMetadata.topic());
+                    result.setMsgId(recordMetadata.partition() + "_" + recordMetadata.offset());
+                    return result;
+                });
+    }
 
     /**
      * 发送消息

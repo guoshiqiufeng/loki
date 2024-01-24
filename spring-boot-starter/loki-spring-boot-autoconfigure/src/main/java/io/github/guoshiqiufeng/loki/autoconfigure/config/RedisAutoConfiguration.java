@@ -15,7 +15,7 @@
  */
 package io.github.guoshiqiufeng.loki.autoconfigure.config;
 
-import io.github.guoshiqiufeng.loki.core.exception.LokiException;
+import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.core.handler.Handler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.handler.impl.RedisHandler;

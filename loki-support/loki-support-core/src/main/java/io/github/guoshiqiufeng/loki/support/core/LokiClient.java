@@ -13,29 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.core.exception;
+package io.github.guoshiqiufeng.loki.support.core;
 
-import lombok.AllArgsConstructor;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * 异常类
+ * client接口，用于统一操作
  *
  * @author yanghq
  * @version 1.0
- * @since 2023/11/10 14:17
+ * @since 2024/1/20 10:07
  */
-@AllArgsConstructor
-public class LokiException extends RuntimeException {
-
-    private static final long serialVersionUID = 3441678874129097621L;
+public interface LokiClient {
 
     /**
-     * 构造函数
+     * 发送消息
      *
-     * @param message 消息
-     * @param args    参数
+     * @param record 发送信息
+     * @return 发送消息结果
      */
-    public LokiException(String message, Object... args) {
-        super(String.format(message, args));
+    default CompletableFuture<ProducerResult> sendAsync(ProducerRecord record) {
+        return sendAsync(null, record);
     }
+
+    /**
+     * 发送消息
+     *
+     * @param groupName 组名称
+     * @param record    发送信息
+     * @return 发送消息结果
+     */
+    CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord record);
 }
