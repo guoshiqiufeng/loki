@@ -31,6 +31,7 @@ ext {
             "fastjson2"           : "com.alibaba.fastjson2:fastjson2:2.0.42",
             "logback-classic"     : "ch.qos.logback:logback-classic:1.4.14",
             "hutool-all"          : "cn.hutool:hutool-all:${hutoolVersion}",
+            "guava"               : "com.google.guava:guava:33.0.0-jre",
     ]
 }
 

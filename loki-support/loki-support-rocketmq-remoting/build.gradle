@@ -1,4 +1,5 @@
 dependencies {
+    api "${lib."guava"}"
     api "${lib.'rocketmq-client'}"
     api project(":loki-support:loki-support-core")
     implementation "${lib."slf4j-api"}"
