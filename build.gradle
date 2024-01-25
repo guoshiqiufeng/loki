@@ -71,6 +71,8 @@ subprojects {
         }
     }
 
+    def onlyPom = project.name == "loki-bom" || project.name.contains("spring-boot-starter");
+
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
         options.warnings = false
@@ -177,16 +179,19 @@ subprojects {
             }
         }
         publications {
-
             mavenJava(MavenPublication) {
-                from components.java
-
-                artifact sourcesJar
-                artifact javadocJar
-
+                if(!onlyPom) {
+                    from components.java
+                    artifact sourcesJar
+                    artifact javadocJar
+                }
                 pom {
                     name = 'loki'
-                    packaging 'jar'
+                    if(onlyPom) {
+                        packaging 'pom'
+                    } else {
+                        packaging 'jar'
+                    }
                     description = 'Simplifying mq usage.'
                     url = 'https://github.com/guoshiqiufeng/loki'
 
