@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.8.0](https://github.com/guoshiqiufeng/loki/compare/v0.7.0...v0.8.0) (2024-01-25)
+
+
+### ⭐ New Features
+
+* Add LokiClient support sending messages ([f685a9a](https://github.com/guoshiqiufeng/loki/commit/f685a9a705c6a7f072fed490e572eb3d79eab4f1))
+
+
+### 🐞 Bug Fixes
+
+* bom only pom to maven ([90e3a8b](https://github.com/guoshiqiufeng/loki/commit/90e3a8b2d62255cafd245e5dafc02db9bff29c53))
+* spring-boot-starter dependencies ([b9c2dfc](https://github.com/guoshiqiufeng/loki/commit/b9c2dfcc905d19ef9c8ce99dc3d8f8820fafb506))
+
+
+### 🔨 Dependency Upgrades
+
+* Update guava to 33.0.0-jre ([ebc15ec](https://github.com/guoshiqiufeng/loki/commit/ebc15ece6a548a251e4cb1e22219d46cfc606636))
+* Update okhttp to 4.12.0 ([9b12af1](https://github.com/guoshiqiufeng/loki/commit/9b12af1fec0d06516eb85e4e2c5deb8185dd2e7c))
+* Update opentelemetry to 1.31.0 ([9b12af1](https://github.com/guoshiqiufeng/loki/commit/9b12af1fec0d06516eb85e4e2c5deb8185dd2e7c))
+
 ## [0.7.0](https://github.com/guoshiqiufeng/loki/compare/v0.6.1...v0.7.0) (2024-01-19)
 
 
