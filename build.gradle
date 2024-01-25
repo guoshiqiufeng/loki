@@ -19,6 +19,8 @@ ext {
             kafkaClientsVersion = '3.6.1',
             jedisVersion = '5.1.0',
             hutoolVersion = '5.8.25',
+            opentelemetryVersion = "1.31.0",
+            okhttpVersion = "4.12.0"
     ]
 
     lib = [
@@ -60,6 +62,13 @@ subprojects {
         maven { url "https://maven.aliyun.com/repository/public" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
+    }
+
+    if(project.name == "loki-spring-boot-starter" || project.name == "loki-spring-boot-starter-rocketmq-remoting" || project.name == "loki-support-rocketmq-remoting") {
+        dependencies {
+            implementation platform("io.opentelemetry:opentelemetry-bom:${opentelemetryVersion}")
+            implementation platform("com.squareup.okhttp3:okhttp-bom:${okhttpVersion}")
+        }
     }
 
     tasks.withType(JavaCompile) {
