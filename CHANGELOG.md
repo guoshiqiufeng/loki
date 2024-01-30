@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.8.0](https://github.com/guoshiqiufeng/loki/compare/v0.7.0...v0.8.0) (2024-01-25)
+## [0.8.0](https://github.com/guoshiqiufeng/loki/compare/v0.7.0...v0.8.0)
 
 
 ### ⭐ New Features
@@ -20,7 +20,7 @@
 * Update okhttp to 4.12.0 ([9b12af1](https://github.com/guoshiqiufeng/loki/commit/9b12af1fec0d06516eb85e4e2c5deb8185dd2e7c))
 * Update opentelemetry to 1.31.0 ([9b12af1](https://github.com/guoshiqiufeng/loki/commit/9b12af1fec0d06516eb85e4e2c5deb8185dd2e7c))
 
-## [0.7.0](https://github.com/guoshiqiufeng/loki/compare/v0.6.1...v0.7.0) (2024-01-19)
+## [0.7.0](https://github.com/guoshiqiufeng/loki/compare/v0.6.1...v0.7.0)
 
 
 ### ⭐ New Features
