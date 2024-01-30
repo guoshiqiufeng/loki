@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.8.1](https://github.com/guoshiqiufeng/loki/compare/v0.8.0...v0.8.1)
+
+
+### 🐞 Bug Fixes
+- fix starter dependency(https://github.com/guoshiqiufeng/loki/commit/e52855f09bfdc92720dbb2b5b070117c1bd37beb)
+
 ## [0.8.0](https://github.com/guoshiqiufeng/loki/compare/v0.7.0...v0.8.0)
 
 
