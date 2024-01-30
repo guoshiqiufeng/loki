@@ -19,6 +19,8 @@ ext {
             kafkaClientsVersion = '3.6.1',
             jedisVersion = '5.1.0',
             hutoolVersion = '5.8.25',
+            opentelemetryVersion = "1.31.0",
+            okhttpVersion = "4.12.0"
     ]
 
     lib = [
@@ -31,6 +33,7 @@ ext {
             "fastjson2"           : "com.alibaba.fastjson2:fastjson2:2.0.42",
             "logback-classic"     : "ch.qos.logback:logback-classic:1.4.14",
             "hutool-all"          : "cn.hutool:hutool-all:${hutoolVersion}",
+            "guava"               : "com.google.guava:guava:33.0.0-jre",
     ]
 }
 
@@ -60,6 +63,15 @@ subprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
     }
+
+    if(project.name == "loki-spring-boot-starter" || project.name == "loki-spring-boot-starter-rocketmq-remoting" || project.name == "loki-support-rocketmq-remoting") {
+        dependencies {
+            implementation platform("io.opentelemetry:opentelemetry-bom:${opentelemetryVersion}")
+            implementation platform("com.squareup.okhttp3:okhttp-bom:${okhttpVersion}")
+        }
+    }
+
+    def onlyPom = project.name == "loki-bom" || project.name.contains("spring-boot-starter");
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
@@ -167,16 +179,19 @@ subprojects {
             }
         }
         publications {
-
             mavenJava(MavenPublication) {
-                from components.java
-
-                artifact sourcesJar
-                artifact javadocJar
-
+                if(!onlyPom) {
+                    from components.java
+                    artifact sourcesJar
+                    artifact javadocJar
+                }
                 pom {
                     name = 'loki'
-                    packaging 'jar'
+                    if(onlyPom) {
+                        packaging 'pom'
+                    } else {
+                        packaging 'jar'
+                    }
                     description = 'Simplifying mq usage.'
                     url = 'https://github.com/guoshiqiufeng/loki'
 

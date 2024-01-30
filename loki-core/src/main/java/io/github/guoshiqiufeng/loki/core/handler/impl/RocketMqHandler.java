@@ -19,7 +19,7 @@ import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.core.toolkit.StringUtils;
+import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;

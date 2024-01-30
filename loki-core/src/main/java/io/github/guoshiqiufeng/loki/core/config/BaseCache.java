@@ -15,7 +15,7 @@
  */
 package io.github.guoshiqiufeng.loki.core.config;
 
-import io.github.guoshiqiufeng.loki.core.exception.LokiException;
+import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.mapper.BaseMapper;
 import io.github.guoshiqiufeng.loki.core.mapper.BaseMapperImpl;
