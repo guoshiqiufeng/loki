@@ -71,7 +71,7 @@ subprojects {
         }
     }
 
-    def onlyPom = project.name == "loki-bom" || project.name.contains("spring-boot-starter");
+    def onlyPom = project.name == "loki-bom";
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
