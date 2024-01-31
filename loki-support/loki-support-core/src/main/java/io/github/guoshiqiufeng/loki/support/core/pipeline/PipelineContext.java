@@ -51,8 +51,4 @@ public class PipelineContext<T extends PipelineModel> implements Serializable {
      */
     private Boolean needBreak;
 
-    /**
-     * 结果
-     */
-    String response;
 }

@@ -77,6 +77,9 @@ public abstract class BaseRocketRemotingClient implements RocketRemotingClient {
 
     private Message covertMessage(ProducerRecord record) {
         record = PipelineUtils.processSend(record);
+        if(record == null) {
+            throw new LokiException("record is null!");
+        }
         Message message = new Message(record.getTopic(), record.getTag(), record.getMessage().getBytes());
         Long deliveryTimestamp = record.getDeliveryTimestamp();
         if (deliveryTimestamp != null && deliveryTimestamp != 0) {

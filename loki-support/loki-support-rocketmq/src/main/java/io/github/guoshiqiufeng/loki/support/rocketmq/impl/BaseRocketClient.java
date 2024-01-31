@@ -80,6 +80,9 @@ public abstract class BaseRocketClient implements RocketClient {
 
     private Message covertMessage(String groupName, ProducerRecord record) {
         record = PipelineUtils.processSend(record);
+        if(record == null) {
+            throw new LokiException("record is null!");
+        }
         MessageBuilder messageBuilder = new MessageBuilderImpl()
                 .setTopic(record.getTopic());
         if (StringUtils.isNotEmpty(record.getTag())) {

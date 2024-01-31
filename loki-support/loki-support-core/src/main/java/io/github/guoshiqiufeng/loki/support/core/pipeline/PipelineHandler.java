@@ -58,7 +58,7 @@ public class PipelineHandler {
         PipelineTemplate<T> castedPipelineTemplate = (PipelineTemplate<T>) pipelineTemplate;
 
         List<PipelineProcess<T>> processList = new ArrayList<>(castedPipelineTemplate.getProcessList());
-        processList = processList.stream().filter(PipelineProcess::support)
+        processList = processList.stream().filter(process -> process.support(context))
                 .sorted(Comparator.comparing(PipelineProcess::order))
                 .collect(Collectors.toList());
 

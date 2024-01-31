@@ -48,12 +48,16 @@ public class KafkaConsumeUtils {
                     if (tag == null || tag.isEmpty() || "*".equals(tag)) {
                         ConsumerRecord consumerRecord = covertConsumerRecord(kafkaConsumerRecord);
                         consumerRecord = PipelineUtils.processListener(consumerRecord);
-                        function.apply(consumerRecord);
+                        if(consumerRecord != null) {
+                            function.apply(consumerRecord);
+                        }
                     } else {
                         if (tag.equals(kafkaConsumerRecord.tag())) {
                             ConsumerRecord consumerRecord = covertConsumerRecord(kafkaConsumerRecord);
                             consumerRecord = PipelineUtils.processListener(consumerRecord);
-                            function.apply(consumerRecord);
+                            if(consumerRecord != null) {
+                                function.apply(consumerRecord);
+                            }
                         }
                     }
                 });
@@ -87,12 +91,16 @@ public class KafkaConsumeUtils {
                     if (tag == null || tag.isEmpty() || "*".equals(tag)) {
                         ConsumerRecord consumerRecord = covertConsumerRecord(kafkaConsumerRecord);
                         consumerRecord = PipelineUtils.processListener(consumerRecord);
-                        function.apply(consumerRecord);
+                        if(consumerRecord != null) {
+                            function.apply(consumerRecord);
+                        }
                     } else {
                         if (tag.equals(kafkaConsumerRecord.tag())) {
                             ConsumerRecord consumerRecord = covertConsumerRecord(kafkaConsumerRecord);
                             consumerRecord = PipelineUtils.processListener(consumerRecord);
-                            function.apply(consumerRecord);
+                            if(consumerRecord != null) {
+                                function.apply(consumerRecord);
+                            }
                         }
                     }
                 });

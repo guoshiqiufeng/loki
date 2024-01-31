@@ -48,7 +48,7 @@ public class PipelineUtils {
                 .code(PipelineTypeEnum.SEND.name())
                 .processModel(producerRecordModel)
                 .needBreak(false)
-                .response("").build();
+                .build();
         PipelineContext<ProducerRecordModel> process = pipelineHandler.process(context);
         return process.getProcessModel();
     }
@@ -70,7 +70,7 @@ public class PipelineUtils {
                 .code(PipelineTypeEnum.LISTENER.name())
                 .processModel(consumerRecordModel)
                 .needBreak(false)
-                .response("").build();
+                .build();
         PipelineContext<ConsumerRecordModel> process = pipelineHandler.process(context);
         return process.getProcessModel();
     }

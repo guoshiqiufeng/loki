@@ -47,6 +47,9 @@ public abstract class BaseRedisClient implements RedisClient {
             throw new LokiException("sendAsync fail : record is null!");
         }
         record = PipelineUtils.processSend(record);
+        if(record == null) {
+            throw new LokiException("record is null!");
+        }
         ProducerRecord finalRecord = record;
         long publish = publish(finalRecord.getTopic(), finalRecord.getMessage());
         ProducerResult result = new ProducerResult();
@@ -67,6 +70,9 @@ public abstract class BaseRedisClient implements RedisClient {
             throw new LokiException("sendAsync fail : record is null!");
         }
         record = PipelineUtils.processSend(record);
+        if(record == null) {
+            throw new LokiException("record is null!");
+        }
         ProducerRecord finalRecord = record;
         return CompletableFuture.supplyAsync(() -> publish(finalRecord.getTopic(), finalRecord.getMessage()))
                 .thenApplyAsync(recordMetadata -> {

@@ -187,6 +187,9 @@ public class RocketMqHandler extends AbstractHandler {
                         }
                         ConsumerRecord consumerRecord = covertConsumerRecord(messageView);
                         consumerRecord = PipelineUtils.processListener(consumerRecord);
+                        if (consumerRecord == null) {
+                            return ConsumeResult.SUCCESS;
+                        }
                         try {
                             function.apply(new MessageContent<String>()
                                     .setMessageId(consumerRecord.getMessageId())

@@ -92,6 +92,9 @@ public abstract class BaseKafkaClient implements KafkaClient {
      */
     private ProducerRecord<String, String> covertKafkaRecord(io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord record) {
         record = PipelineUtils.processSend(record);
+        if(record == null) {
+            throw new LokiException("record is null!");
+        }
         List<Header> headers = new ArrayList<>();
         String tag = record.getTag();
         Long deliveryTimestamp = record.getDeliveryTimestamp();

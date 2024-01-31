@@ -16,6 +16,7 @@
 package io.github.guoshiqiufeng.loki.support.redis.consumer;
 
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.JedisPubSub;
 
@@ -40,8 +41,12 @@ public class DefaultJedisPubSub extends JedisPubSub {
         if (log.isDebugEnabled()) {
             log.debug("{} onMessage : {}", channel, message);
         }
-        function.apply(new ConsumerRecord(channel, null, null,
-                null, null, message));
+        ConsumerRecord consumerRecord = new ConsumerRecord(channel, null, null,
+                null, null, message);
+        consumerRecord = PipelineUtils.processListener(consumerRecord);
+        if (consumerRecord != null) {
+            function.apply(consumerRecord);
+        }
     }
 
     @Override
@@ -49,8 +54,12 @@ public class DefaultJedisPubSub extends JedisPubSub {
         if (log.isDebugEnabled()) {
             log.debug("pattern: {}  channel: {} onPMessage : {}", pattern, channel, message);
         }
-        function.apply(new ConsumerRecord(channel, null, null,
-                null, null, message));
+        ConsumerRecord consumerRecord = new ConsumerRecord(channel, null, null,
+                null, null, message);
+        consumerRecord = PipelineUtils.processListener(consumerRecord);
+        if (consumerRecord != null) {
+            function.apply(consumerRecord);
+        }
     }
 
     @Override
