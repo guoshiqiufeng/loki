@@ -15,11 +15,11 @@
  */
 package io.github.guoshiqiufeng.loki.core.config;
 
-import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.mapper.BaseMapper;
 import io.github.guoshiqiufeng.loki.core.mapper.BaseMapperImpl;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import lombok.experimental.UtilityClass;
 
 import java.util.Map;

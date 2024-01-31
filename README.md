@@ -35,10 +35,10 @@ https://guoshiqiufeng.github.io/loki-doc/en/
 |------------------------------------------------|:-------------:|:-----------------:|-------|-------| 
 | 【BaseMapper】Send standard messages             |       ✅       |         ✅         | ✅     | ✅     |    
 | 【BaseMapper】Send async messages                |       ✅       |         ✅         | ✅     | ✅     |    
-| 【BaseMapper】Send timed/delay messages          |       ✅       |        ✅         | 🚧    | 🚧    |    
+| 【BaseMapper】Send timed/delay messages          |       ✅       |         ✅         | 🚧    | 🚧    |    
 | 【LokiClient】Send standard messages             |       ✅       |         ✅         | ✅     | ✅     |    
 | 【LokiClient】Send async messages                |       ✅       |         ✅         | ✅     | ✅     |    
-| 【LokiClient】Send timed/delay messages          |       ✅       |        ✅         | 🚧    | 🚧    |    
+| 【LokiClient】Send timed/delay messages          |       ✅       |         ✅         | 🚧    | 🚧    |    
 | Producer with transactional messages           |      🚧       |        🚧         | 🚧    | 🚧    |
 | 【Topic】 consumer with message listener         |       ✅       |         ✅         | ✅     | ✅     |    
 | 【Topic-Pattern】 consumer with message listener |      🚧       |        🚧         | ✅     | ✅     |    

@@ -13,45 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.core;
+package io.github.guoshiqiufeng.loki.support.core.pipeline;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+
+import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
+ * 上下文
+ *
  * @author yanghq
  * @version 1.0
- * @since 2024/1/24 10:51
+ * @since 2023/2/9 14:27
  */
 @Data
+@Builder
 @AllArgsConstructor
-public class ProducerRecord implements Serializable {
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+public class PipelineContext<T extends PipelineModel> implements Serializable {
 
     /**
-     * 主题
+     * 标识责任链的code
      */
-    private String topic;
+    private String code;
 
     /**
-     * 标签
+     * 存储责任链上下文数据的模型
      */
-    private String tag;
+    private T processModel;
 
     /**
-     * 消息内容
+     * 责任链中断的标识
      */
-    private String message;
+    private Boolean needBreak;
 
     /**
-     * 延时时间
+     * 结果
      */
-    private Long deliveryTimestamp;
-
-    /**
-     * key
-     */
-    private List<String> keys;
+    String response;
 }

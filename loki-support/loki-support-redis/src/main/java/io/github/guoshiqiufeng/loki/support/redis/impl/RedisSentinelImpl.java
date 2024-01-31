@@ -15,7 +15,6 @@
  */
 package io.github.guoshiqiufeng.loki.support.redis.impl;
 
-import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.JedisSentinelPool;
 
@@ -26,7 +25,7 @@ import redis.clients.jedis.JedisSentinelPool;
  * @version 1.0
  * @since 2023/12/25 17:29
  */
-public class RedisSentinelImpl implements RedisClient {
+public class RedisSentinelImpl extends BaseRedisClient {
 
     private final JedisSentinelPool jedisSentinelPool;
 

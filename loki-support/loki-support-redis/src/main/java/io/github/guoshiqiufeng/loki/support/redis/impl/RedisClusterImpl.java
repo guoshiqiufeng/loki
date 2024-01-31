@@ -15,7 +15,6 @@
  */
 package io.github.guoshiqiufeng.loki.support.redis.impl;
 
-import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPubSub;
 
@@ -26,7 +25,7 @@ import redis.clients.jedis.JedisPubSub;
  * @version 1.0
  * @since 2023/12/25 17:26
  */
-public class RedisClusterImpl implements RedisClient {
+public class RedisClusterImpl extends BaseRedisClient {
 
     private final JedisCluster jedisCluster;
 

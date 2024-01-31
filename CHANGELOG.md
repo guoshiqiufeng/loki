@@ -2,32 +2,34 @@
 
 ## [0.8.1](https://github.com/guoshiqiufeng/loki/compare/v0.8.0...v0.8.1)
 
-
 ### 🐞 Bug Fixes
+
 - fix starter dependency(https://github.com/guoshiqiufeng/loki/commit/e52855f09bfdc92720dbb2b5b070117c1bd37beb)
 
 ## [0.8.0](https://github.com/guoshiqiufeng/loki/compare/v0.7.0...v0.8.0)
 
-
 ### ⭐ New Features
 
-* Add LokiClient support sending messages ([f685a9a](https://github.com/guoshiqiufeng/loki/commit/f685a9a705c6a7f072fed490e572eb3d79eab4f1))
-
+* Add LokiClient support sending
+  messages ([f685a9a](https://github.com/guoshiqiufeng/loki/commit/f685a9a705c6a7f072fed490e572eb3d79eab4f1))
 
 ### 🐞 Bug Fixes
 
-* bom only pom to maven ([90e3a8b](https://github.com/guoshiqiufeng/loki/commit/90e3a8b2d62255cafd245e5dafc02db9bff29c53))
-* spring-boot-starter dependencies ([b9c2dfc](https://github.com/guoshiqiufeng/loki/commit/b9c2dfcc905d19ef9c8ce99dc3d8f8820fafb506))
-
+* bom only pom to
+  maven ([90e3a8b](https://github.com/guoshiqiufeng/loki/commit/90e3a8b2d62255cafd245e5dafc02db9bff29c53))
+* spring-boot-starter
+  dependencies ([b9c2dfc](https://github.com/guoshiqiufeng/loki/commit/b9c2dfcc905d19ef9c8ce99dc3d8f8820fafb506))
 
 ### 🔨 Dependency Upgrades
 
-* Update guava to 33.0.0-jre ([ebc15ec](https://github.com/guoshiqiufeng/loki/commit/ebc15ece6a548a251e4cb1e22219d46cfc606636))
-* Update okhttp to 4.12.0 ([9b12af1](https://github.com/guoshiqiufeng/loki/commit/9b12af1fec0d06516eb85e4e2c5deb8185dd2e7c))
-* Update opentelemetry to 1.31.0 ([9b12af1](https://github.com/guoshiqiufeng/loki/commit/9b12af1fec0d06516eb85e4e2c5deb8185dd2e7c))
+* Update guava to
+  33.0.0-jre ([ebc15ec](https://github.com/guoshiqiufeng/loki/commit/ebc15ece6a548a251e4cb1e22219d46cfc606636))
+* Update okhttp to
+  4.12.0 ([9b12af1](https://github.com/guoshiqiufeng/loki/commit/9b12af1fec0d06516eb85e4e2c5deb8185dd2e7c))
+* Update opentelemetry to
+  1.31.0 ([9b12af1](https://github.com/guoshiqiufeng/loki/commit/9b12af1fec0d06516eb85e4e2c5deb8185dd2e7c))
 
 ## [0.7.0](https://github.com/guoshiqiufeng/loki/compare/v0.6.1...v0.7.0)
-
 
 ### ⭐ New Features
 
@@ -35,15 +37,15 @@
 * rocketmq-remoting ([1af7499](https://github.com/guoshiqiufeng/loki/commit/1af74997aa03a672f6fc9dba32e6c7277cd830e2))
 * rocketmq-remoting ([40e0138](https://github.com/guoshiqiufeng/loki/commit/40e01381b1a3224d0cd49c43acf475e329bc8abe))
 
-
 ### 🐞 Bug Fixes
 
-* bom add support dependency ([8ba36c3](https://github.com/guoshiqiufeng/loki/commit/8ba36c3101fa95696d11dfad35e55f9bda52ad6f))
-
+* bom add support
+  dependency ([8ba36c3](https://github.com/guoshiqiufeng/loki/commit/8ba36c3101fa95696d11dfad35e55f9bda52ad6f))
 
 ### 🔨 Dependency Upgrades
 
-* Update hutool to 5.8.25 ([30f72db](https://github.com/guoshiqiufeng/loki/commit/30f72db9a48250518d7990f8449976ae19227651))
+* Update hutool to
+  5.8.25 ([30f72db](https://github.com/guoshiqiufeng/loki/commit/30f72db9a48250518d7990f8449976ae19227651))
 
 ## [0.6.1](https://github.com/guoshiqiufeng/loki/compare/v0.6.0...v0.6.1)
 

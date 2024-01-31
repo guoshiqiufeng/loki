@@ -13,45 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.core;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.io.Serializable;
-import java.util.List;
+package io.github.guoshiqiufeng.loki.support.core.pipeline;
 
 /**
+ * 业务执行器
+ *
  * @author yanghq
  * @version 1.0
- * @since 2024/1/24 10:51
+ * @since 2023/2/9 14:26
  */
-@Data
-@AllArgsConstructor
-public class ProducerRecord implements Serializable {
+public interface PipelineProcess<T extends PipelineModel> {
 
     /**
-     * 主题
+     * 是否支持
+     *
+     * @return 是否支持 true 支持 false 不支持
      */
-    private String topic;
+    default boolean support() {
+        return true;
+    }
 
     /**
-     * 标签
+     * 获取排序，越小越靠前
+     *
+     * @return 排序
      */
-    private String tag;
+    default Long order() {
+        return 0L;
+    }
 
     /**
-     * 消息内容
+     * 处理
+     *
+     * @param context 内容
      */
-    private String message;
-
-    /**
-     * 延时时间
-     */
-    private Long deliveryTimestamp;
-
-    /**
-     * key
-     */
-    private List<String> keys;
+    void process(PipelineContext<T> context);
 }

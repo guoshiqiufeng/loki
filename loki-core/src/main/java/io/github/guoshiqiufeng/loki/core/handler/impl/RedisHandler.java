@@ -19,13 +19,16 @@ import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
+import io.github.guoshiqiufeng.loki.support.core.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
@@ -83,17 +86,9 @@ public class RedisHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            Long timestamp = null;
-            if (deliveryTimestamp != null && deliveryTimestamp != 0) {
-                timestamp = System.currentTimeMillis() + deliveryTimestamp;
-            }
-            String key = null;
-            if (keys != null && keys.length > 0) {
-                key = keys[0];
-            }
-
-            long publish = redisClient.publish(topic, body);
-            return null;
+            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
+            ProducerResult producerResult = redisClient.send(topic, record);
+            return producerResult.getMsgId();
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("RedisHandler# send message error:{}", e.getMessage());
@@ -129,16 +124,8 @@ public class RedisHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            Long timestamp = null;
-            if (deliveryTimestamp != null && deliveryTimestamp != 0) {
-                timestamp = System.currentTimeMillis() + deliveryTimestamp;
-            }
-            String key = null;
-            if (keys != null && keys.length > 0) {
-                key = keys[0];
-            }
-
-            return CompletableFuture.supplyAsync(() -> "" + redisClient.publish(topic, message));
+            ProducerRecord record = new ProducerRecord(topic, tag, message, deliveryTimestamp, Arrays.asList(keys));
+            return redisClient.sendAsync(topic, record).thenApply(ProducerResult::getMsgId);
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("RedisHandler# send message error:{}", e.getMessage());
@@ -198,4 +185,5 @@ public class RedisHandler extends AbstractHandler {
             throw new RuntimeException(e);
         }
     }
+
 }

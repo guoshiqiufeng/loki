@@ -64,7 +64,7 @@ subprojects {
         mavenCentral()
     }
 
-    if(project.name == "loki-spring-boot-starter" || project.name == "loki-spring-boot-starter-rocketmq-remoting" || project.name == "loki-support-rocketmq-remoting") {
+    if (project.name == "loki-spring-boot-starter" || project.name == "loki-spring-boot-starter-rocketmq-remoting" || project.name == "loki-support-rocketmq-remoting") {
         dependencies {
             implementation platform("io.opentelemetry:opentelemetry-bom:${opentelemetryVersion}")
             implementation platform("com.squareup.okhttp3:okhttp-bom:${okhttpVersion}")
@@ -180,14 +180,14 @@ subprojects {
         }
         publications {
             mavenJava(MavenPublication) {
-                if(!onlyPom) {
+                if (!onlyPom) {
                     from components.java
                     artifact sourcesJar
                     artifact javadocJar
                 }
                 pom {
                     name = 'loki'
-                    if(onlyPom) {
+                    if (onlyPom) {
                         packaging 'pom'
                     } else {
                         packaging 'jar'

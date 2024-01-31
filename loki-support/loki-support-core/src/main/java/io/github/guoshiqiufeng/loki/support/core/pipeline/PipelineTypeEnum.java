@@ -13,45 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.core;
+package io.github.guoshiqiufeng.loki.support.core.pipeline;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.io.Serializable;
-import java.util.List;
+import lombok.Getter;
 
 /**
  * @author yanghq
  * @version 1.0
- * @since 2024/1/24 10:51
+ * @since 2024/1/30 15:30
  */
-@Data
-@AllArgsConstructor
-public class ProducerRecord implements Serializable {
+@Getter
+public enum PipelineTypeEnum {
 
     /**
-     * 主题
+     * 发送
      */
-    private String topic;
+    SEND,
 
     /**
-     * 标签
+     * 监听
      */
-    private String tag;
+    LISTENER;
 
-    /**
-     * 消息内容
-     */
-    private String message;
-
-    /**
-     * 延时时间
-     */
-    private Long deliveryTimestamp;
-
-    /**
-     * key
-     */
-    private List<String> keys;
 }

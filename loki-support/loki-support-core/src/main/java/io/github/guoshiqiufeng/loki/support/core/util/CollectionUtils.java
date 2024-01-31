@@ -13,45 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.core;
+package io.github.guoshiqiufeng.loki.support.core.util;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author yanghq
  * @version 1.0
- * @since 2024/1/24 10:51
+ * @since 2024/1/29 16:47
  */
-@Data
-@AllArgsConstructor
-public class ProducerRecord implements Serializable {
+public class CollectionUtils {
 
-    /**
-     * 主题
-     */
-    private String topic;
+    public static boolean isEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
+    }
 
-    /**
-     * 标签
-     */
-    private String tag;
+    public static boolean isEmpty(Map<?, ?> map) {
+        return map == null || map.isEmpty();
+    }
 
-    /**
-     * 消息内容
-     */
-    private String message;
-
-    /**
-     * 延时时间
-     */
-    private Long deliveryTimestamp;
-
-    /**
-     * key
-     */
-    private List<String> keys;
 }

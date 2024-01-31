@@ -32,12 +32,31 @@ public interface LokiClient {
      * @param record 发送信息
      * @return 发送消息结果
      */
+    default ProducerResult send(ProducerRecord record) {
+        return send(null, record);
+    }
+
+    /**
+     * 发送消息
+     *
+     * @param groupName 组名称
+     * @param record    发送信息
+     * @return 发送消息结果
+     */
+    ProducerResult send(String groupName, ProducerRecord record);
+
+    /**
+     * 异步发送消息
+     *
+     * @param record 发送信息
+     * @return 发送消息结果
+     */
     default CompletableFuture<ProducerResult> sendAsync(ProducerRecord record) {
         return sendAsync(null, record);
     }
 
     /**
-     * 发送消息
+     * 异步发送消息
      *
      * @param groupName 组名称
      * @param record    发送信息
