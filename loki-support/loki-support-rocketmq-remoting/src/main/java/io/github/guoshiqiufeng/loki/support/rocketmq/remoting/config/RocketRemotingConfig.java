@@ -46,7 +46,7 @@ public class RocketRemotingConfig {
 
     @Bean
     @ConditionalOnMissingBean(RocketRemotingClient.class)
-    public RocketRemotingClient rocketClient(LokiProperties lokiProperties, RocketMQProperties rocketProperties) {
+    public RocketRemotingClient rocketRemotingClient(LokiProperties lokiProperties, RocketMQProperties rocketProperties) {
         RocketRemotingConfigUtils.convert(lokiProperties, rocketProperties);
         return new RocketRemotingDefaultImpl(rocketProperties);
     }
