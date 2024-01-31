@@ -21,8 +21,8 @@ import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
-import io.github.guoshiqiufeng.loki.support.core.ProducerRecord;
-import io.github.guoshiqiufeng.loki.support.core.ProducerResult;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
@@ -161,14 +161,14 @@ public class RedisHandler extends AbstractHandler {
                 if (!StringUtils.isEmpty(topicPattern)) {
                     redisClient.psubscribe(record -> function.apply(new MessageContent<String>()
                             .setTopic(record.getTopic())
-                            .setBody(record.getMessage())
-                            .setBodyMessage(record.getMessage())
+                            .setBody(record.getBodyMessage())
+                            .setBodyMessage(record.getBodyMessage())
                     ), topicPattern);
                 } else {
                     redisClient.subscribe(record -> function.apply(new MessageContent<String>()
                             .setTopic(record.getTopic())
-                            .setBody(record.getMessage())
-                            .setBodyMessage(record.getMessage())
+                            .setBody(record.getBodyMessage())
+                            .setBodyMessage(record.getBodyMessage())
                     ), topic);
                 }
             }, executorService).exceptionally(throwable -> {

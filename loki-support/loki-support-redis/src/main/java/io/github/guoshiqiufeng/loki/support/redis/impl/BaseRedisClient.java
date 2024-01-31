@@ -15,11 +15,12 @@
  */
 package io.github.guoshiqiufeng.loki.support.redis.impl;
 
-import io.github.guoshiqiufeng.loki.support.core.ProducerRecord;
-import io.github.guoshiqiufeng.loki.support.core.ProducerResult;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
 import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
-import io.github.guoshiqiufeng.loki.support.redis.consumer.ConsumerRecord;
 import io.github.guoshiqiufeng.loki.support.redis.consumer.DefaultJedisPubSub;
 import redis.clients.jedis.JedisPubSub;
 
@@ -45,8 +46,8 @@ public abstract class BaseRedisClient implements RedisClient {
         if (record == null) {
             throw new LokiException("sendAsync fail : record is null!");
         }
-        record = processSend(record);
-        io.github.guoshiqiufeng.loki.support.core.ProducerRecord finalRecord = record;
+        record = PipelineUtils.processSend(record);
+        ProducerRecord finalRecord = record;
         long publish = publish(finalRecord.getTopic(), finalRecord.getMessage());
         ProducerResult result = new ProducerResult();
         result.setTopic(finalRecord.getTopic());
@@ -61,12 +62,12 @@ public abstract class BaseRedisClient implements RedisClient {
      * @return 发送消息结果
      */
     @Override
-    public CompletableFuture<ProducerResult> sendAsync(String groupName, io.github.guoshiqiufeng.loki.support.core.ProducerRecord record) {
+    public CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord record) {
         if (record == null) {
             throw new LokiException("sendAsync fail : record is null!");
         }
-        record = processSend(record);
-        io.github.guoshiqiufeng.loki.support.core.ProducerRecord finalRecord = record;
+        record = PipelineUtils.processSend(record);
+        ProducerRecord finalRecord = record;
         return CompletableFuture.supplyAsync(() -> publish(finalRecord.getTopic(), finalRecord.getMessage()))
                 .thenApplyAsync(recordMetadata -> {
                     ProducerResult result = new ProducerResult();

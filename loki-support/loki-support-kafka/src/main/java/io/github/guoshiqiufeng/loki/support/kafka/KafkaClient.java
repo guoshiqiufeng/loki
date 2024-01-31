@@ -16,7 +16,6 @@
 package io.github.guoshiqiufeng.loki.support.kafka;
 
 import io.github.guoshiqiufeng.loki.support.core.LokiClient;
-import io.github.guoshiqiufeng.loki.support.core.PipelineApi;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 /**
@@ -26,7 +25,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
  * @version 1.0
  * @since 2024/1/6 10:35
  */
-public interface KafkaClient extends LokiClient, PipelineApi {
+public interface KafkaClient extends LokiClient {
 
     /**
      * 获取消费者

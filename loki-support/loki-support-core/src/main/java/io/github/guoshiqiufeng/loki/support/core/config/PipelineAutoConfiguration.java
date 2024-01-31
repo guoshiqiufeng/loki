@@ -16,6 +16,8 @@
 package io.github.guoshiqiufeng.loki.support.core.config;
 
 import io.github.guoshiqiufeng.loki.support.core.pipeline.*;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.model.ConsumerRecordModel;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.model.ProducerRecordModel;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,8 +44,8 @@ public class PipelineAutoConfiguration {
 
     @Bean("lokiListenerTemplate")
     @ConditionalOnMissingBean(name = "lokiListenerTemplate")
-    public PipelineTemplate<ListenerModel> lokiListenerTemplate(List<PipelineProcess<ListenerModel>> processList) {
-        PipelineTemplate<ListenerModel> processTemplate = new PipelineTemplate<>();
+    public PipelineTemplate<ConsumerRecordModel> lokiListenerTemplate(List<PipelineProcess<ConsumerRecordModel>> processList) {
+        PipelineTemplate<ConsumerRecordModel> processTemplate = new PipelineTemplate<>();
         processTemplate.setProcessList(processList);
         return processTemplate;
     }
@@ -56,7 +58,7 @@ public class PipelineAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(PipelineHandler.class)
     public PipelineHandler pipelineHandler(List<PipelineProcess<ProducerRecordModel>> produceProcessList,
-                                           List<PipelineProcess<ListenerModel>> processList) {
+                                           List<PipelineProcess<ConsumerRecordModel>> processList) {
         PipelineHandler processHandler = new PipelineHandler();
         Map<String, PipelineTemplate<? extends PipelineModel>> templateConfig = new HashMap<>(2);
         templateConfig.put(PipelineTypeEnum.SEND.name(), lokiSendTemplate(produceProcessList));

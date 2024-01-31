@@ -16,7 +16,6 @@
 package io.github.guoshiqiufeng.loki.support.rocketmq.remoting;
 
 import io.github.guoshiqiufeng.loki.support.core.LokiClient;
-import io.github.guoshiqiufeng.loki.support.core.PipelineApi;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 
 /**
@@ -28,7 +27,7 @@ import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
  * @version 1.0
  * @since 2024/1/18 10:13
  */
-public interface RocketRemotingClient extends LokiClient, PipelineApi {
+public interface RocketRemotingClient extends LokiClient {
 
     /**
      * 获取消费者

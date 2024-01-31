@@ -15,6 +15,8 @@
  */
 package io.github.guoshiqiufeng.loki.support.kafka.utils;
 
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
 import io.github.guoshiqiufeng.loki.support.kafka.consumer.KafkaConsumerRecord;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +31,14 @@ import java.util.regex.Pattern;
 
 /**
  * kafka消费工具类
+ *
+ * @author yanghq
  */
 @Slf4j
 @UtilityClass
 public class KafkaConsumeUtils {
 
-    public void consumeMessageForPattern(KafkaConsumer<String, String> consumer, String topicPattern, String tag, Function<KafkaConsumerRecord<String, String>, Void> function) {
+    public void consumeMessageForPattern(KafkaConsumer<String, String> consumer, String topicPattern, String tag, Function<ConsumerRecord, Void> function) {
         try {
             consumer.subscribe(Pattern.compile(topicPattern));
             while (true) {
@@ -42,10 +46,14 @@ public class KafkaConsumeUtils {
                 records.forEach(record -> {
                     KafkaConsumerRecord<String, String> kafkaConsumerRecord = new KafkaConsumerRecord<String, String>(record);
                     if (tag == null || tag.isEmpty() || "*".equals(tag)) {
-                        function.apply(kafkaConsumerRecord);
+                        ConsumerRecord consumerRecord = covertConsumerRecord(kafkaConsumerRecord);
+                        consumerRecord = PipelineUtils.processListener(consumerRecord);
+                        function.apply(consumerRecord);
                     } else {
                         if (tag.equals(kafkaConsumerRecord.tag())) {
-                            function.apply(kafkaConsumerRecord);
+                            ConsumerRecord consumerRecord = covertConsumerRecord(kafkaConsumerRecord);
+                            consumerRecord = PipelineUtils.processListener(consumerRecord);
+                            function.apply(consumerRecord);
                         }
                     }
                 });
@@ -69,7 +77,7 @@ public class KafkaConsumeUtils {
      * @param tag      标签
      * @param function 回调方法
      */
-    public void consumeMessage(KafkaConsumer<String, String> consumer, String topic, String tag, Function<KafkaConsumerRecord<String, String>, Void> function) {
+    public void consumeMessage(KafkaConsumer<String, String> consumer, String topic, String tag, Function<ConsumerRecord, Void> function) {
         try {
             consumer.subscribe(Collections.singletonList(topic));
             while (true) {
@@ -77,10 +85,14 @@ public class KafkaConsumeUtils {
                 records.forEach(record -> {
                     KafkaConsumerRecord<String, String> kafkaConsumerRecord = new KafkaConsumerRecord<String, String>(record);
                     if (tag == null || tag.isEmpty() || "*".equals(tag)) {
-                        function.apply(kafkaConsumerRecord);
+                        ConsumerRecord consumerRecord = covertConsumerRecord(kafkaConsumerRecord);
+                        consumerRecord = PipelineUtils.processListener(consumerRecord);
+                        function.apply(consumerRecord);
                     } else {
                         if (tag.equals(kafkaConsumerRecord.tag())) {
-                            function.apply(kafkaConsumerRecord);
+                            ConsumerRecord consumerRecord = covertConsumerRecord(kafkaConsumerRecord);
+                            consumerRecord = PipelineUtils.processListener(consumerRecord);
+                            function.apply(consumerRecord);
                         }
                     }
                 });
@@ -94,5 +106,16 @@ public class KafkaConsumeUtils {
         } finally {
             consumer.close();
         }
+    }
+
+    private ConsumerRecord covertConsumerRecord(KafkaConsumerRecord<String, String> kafkaConsumerRecord) {
+        return new ConsumerRecord(kafkaConsumerRecord.topic(),
+                kafkaConsumerRecord.tag(), getMsgId(kafkaConsumerRecord),
+                null, Collections.singletonList(kafkaConsumerRecord.key()),
+                kafkaConsumerRecord.value());
+    }
+
+    private String getMsgId(KafkaConsumerRecord<String, String> recordMetadata) {
+        return recordMetadata.partition() + "_" + recordMetadata.offset();
     }
 }

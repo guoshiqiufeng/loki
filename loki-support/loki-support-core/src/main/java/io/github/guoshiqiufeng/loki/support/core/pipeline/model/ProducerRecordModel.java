@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.core.pipeline;
+package io.github.guoshiqiufeng.loki.support.core.pipeline.model;
 
-import io.github.guoshiqiufeng.loki.support.core.ProducerRecord;
-import lombok.Builder;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineModel;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * 消息发送实体
@@ -27,9 +29,8 @@ import lombok.EqualsAndHashCode;
  * @version 1.0
  * @since 2024/1/30 15:14
  */
-@Builder
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class ProducerRecordModel extends ProducerRecord implements PipelineModel {
+@EqualsAndHashCode(callSuper = true)
+public class ProducerRecordModel extends ProducerRecord implements PipelineModel, Serializable {
 
 }

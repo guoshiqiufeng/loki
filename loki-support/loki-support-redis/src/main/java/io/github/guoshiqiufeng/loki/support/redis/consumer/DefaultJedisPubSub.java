@@ -15,6 +15,7 @@
  */
 package io.github.guoshiqiufeng.loki.support.redis.consumer;
 
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.JedisPubSub;
 
@@ -39,7 +40,8 @@ public class DefaultJedisPubSub extends JedisPubSub {
         if (log.isDebugEnabled()) {
             log.debug("{} onMessage : {}", channel, message);
         }
-        function.apply(new ConsumerRecord().setTopic(channel).setMessage(message));
+        function.apply(new ConsumerRecord(channel, null, null,
+                null, null, message));
     }
 
     @Override
@@ -47,7 +49,8 @@ public class DefaultJedisPubSub extends JedisPubSub {
         if (log.isDebugEnabled()) {
             log.debug("pattern: {}  channel: {} onPMessage : {}", pattern, channel, message);
         }
-        function.apply(new ConsumerRecord().setTopic(channel).setMessage(message));
+        function.apply(new ConsumerRecord(channel, null, null,
+                null, null, message));
     }
 
     @Override

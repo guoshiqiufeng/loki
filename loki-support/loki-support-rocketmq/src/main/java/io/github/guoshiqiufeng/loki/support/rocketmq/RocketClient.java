@@ -16,7 +16,6 @@
 package io.github.guoshiqiufeng.loki.support.rocketmq;
 
 import io.github.guoshiqiufeng.loki.support.core.LokiClient;
-import io.github.guoshiqiufeng.loki.support.core.PipelineApi;
 import org.apache.rocketmq.client.apis.consumer.PushConsumerBuilder;
 
 /**
@@ -24,7 +23,7 @@ import org.apache.rocketmq.client.apis.consumer.PushConsumerBuilder;
  * @version 1.0
  * @since 2024/1/18 10:07
  */
-public interface RocketClient extends LokiClient, PipelineApi {
+public interface RocketClient extends LokiClient {
 
     /**
      * 获取消费者

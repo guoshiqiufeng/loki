@@ -20,9 +20,11 @@ import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.enums.MqType;
-import io.github.guoshiqiufeng.loki.support.core.ProducerRecord;
-import io.github.guoshiqiufeng.loki.support.core.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +33,11 @@ import org.apache.rocketmq.client.apis.consumer.FilterExpression;
 import org.apache.rocketmq.client.apis.consumer.FilterExpressionType;
 import org.apache.rocketmq.client.apis.consumer.PushConsumerBuilder;
 import org.apache.rocketmq.client.apis.message.MessageId;
+import org.apache.rocketmq.client.apis.message.MessageView;
 import org.apache.rocketmq.shaded.com.google.common.base.Throwables;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -183,21 +185,17 @@ public class RocketMqHandler extends AbstractHandler {
                         if (log.isDebugEnabled()) {
                             log.debug("Consume message={}", messageView);
                         }
-                        MessageId messageId = messageView.getMessageId();
-                        String messageGroup = messageView.getMessageGroup().orElse("");
-                        String tagName = messageView.getTag().orElse("");
-                        String topicName = messageView.getTopic();
-                        Collection<String> keys = messageView.getKeys();
-                        String body = StandardCharsets.UTF_8.decode(messageView.getBody()).toString();
+                        ConsumerRecord consumerRecord = covertConsumerRecord(messageView);
+                        consumerRecord = PipelineUtils.processListener(consumerRecord);
                         try {
                             function.apply(new MessageContent<String>()
-                                    .setMessageId(messageId.toString())
-                                    .setMessageGroup(messageGroup)
-                                    .setTopic(topicName)
-                                    .setTag(tagName)
-                                    .setKeys(keys)
-                                    .setBody(body)
-                                    .setBodyMessage(body));
+                                    .setMessageId(consumerRecord.getMessageId())
+                                    .setMessageGroup(consumerRecord.getMessageGroup())
+                                    .setTopic(consumerRecord.getTopic())
+                                    .setTag(consumerRecord.getTag())
+                                    .setKeys(consumerRecord.getKeys())
+                                    .setBody(consumerRecord.getBodyMessage())
+                                    .setBodyMessage(consumerRecord.getBodyMessage()));
                         } catch (Exception e) {
                             if (log.isErrorEnabled()) {
                                 log.error("RocketMqHandler# pushMessageListener error:{}", Throwables.getStackTraceAsString(e));
@@ -213,5 +211,15 @@ public class RocketMqHandler extends AbstractHandler {
             }
             throw new RuntimeException(e);
         }
+    }
+
+    private ConsumerRecord covertConsumerRecord(MessageView messageView) {
+        MessageId messageId = messageView.getMessageId();
+        String messageGroup = messageView.getMessageGroup().orElse("");
+        String tagName = messageView.getTag().orElse("");
+        String topicName = messageView.getTopic();
+        String body = StandardCharsets.UTF_8.decode(messageView.getBody()).toString();
+        return new ConsumerRecord(topicName, tagName, messageId.toString(), messageGroup,
+                messageView.getKeys(), body);
     }
 }

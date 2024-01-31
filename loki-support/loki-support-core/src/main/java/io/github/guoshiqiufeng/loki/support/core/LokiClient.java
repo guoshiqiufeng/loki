@@ -15,6 +15,9 @@
  */
 package io.github.guoshiqiufeng.loki.support.core;
 
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
+
 import java.util.concurrent.CompletableFuture;
 
 /**

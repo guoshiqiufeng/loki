@@ -21,9 +21,11 @@ import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
-import io.github.guoshiqiufeng.loki.support.core.ProducerRecord;
-import io.github.guoshiqiufeng.loki.support.core.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.RocketRemotingClient;
 import lombok.extern.slf4j.Slf4j;
@@ -171,15 +173,16 @@ public class RocketMqRemotingHandler extends AbstractHandler {
                                     if (log.isDebugEnabled()) {
                                         log.debug("msgExt:{}", msgExt);
                                     }
-                                    String body = new String(msgExt.getBody());
+                                    ConsumerRecord consumerRecord = covertConsumerRecord(msgExt);
+                                    consumerRecord = PipelineUtils.processListener(consumerRecord);
                                     function.apply(new MessageContent<String>()
-                                            .setMessageId(msgExt.getMsgId())
+                                            .setMessageId(consumerRecord.getMessageId())
                                             //.setMessageGroup(msgExt.getProperty(MessageConst.PROPERTY_PRODUCER_GROUP))
-                                            .setTopic(msgExt.getTopic())
-                                            .setTag(msgExt.getTags())
-                                            .setKeys(Arrays.asList(msgExt.getKeys().split(",")))
-                                            .setBody(body)
-                                            .setBodyMessage(body));
+                                            .setTopic(consumerRecord.getTopic())
+                                            .setTag(consumerRecord.getTag())
+                                            .setKeys(consumerRecord.getKeys())
+                                            .setBody(consumerRecord.getBodyMessage())
+                                            .setBodyMessage(consumerRecord.getBodyMessage()));
                                 }
                             } catch (Exception e) {
                                 if (log.isErrorEnabled()) {
@@ -210,5 +213,11 @@ public class RocketMqRemotingHandler extends AbstractHandler {
             }
             throw new RuntimeException(e);
         }
+    }
+
+    private ConsumerRecord covertConsumerRecord(MessageExt msgExt) {
+        return new ConsumerRecord(msgExt.getTopic(), msgExt.getTags(),
+                msgExt.getMsgId(), null, Arrays.asList(msgExt.getKeys().split(",")),
+                new String(msgExt.getBody()));
     }
 }

@@ -15,8 +15,9 @@
  */
 package io.github.guoshiqiufeng.loki.support.rocketmq.remoting.impl;
 
-import io.github.guoshiqiufeng.loki.support.core.ProducerRecord;
-import io.github.guoshiqiufeng.loki.support.core.ProducerResult;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.RocketRemotingClient;
 import org.apache.rocketmq.client.producer.SendResult;
@@ -75,7 +76,7 @@ public abstract class BaseRocketRemotingClient implements RocketRemotingClient {
     }
 
     private Message covertMessage(ProducerRecord record) {
-        record = processSend(record);
+        record = PipelineUtils.processSend(record);
         Message message = new Message(record.getTopic(), record.getTag(), record.getMessage().getBytes());
         Long deliveryTimestamp = record.getDeliveryTimestamp();
         if (deliveryTimestamp != null && deliveryTimestamp != 0) {

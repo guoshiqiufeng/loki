@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.core.pipeline;
+package io.github.guoshiqiufeng.loki.support.core.pipeline.model;
 
-import io.github.guoshiqiufeng.loki.support.core.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * @author yanghq
  * @version 1.0
  * @since 2024/1/30 16:10
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class ListenerModel extends ProducerRecord implements PipelineModel {
+@EqualsAndHashCode(callSuper = true)
+public class ConsumerRecordModel extends ConsumerRecord implements PipelineModel, Serializable {
 }

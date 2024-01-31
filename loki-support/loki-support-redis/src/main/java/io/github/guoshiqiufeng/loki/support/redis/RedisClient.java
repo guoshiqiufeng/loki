@@ -16,8 +16,7 @@
 package io.github.guoshiqiufeng.loki.support.redis;
 
 import io.github.guoshiqiufeng.loki.support.core.LokiClient;
-import io.github.guoshiqiufeng.loki.support.core.PipelineApi;
-import io.github.guoshiqiufeng.loki.support.redis.consumer.ConsumerRecord;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
 
 import java.util.function.Function;
 
@@ -28,7 +27,7 @@ import java.util.function.Function;
  * @version 1.0
  * @since 2023/12/25 15:49
  */
-public interface RedisClient extends LokiClient, PipelineApi {
+public interface RedisClient extends LokiClient {
 
     /**
      * 订阅消息

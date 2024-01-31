@@ -21,18 +21,16 @@ import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
-import io.github.guoshiqiufeng.loki.support.core.ProducerRecord;
-import io.github.guoshiqiufeng.loki.support.core.ProducerResult;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
 import io.github.guoshiqiufeng.loki.support.kafka.utils.KafkaConsumeUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
@@ -168,25 +166,25 @@ public class KafkaHandler extends AbstractHandler {
                             consumer,
                             topicPattern, finalTag,
                             record -> function.apply(new MessageContent<String>()
-                                    .setMessageId(getMessageId(record))
+                                    .setMessageId(record.getMessageId())
                                     // .setMessageGroup(messageGroup)
-                                    .setTopic(record.topic())
-                                    .setTag(record.tag())
-                                    .setKeys(Collections.singletonList(record.key()))
-                                    .setBody(record.value())
-                                    .setBodyMessage(record.value())));
+                                    .setTopic(record.getTopic())
+                                    .setTag(record.getTag())
+                                    .setKeys(record.getKeys())
+                                    .setBody(record.getBodyMessage())
+                                    .setBodyMessage(record.getBodyMessage())));
                 } else {
                     KafkaConsumeUtils.consumeMessage(
                             consumer,
                             topic, finalTag,
                             record -> function.apply(new MessageContent<String>()
-                                    .setMessageId(getMessageId(record))
+                                    .setMessageId(record.getMessageId())
                                     // .setMessageGroup(messageGroup)
-                                    .setTopic(record.topic())
-                                    .setTag(record.tag())
-                                    .setKeys(Collections.singletonList(record.key()))
-                                    .setBody(record.value())
-                                    .setBodyMessage(record.value())));
+                                    .setTopic(record.getTopic())
+                                    .setTag(record.getTag())
+                                    .setKeys(record.getKeys())
+                                    .setBody(record.getBodyMessage())
+                                    .setBodyMessage(record.getBodyMessage())));
                 }
 
             }, executorService).exceptionally(throwable -> {
@@ -202,10 +200,6 @@ public class KafkaHandler extends AbstractHandler {
             }
             throw new RuntimeException(e);
         }
-    }
-
-    private String getMessageId(ConsumerRecord<String, String> recordMetadata) {
-        return recordMetadata.partition() + "_" + recordMetadata.offset();
     }
 
 }

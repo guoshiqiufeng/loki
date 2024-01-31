@@ -16,7 +16,8 @@
 package io.github.guoshiqiufeng.loki.support.kafka.impl;
 
 import io.github.guoshiqiufeng.loki.constant.Constant;
-import io.github.guoshiqiufeng.loki.support.core.ProducerResult;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
@@ -47,7 +48,7 @@ public abstract class BaseKafkaClient implements KafkaClient {
      * @return 发送消息结果
      */
     @Override
-    public ProducerResult send(String groupName, io.github.guoshiqiufeng.loki.support.core.ProducerRecord record) {
+    public ProducerResult send(String groupName, io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord record) {
         try {
             return sendAsync(groupName, record).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -63,7 +64,7 @@ public abstract class BaseKafkaClient implements KafkaClient {
      * @return 发送消息结果
      */
     @Override
-    public CompletableFuture<ProducerResult> sendAsync(String groupName, io.github.guoshiqiufeng.loki.support.core.ProducerRecord record) {
+    public CompletableFuture<ProducerResult> sendAsync(String groupName, io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord record) {
         if (record == null) {
             throw new LokiException("sendAsync fail : record is null!");
         }
@@ -89,8 +90,8 @@ public abstract class BaseKafkaClient implements KafkaClient {
      * @param record record
      * @return kafka record
      */
-    private ProducerRecord<String, String> covertKafkaRecord(io.github.guoshiqiufeng.loki.support.core.ProducerRecord record) {
-        record = processSend(record);
+    private ProducerRecord<String, String> covertKafkaRecord(io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord record) {
+        record = PipelineUtils.processSend(record);
         List<Header> headers = new ArrayList<>();
         String tag = record.getTag();
         Long deliveryTimestamp = record.getDeliveryTimestamp();

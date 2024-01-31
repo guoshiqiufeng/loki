@@ -15,8 +15,9 @@
  */
 package io.github.guoshiqiufeng.loki.support.rocketmq.impl;
 
-import io.github.guoshiqiufeng.loki.support.core.ProducerRecord;
-import io.github.guoshiqiufeng.loki.support.core.ProducerResult;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;
@@ -78,7 +79,7 @@ public abstract class BaseRocketClient implements RocketClient {
     }
 
     private Message covertMessage(String groupName, ProducerRecord record) {
-        record = processSend(record);
+        record = PipelineUtils.processSend(record);
         MessageBuilder messageBuilder = new MessageBuilderImpl()
                 .setTopic(record.getTopic());
         if (StringUtils.isNotEmpty(record.getTag())) {

@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.core;
+package io.github.guoshiqiufeng.loki.support.core.producer;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author yanghq
  * @version 1.0
- * @since 2024/1/24 10:51
+ * @since 2024/1/24 10:53
  */
 @Data
-@AllArgsConstructor
-public class ProducerRecord implements Serializable {
+public class ProducerResult {
 
     /**
      * 主题
@@ -36,22 +31,7 @@ public class ProducerRecord implements Serializable {
     private String topic;
 
     /**
-     * 标签
+     * 消息id
      */
-    private String tag;
-
-    /**
-     * 消息内容
-     */
-    private String message;
-
-    /**
-     * 延时时间
-     */
-    private Long deliveryTimestamp;
-
-    /**
-     * key
-     */
-    private List<String> keys;
+    private String msgId;
 }
