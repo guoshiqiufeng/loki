@@ -46,11 +46,11 @@ public class PipelineUtils {
         BeanUtils.copyProperties(producerRecord, producerRecordModel);
         PipelineContext<ProducerRecordModel> context = PipelineContext.<ProducerRecordModel>builder()
                 .code(PipelineTypeEnum.SEND.name())
-                .processModel(producerRecordModel)
+                .model(producerRecordModel)
                 .needBreak(false)
                 .build();
         PipelineContext<ProducerRecordModel> process = pipelineHandler.process(context);
-        return process.getProcessModel();
+        return process.getModel();
     }
 
     /**
@@ -68,10 +68,10 @@ public class PipelineUtils {
         BeanUtils.copyProperties(consumerRecord, consumerRecordModel);
         PipelineContext<ConsumerRecordModel> context = PipelineContext.<ConsumerRecordModel>builder()
                 .code(PipelineTypeEnum.LISTENER.name())
-                .processModel(consumerRecordModel)
+                .model(consumerRecordModel)
                 .needBreak(false)
                 .build();
         PipelineContext<ConsumerRecordModel> process = pipelineHandler.process(context);
-        return process.getProcessModel();
+        return process.getModel();
     }
 }

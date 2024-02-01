@@ -44,7 +44,7 @@ public class PipelineContext<T extends PipelineModel> implements Serializable {
     /**
      * 存储责任链上下文数据的模型
      */
-    private T processModel;
+    private T model;
 
     /**
      * 责任链中断的标识
