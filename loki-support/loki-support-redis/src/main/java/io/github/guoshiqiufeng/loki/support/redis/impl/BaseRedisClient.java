@@ -47,7 +47,7 @@ public abstract class BaseRedisClient implements RedisClient {
             throw new LokiException("sendAsync fail : record is null!");
         }
         record = PipelineUtils.processSend(record);
-        if(record == null) {
+        if (record == null) {
             throw new LokiException("record is null!");
         }
         ProducerRecord finalRecord = record;
@@ -70,7 +70,7 @@ public abstract class BaseRedisClient implements RedisClient {
             throw new LokiException("sendAsync fail : record is null!");
         }
         record = PipelineUtils.processSend(record);
-        if(record == null) {
+        if (record == null) {
             throw new LokiException("record is null!");
         }
         ProducerRecord finalRecord = record;

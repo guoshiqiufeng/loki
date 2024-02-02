@@ -15,10 +15,10 @@
  */
 package io.github.guoshiqiufeng.loki.support.rocketmq.remoting.impl;
 
+import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
-import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.RocketRemotingClient;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
@@ -77,7 +77,7 @@ public abstract class BaseRocketRemotingClient implements RocketRemotingClient {
 
     private Message covertMessage(ProducerRecord record) {
         record = PipelineUtils.processSend(record);
-        if(record == null) {
+        if (record == null) {
             throw new LokiException("record is null!");
         }
         Message message = new Message(record.getTopic(), record.getTag(), record.getMessage().getBytes());

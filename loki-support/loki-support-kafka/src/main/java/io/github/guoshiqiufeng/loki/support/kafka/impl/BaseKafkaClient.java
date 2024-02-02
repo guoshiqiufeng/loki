@@ -16,9 +16,9 @@
 package io.github.guoshiqiufeng.loki.support.kafka.impl;
 
 import io.github.guoshiqiufeng.loki.constant.Constant;
+import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
-import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -92,7 +92,7 @@ public abstract class BaseKafkaClient implements KafkaClient {
      */
     private ProducerRecord<String, String> covertKafkaRecord(io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord record) {
         record = PipelineUtils.processSend(record);
-        if(record == null) {
+        if (record == null) {
             throw new LokiException("record is null!");
         }
         List<Header> headers = new ArrayList<>();

@@ -15,10 +15,10 @@
  */
 package io.github.guoshiqiufeng.loki.support.rocketmq.impl;
 
+import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
-import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;
 import org.apache.rocketmq.client.apis.message.Message;
@@ -80,7 +80,7 @@ public abstract class BaseRocketClient implements RocketClient {
 
     private Message covertMessage(String groupName, ProducerRecord record) {
         record = PipelineUtils.processSend(record);
-        if(record == null) {
+        if (record == null) {
             throw new LokiException("record is null!");
         }
         MessageBuilder messageBuilder = new MessageBuilderImpl()

@@ -26,6 +26,7 @@ public interface PipelineProcess<T extends PipelineModel> {
 
     /**
      * 是否支持
+     *
      * @param context 内容
      * @return 是否支持 true 支持 false 不支持
      */
