@@ -15,7 +15,6 @@
  */
 package io.github.guoshiqiufeng.loki.support.kafka.impl;
 
-import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
 import io.github.guoshiqiufeng.loki.support.kafka.config.KafkaProperties;
 import io.github.guoshiqiufeng.loki.support.kafka.utils.KafkaConfigUtils;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -32,13 +31,12 @@ import java.util.concurrent.Future;
  * @version 1.0
  * @since 2024/1/6 10:36
  */
-public class KafkaDefaultImpl implements KafkaClient {
+public class KafkaDefaultImpl extends BaseKafkaClient {
 
     /**
      * 配置文件
      */
     final KafkaProperties kafkaProperties;
-    ;
 
     /**
      * 构造方法

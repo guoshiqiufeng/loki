@@ -13,35 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.redis;
+package io.github.guoshiqiufeng.loki.support.core.pipeline;
 
-import io.github.guoshiqiufeng.loki.support.core.LokiClient;
-import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
 
-import java.util.function.Function;
+import lombok.*;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
- * redis客户端
+ * 上下文
  *
  * @author yanghq
  * @version 1.0
- * @since 2023/12/25 15:49
+ * @since 2023/2/9 14:27
  */
-public interface RedisClient extends LokiClient {
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+public class PipelineContext<T extends PipelineModel> implements Serializable {
 
     /**
-     * 订阅消息
-     *
-     * @param function 回调
-     * @param channels 频道
+     * 标识责任链的code
      */
-    void subscribe(Function<ConsumerRecord, Void> function, String... channels);
+    private String code;
 
     /**
-     * 订阅消息
-     *
-     * @param function 回调
-     * @param patterns 规则
+     * 存储责任链上下文数据的模型
      */
-    void psubscribe(Function<ConsumerRecord, Void> function, String... patterns);
+    private T model;
+
+    /**
+     * 责任链中断的标识
+     */
+    private Boolean needBreak;
+
 }

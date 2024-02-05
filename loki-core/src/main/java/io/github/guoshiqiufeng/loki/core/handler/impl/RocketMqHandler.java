@@ -19,25 +19,25 @@ import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
+import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.client.apis.ClientException;
 import org.apache.rocketmq.client.apis.consumer.ConsumeResult;
 import org.apache.rocketmq.client.apis.consumer.FilterExpression;
 import org.apache.rocketmq.client.apis.consumer.FilterExpressionType;
 import org.apache.rocketmq.client.apis.consumer.PushConsumerBuilder;
-import org.apache.rocketmq.client.apis.message.Message;
-import org.apache.rocketmq.client.apis.message.MessageBuilder;
 import org.apache.rocketmq.client.apis.message.MessageId;
-import org.apache.rocketmq.client.apis.producer.SendReceipt;
-import org.apache.rocketmq.client.java.message.MessageBuilderImpl;
+import org.apache.rocketmq.client.apis.message.MessageView;
 import org.apache.rocketmq.shaded.com.google.common.base.Throwables;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -94,31 +94,16 @@ public class RocketMqHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            MessageBuilder messageBuilder = new MessageBuilderImpl()
-                    .setTopic(topic);
-            if (StringUtils.isNotEmpty(tag)) {
-                messageBuilder.setTag(tag);
-            }
-            if (deliveryTimestamp != null && deliveryTimestamp != 0) {
-                messageBuilder.setDeliveryTimestamp(System.currentTimeMillis() + deliveryTimestamp);
-            } else {
-                messageBuilder.setMessageGroup(producerName);
-            }
-            if (keys != null && keys.length > 0) {
-                messageBuilder.setKeys(keys);
-            }
-            Message message = messageBuilder
-                    .setBody(body.getBytes())
-                    .build();
+            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
             if (log.isDebugEnabled()) {
-                log.debug("RocketMqHandler# send message:{}", message);
+                log.debug("RocketMqHandler# send record:{}", record);
             }
-            SendReceipt send = rocketClient.send(producerName, message);
+            ProducerResult send = rocketClient.send(producerName, record);
             if (log.isDebugEnabled()) {
-                log.debug("RocketMqHandler# send messageId:{}", send.getMessageId());
+                log.debug("RocketMqHandler# send messageId:{}", send.getMsgId());
             }
-            return send.getMessageId().toString();
-        } catch (ClientException e) {
+            return send.getMsgId();
+        } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("RocketMqHandler# send message error:{}", e.getMessage());
             }
@@ -153,27 +138,13 @@ public class RocketMqHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            MessageBuilder messageBuilder = new MessageBuilderImpl()
-                    .setTopic(topic);
-            if (StringUtils.isNotEmpty(tag)) {
-                messageBuilder.setTag(tag);
-            }
-            if (deliveryTimestamp != null && deliveryTimestamp != 0) {
-                messageBuilder.setDeliveryTimestamp(System.currentTimeMillis() + deliveryTimestamp);
-            } else {
-                messageBuilder.setMessageGroup(producerName);
-            }
-            if (keys != null && keys.length > 0) {
-                messageBuilder.setKeys(keys);
-            }
-            Message message = messageBuilder
-                    .setBody(body.getBytes())
-                    .build();
+            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
             if (log.isDebugEnabled()) {
-                log.debug("RocketMqHandler# send message:{}", message);
+                log.debug("RocketMqHandler# send record:{}", record);
             }
-            return rocketClient.sendAsync(producerName, message).thenApply(m -> m.getMessageId().toString());
-        } catch (ClientException e) {
+
+            return rocketClient.sendAsync(producerName, record).thenApply(ProducerResult::getMsgId);
+        } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("RocketMqHandler# send message error:{}", e.getMessage());
             }
@@ -214,21 +185,20 @@ public class RocketMqHandler extends AbstractHandler {
                         if (log.isDebugEnabled()) {
                             log.debug("Consume message={}", messageView);
                         }
-                        MessageId messageId = messageView.getMessageId();
-                        String messageGroup = messageView.getMessageGroup().orElse("");
-                        String tagName = messageView.getTag().orElse("");
-                        String topicName = messageView.getTopic();
-                        Collection<String> keys = messageView.getKeys();
-                        String body = StandardCharsets.UTF_8.decode(messageView.getBody()).toString();
+                        ConsumerRecord consumerRecord = covertConsumerRecord(messageView);
+                        consumerRecord = PipelineUtils.processListener(consumerRecord);
+                        if (consumerRecord == null) {
+                            return ConsumeResult.SUCCESS;
+                        }
                         try {
                             function.apply(new MessageContent<String>()
-                                    .setMessageId(messageId.toString())
-                                    .setMessageGroup(messageGroup)
-                                    .setTopic(topicName)
-                                    .setTag(tagName)
-                                    .setKeys(keys)
-                                    .setBody(body)
-                                    .setBodyMessage(body));
+                                    .setMessageId(consumerRecord.getMessageId())
+                                    .setMessageGroup(consumerRecord.getMessageGroup())
+                                    .setTopic(consumerRecord.getTopic())
+                                    .setTag(consumerRecord.getTag())
+                                    .setKeys(consumerRecord.getKeys())
+                                    .setBody(consumerRecord.getBodyMessage())
+                                    .setBodyMessage(consumerRecord.getBodyMessage()));
                         } catch (Exception e) {
                             if (log.isErrorEnabled()) {
                                 log.error("RocketMqHandler# pushMessageListener error:{}", Throwables.getStackTraceAsString(e));
@@ -244,5 +214,15 @@ public class RocketMqHandler extends AbstractHandler {
             }
             throw new RuntimeException(e);
         }
+    }
+
+    private ConsumerRecord covertConsumerRecord(MessageView messageView) {
+        MessageId messageId = messageView.getMessageId();
+        String messageGroup = messageView.getMessageGroup().orElse("");
+        String tagName = messageView.getTag().orElse("");
+        String topicName = messageView.getTopic();
+        String body = StandardCharsets.UTF_8.decode(messageView.getBody()).toString();
+        return new ConsumerRecord(topicName, tagName, messageId.toString(), messageGroup,
+                messageView.getKeys(), body);
     }
 }

@@ -17,10 +17,10 @@ package io.github.guoshiqiufeng.loki.core.proxy;
 
 import io.github.guoshiqiufeng.loki.annotation.SendMessage;
 import io.github.guoshiqiufeng.loki.core.config.BaseCache;
-import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.core.mapper.BaseMapper;
 import io.github.guoshiqiufeng.loki.core.mapper.BaseMapperImpl;
 import io.github.guoshiqiufeng.loki.enums.MethodType;
+import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;

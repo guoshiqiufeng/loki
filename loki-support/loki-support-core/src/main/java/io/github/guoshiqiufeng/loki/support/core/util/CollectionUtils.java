@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.rocketmq.remoting;
+package io.github.guoshiqiufeng.loki.support.core.util;
 
-import io.github.guoshiqiufeng.loki.support.core.LokiClient;
-import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import java.util.Collection;
+import java.util.Map;
 
 /**
- * rocketmq remoting client
- * <p>
- * 支持rocketmq 4.x,5.x的客户端
- *
  * @author yanghq
  * @version 1.0
- * @since 2024/1/18 10:13
+ * @since 2024/1/29 16:47
  */
-public interface RocketRemotingClient extends LokiClient {
+public class CollectionUtils {
 
-    /**
-     * 获取消费者
-     *
-     * @param consumerGroup 消费者组
-     * @param index         消费者索引
-     * @return 消费者
-     */
-    DefaultMQPushConsumer getConsumer(String consumerGroup, Integer index);
+    public static boolean isEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
+    }
+
+    public static boolean isEmpty(Map<?, ?> map) {
+        return map == null || map.isEmpty();
+    }
+
 }

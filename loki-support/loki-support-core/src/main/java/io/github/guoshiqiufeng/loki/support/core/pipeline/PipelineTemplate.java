@@ -13,28 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.rocketmq.remoting;
+package io.github.guoshiqiufeng.loki.support.core.pipeline;
 
-import io.github.guoshiqiufeng.loki.support.core.LokiClient;
-import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import lombok.Data;
+
+import java.util.List;
 
 /**
- * rocketmq remoting client
- * <p>
- * 支持rocketmq 4.x,5.x的客户端
+ * 模板
  *
  * @author yanghq
  * @version 1.0
- * @since 2024/1/18 10:13
+ * @since 2023/2/9 14:32
  */
-public interface RocketRemotingClient extends LokiClient {
+@Data
+public class PipelineTemplate<T extends PipelineModel> {
 
-    /**
-     * 获取消费者
-     *
-     * @param consumerGroup 消费者组
-     * @param index         消费者索引
-     * @return 消费者
-     */
-    DefaultMQPushConsumer getConsumer(String consumerGroup, Integer index);
+    private List<PipelineProcess<T>> processList;
 }

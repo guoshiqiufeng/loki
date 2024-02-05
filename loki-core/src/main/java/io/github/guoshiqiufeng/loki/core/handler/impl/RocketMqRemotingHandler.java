@@ -22,13 +22,16 @@ import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
+import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.RocketRemotingClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
-import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.shaded.com.google.common.base.Throwables;
 
@@ -81,17 +84,11 @@ public class RocketMqRemotingHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            Message message = new Message(topic, tag, body.getBytes());
-            if (keys != null && keys.length > 0) {
-                message.setKeys(Arrays.asList(keys));
-            }
-            if (deliveryTimestamp != null && deliveryTimestamp != 0) {
-                message.setDeliverTimeMs(System.currentTimeMillis() + deliveryTimestamp);
-            }
+            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
             if (log.isDebugEnabled()) {
-                log.debug("RocketMqRemotingHandler# send message:{}", message);
+                log.debug("RocketMqRemotingHandler# send record:{}", record);
             }
-            return rocketRemotingClient.send(producerName, message).getMsgId();
+            return rocketRemotingClient.send(producerName, record).getMsgId();
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("RocketMqRemotingHandler# send message error:{}", e.getMessage());
@@ -125,21 +122,13 @@ public class RocketMqRemotingHandler extends AbstractHandler {
             }
             return null;
         }
+        ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
+        if (log.isDebugEnabled()) {
+            log.debug("RocketMqRemotingHandler# sendAsync record:{}", record);
+        }
         // 发送消息
         try {
-            return CompletableFuture.supplyAsync(() -> {
-                Message message = new Message(topic, tag, body.getBytes());
-                if (keys != null && keys.length > 0) {
-                    message.setKeys(Arrays.asList(keys));
-                }
-                if (deliveryTimestamp != null && deliveryTimestamp != 0) {
-                    message.setDeliverTimeMs(System.currentTimeMillis() + deliveryTimestamp);
-                }
-                if (log.isDebugEnabled()) {
-                    log.debug("RocketMqRemotingHandler# sendAsync message:{}", message);
-                }
-                return rocketRemotingClient.send(producerName, message).getMsgId();
-            });
+            return rocketRemotingClient.sendAsync(producerName, record).thenApply(ProducerResult::getMsgId);
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("RocketMqRemotingHandler# send message error:{}", e.getMessage());
@@ -184,15 +173,19 @@ public class RocketMqRemotingHandler extends AbstractHandler {
                                     if (log.isDebugEnabled()) {
                                         log.debug("msgExt:{}", msgExt);
                                     }
-                                    String body = new String(msgExt.getBody());
+                                    ConsumerRecord consumerRecord = covertConsumerRecord(msgExt);
+                                    consumerRecord = PipelineUtils.processListener(consumerRecord);
+                                    if (consumerRecord == null) {
+                                        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                                    }
                                     function.apply(new MessageContent<String>()
-                                            .setMessageId(msgExt.getMsgId())
+                                            .setMessageId(consumerRecord.getMessageId())
                                             //.setMessageGroup(msgExt.getProperty(MessageConst.PROPERTY_PRODUCER_GROUP))
-                                            .setTopic(msgExt.getTopic())
-                                            .setTag(msgExt.getTags())
-                                            .setKeys(Arrays.asList(msgExt.getKeys().split(",")))
-                                            .setBody(body)
-                                            .setBodyMessage(body));
+                                            .setTopic(consumerRecord.getTopic())
+                                            .setTag(consumerRecord.getTag())
+                                            .setKeys(consumerRecord.getKeys())
+                                            .setBody(consumerRecord.getBodyMessage())
+                                            .setBodyMessage(consumerRecord.getBodyMessage()));
                                 }
                             } catch (Exception e) {
                                 if (log.isErrorEnabled()) {
@@ -223,5 +216,11 @@ public class RocketMqRemotingHandler extends AbstractHandler {
             }
             throw new RuntimeException(e);
         }
+    }
+
+    private ConsumerRecord covertConsumerRecord(MessageExt msgExt) {
+        return new ConsumerRecord(msgExt.getTopic(), msgExt.getTags(),
+                msgExt.getMsgId(), null, Arrays.asList(msgExt.getKeys().split(",")),
+                new String(msgExt.getBody()));
     }
 }

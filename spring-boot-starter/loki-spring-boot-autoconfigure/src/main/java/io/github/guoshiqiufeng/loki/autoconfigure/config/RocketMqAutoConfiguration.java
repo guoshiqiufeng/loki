@@ -15,12 +15,12 @@
  */
 package io.github.guoshiqiufeng.loki.autoconfigure.config;
 
-import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.core.handler.Handler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.handler.impl.RocketMqHandler;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;
 import io.github.guoshiqiufeng.loki.support.rocketmq.util.RocketMqConfigUtils;
 import org.apache.rocketmq.client.apis.ClientException;

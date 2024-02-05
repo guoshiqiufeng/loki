@@ -13,35 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.redis;
-
-import io.github.guoshiqiufeng.loki.support.core.LokiClient;
-import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
-
-import java.util.function.Function;
+package io.github.guoshiqiufeng.loki.support.core.pipeline;
 
 /**
- * redis客户端
+ * 业务执行器
  *
  * @author yanghq
  * @version 1.0
- * @since 2023/12/25 15:49
+ * @since 2023/2/9 14:26
  */
-public interface RedisClient extends LokiClient {
+public interface PipelineProcess<T extends PipelineModel> {
 
     /**
-     * 订阅消息
+     * 是否支持
      *
-     * @param function 回调
-     * @param channels 频道
+     * @param context 内容
+     * @return 是否支持 true 支持 false 不支持
      */
-    void subscribe(Function<ConsumerRecord, Void> function, String... channels);
+    default boolean support(PipelineContext<T> context) {
+        return true;
+    }
 
     /**
-     * 订阅消息
+     * 获取排序，越小越靠前
      *
-     * @param function 回调
-     * @param patterns 规则
+     * @return 排序
      */
-    void psubscribe(Function<ConsumerRecord, Void> function, String... patterns);
+    default Long order() {
+        return 0L;
+    }
+
+    /**
+     * 处理
+     *
+     * @param context 内容
+     */
+    void process(PipelineContext<T> context);
 }

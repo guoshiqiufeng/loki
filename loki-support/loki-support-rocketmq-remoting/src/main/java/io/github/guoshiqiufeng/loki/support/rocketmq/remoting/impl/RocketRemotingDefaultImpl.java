@@ -15,7 +15,6 @@
  */
 package io.github.guoshiqiufeng.loki.support.rocketmq.remoting.impl;
 
-import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.RocketRemotingClient;
 import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.config.RocketMQProperties;
 import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.util.RocketRemotingConfigUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +25,13 @@ import org.apache.rocketmq.common.message.Message;
 
 /**
  * rocketmq remoting client 默认实现
+ *
  * @author yanghq
  * @version 1.0
  * @since 2024/1/18 10:15
  */
 @Slf4j
-public class RocketRemotingDefaultImpl implements RocketRemotingClient {
+public class RocketRemotingDefaultImpl extends BaseRocketRemotingClient {
 
     private final RocketMQProperties rocketProperties;
 

@@ -13,35 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.redis;
+package io.github.guoshiqiufeng.loki.support.core.producer;
 
-import io.github.guoshiqiufeng.loki.support.core.LokiClient;
-import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
-
-import java.util.function.Function;
+import lombok.Data;
 
 /**
- * redis客户端
- *
  * @author yanghq
  * @version 1.0
- * @since 2023/12/25 15:49
+ * @since 2024/1/24 10:53
  */
-public interface RedisClient extends LokiClient {
+@Data
+public class ProducerResult {
 
     /**
-     * 订阅消息
-     *
-     * @param function 回调
-     * @param channels 频道
+     * 主题
      */
-    void subscribe(Function<ConsumerRecord, Void> function, String... channels);
+    private String topic;
 
     /**
-     * 订阅消息
-     *
-     * @param function 回调
-     * @param patterns 规则
+     * 消息id
      */
-    void psubscribe(Function<ConsumerRecord, Void> function, String... patterns);
+    private String msgId;
 }

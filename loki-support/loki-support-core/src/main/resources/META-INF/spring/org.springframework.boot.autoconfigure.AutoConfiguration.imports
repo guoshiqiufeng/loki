@@ -1,1 +1,2 @@
 io.github.guoshiqiufeng.loki.support.core.config.LokiPropertiesAutoConfiguration
+io.github.guoshiqiufeng.loki.support.core.config.PipelineAutoConfiguration

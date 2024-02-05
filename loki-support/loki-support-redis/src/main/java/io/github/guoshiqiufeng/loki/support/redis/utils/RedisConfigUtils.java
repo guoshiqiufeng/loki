@@ -179,7 +179,7 @@ public class RedisConfigUtils {
             }
 
             // 设置其他相关配置，如 auth、username、password 等。
-            if (mqConfig.getAuth() != null) {
+            if (mqConfig.getAuth() != null && mqConfig.getAuth()) {
                 configureAuth(mqConfig.getUsername(), mqConfig.getPassword(), redisProperties);
             }
         }

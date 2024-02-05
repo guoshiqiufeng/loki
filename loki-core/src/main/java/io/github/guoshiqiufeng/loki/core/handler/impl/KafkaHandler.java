@@ -16,30 +16,22 @@
 package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
-import io.github.guoshiqiufeng.loki.constant.Constant;
 import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
+import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
+import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
 import io.github.guoshiqiufeng.loki.support.kafka.utils.KafkaConsumeUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.header.internals.RecordHeader;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
@@ -96,20 +88,8 @@ public class KafkaHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            List<Header> headers = new ArrayList<>();
-            if (StringUtils.isNotEmpty(tag)) {
-                headers.add(new RecordHeader(Constant.KAFKA_TAG, tag.getBytes(StandardCharsets.UTF_8)));
-            }
-            Long timestamp = null;
-            if (deliveryTimestamp != null && deliveryTimestamp != 0) {
-                timestamp = System.currentTimeMillis() + deliveryTimestamp;
-            }
-            String key = null;
-            if (keys != null && keys.length > 0) {
-                key = keys[0];
-            }
-            ProducerRecord<String, String> record = new ProducerRecord<>(topic, null, timestamp, key, body, headers);
-            return getMessageId(kafkaClient.send(producerName, record).get());
+            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
+            return kafkaClient.sendAsync(producerName, record).get().getMsgId();
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("KafkaHandler# send message error:{}", e.getMessage());
@@ -146,27 +126,8 @@ public class KafkaHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            List<Header> headers = new ArrayList<>();
-            if (StringUtils.isNotEmpty(tag)) {
-                headers.add(new RecordHeader(Constant.KAFKA_TAG, tag.getBytes(StandardCharsets.UTF_8)));
-            }
-            Long timestamp = null;
-            if (deliveryTimestamp != null && deliveryTimestamp != 0) {
-                timestamp = System.currentTimeMillis() + deliveryTimestamp;
-            }
-            String key = null;
-            if (keys != null && keys.length > 0) {
-                key = keys[0];
-            }
-            ProducerRecord<String, String> record = new ProducerRecord<>(topic, null, timestamp, key, body, headers);
-            return CompletableFuture.supplyAsync(() -> {
-                        try {
-                            return kafkaClient.send(producerName, record).get();
-                        } catch (InterruptedException | ExecutionException e) {
-                            throw new RuntimeException(e);
-                        }
-                    })
-                    .thenApplyAsync(this::getMessageId);
+            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
+            return kafkaClient.sendAsync(producerName, record).thenApply(ProducerResult::getMsgId);
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("KafkaHandler# send message error:{}", e.getMessage());
@@ -205,25 +166,25 @@ public class KafkaHandler extends AbstractHandler {
                             consumer,
                             topicPattern, finalTag,
                             record -> function.apply(new MessageContent<String>()
-                                    .setMessageId(getMessageId(record))
+                                    .setMessageId(record.getMessageId())
                                     // .setMessageGroup(messageGroup)
-                                    .setTopic(record.topic())
-                                    .setTag(record.tag())
-                                    .setKeys(Collections.singletonList(record.key()))
-                                    .setBody(record.value())
-                                    .setBodyMessage(record.value())));
+                                    .setTopic(record.getTopic())
+                                    .setTag(record.getTag())
+                                    .setKeys(record.getKeys())
+                                    .setBody(record.getBodyMessage())
+                                    .setBodyMessage(record.getBodyMessage())));
                 } else {
                     KafkaConsumeUtils.consumeMessage(
                             consumer,
                             topic, finalTag,
                             record -> function.apply(new MessageContent<String>()
-                                    .setMessageId(getMessageId(record))
+                                    .setMessageId(record.getMessageId())
                                     // .setMessageGroup(messageGroup)
-                                    .setTopic(record.topic())
-                                    .setTag(record.tag())
-                                    .setKeys(Collections.singletonList(record.key()))
-                                    .setBody(record.value())
-                                    .setBodyMessage(record.value())));
+                                    .setTopic(record.getTopic())
+                                    .setTag(record.getTag())
+                                    .setKeys(record.getKeys())
+                                    .setBody(record.getBodyMessage())
+                                    .setBodyMessage(record.getBodyMessage())));
                 }
 
             }, executorService).exceptionally(throwable -> {
@@ -239,21 +200,6 @@ public class KafkaHandler extends AbstractHandler {
             }
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * 获取消息id<br>
-     * 使用partition和offset拼接
-     *
-     * @param recordMetadata recordMetadata
-     * @return 消息id
-     */
-    private String getMessageId(RecordMetadata recordMetadata) {
-        return recordMetadata.partition() + "_" + recordMetadata.offset();
-    }
-
-    private String getMessageId(ConsumerRecord<String, String> recordMetadata) {
-        return recordMetadata.partition() + "_" + recordMetadata.offset();
     }
 
 }
