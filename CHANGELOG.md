@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.9.0](https://github.com/guoshiqiufeng/loki/compare/v0.8.1...v0.9.0) (2024-02-02)
+## [0.9.0](https://github.com/guoshiqiufeng/loki/compare/v0.8.1...v0.9.0)
 
 
 ### ⭐ New Features
