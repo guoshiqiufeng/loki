@@ -22,10 +22,11 @@ ext {
             opentelemetryVersion = "1.31.0",
             okhttpVersion = "4.12.0",
             gsonVersion = "2.10.1",
+            slf4jVersion = "2.0.11"
     ]
 
     lib = [
-            "slf4j-api"           : "org.slf4j:slf4j-api:1.7.36",
+            "slf4j-api"           : "org.slf4j:slf4j-api:${slf4jVersion}",
             "kafka-clients"       : "org.apache.kafka:kafka-clients:${kafkaClientsVersion}",
             "rocketmq-client"     : "org.apache.rocketmq:rocketmq-client:${rocketMqClientVersion}",
             "rocketmq-client-java": "org.apache.rocketmq:rocketmq-client-java:${rocketMqClientJavaVersion}",
@@ -65,16 +66,13 @@ subprojects {
         mavenCentral()
     }
 
-    if (project.name == "loki-spring-boot-starter" || project.name == "loki-spring-boot-starter-rocketmq-remoting" || project.name == "loki-support-rocketmq-remoting") {
+    def onlyPom = project.name == "loki-bom" || project.name == "loki-dependencies";
+
+    if(!onlyPom) {
         dependencies {
-            implementation platform("io.opentelemetry:opentelemetry-bom:${opentelemetryVersion}")
-            implementation platform("com.squareup.okhttp3:okhttp-bom:${okhttpVersion}")
-            implementation ("com.google.code.gson:gson:${gsonVersion}")
-            implementation ("com.github.luben:zstd-jni:1.5.5-1")
+            implementation platform("io.github.guoshiqiufeng:loki-dependencies:${APP_VERSION}")
         }
     }
-
-    def onlyPom = project.name == "loki-bom";
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
