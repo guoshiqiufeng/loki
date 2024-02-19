@@ -68,7 +68,7 @@ subprojects {
 
     def onlyPom = project.name == "loki-bom" || project.name == "loki-dependencies";
 
-    if(!onlyPom) {
+    if (!onlyPom) {
         dependencies {
             implementation platform("io.github.guoshiqiufeng:loki-dependencies:${APP_VERSION}")
         }

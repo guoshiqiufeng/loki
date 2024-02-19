@@ -12,13 +12,13 @@ apply plugin: "io.spring.dependency-management"
 
 dependencyManagement {
     imports {
-        mavenBom ("io.opentelemetry:opentelemetry-bom:${opentelemetryVersion}")
-        mavenBom ("com.squareup.okhttp3:okhttp-bom:${okhttpVersion}")
+        mavenBom("io.opentelemetry:opentelemetry-bom:${opentelemetryVersion}")
+        mavenBom("com.squareup.okhttp3:okhttp-bom:${okhttpVersion}")
     }
     dependencies {
-        dependency ("com.google.code.gson:gson:${gsonVersion}")
-        dependency ("com.github.luben:zstd-jni:1.5.5-1")
-        dependency ("ch.qos.logback:logback-core:1.4.14")
-        dependency ("ch.qos.logback:logback-classic:1.4.14")
+        dependency("com.google.code.gson:gson:${gsonVersion}")
+        dependency("com.github.luben:zstd-jni:1.5.5-1")
+        dependency("ch.qos.logback:logback-core:1.4.14")
+        dependency("ch.qos.logback:logback-classic:1.4.14")
     }
 }

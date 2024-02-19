@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.core.config;
+package io.github.guoshiqiufeng.loki.support.core.consumer;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
