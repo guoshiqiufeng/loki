@@ -58,5 +58,4 @@ jobs:
 
       - name: Publish
         run: |
-          cd ../
           gradle publish
