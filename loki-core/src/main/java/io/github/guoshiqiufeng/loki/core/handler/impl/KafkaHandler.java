@@ -16,23 +16,19 @@
 package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
-import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
-import io.github.guoshiqiufeng.loki.support.kafka.utils.KafkaConsumeUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 /**
@@ -144,62 +140,7 @@ public class KafkaHandler extends AbstractHandler {
      */
     @Override
     public void pushMessageListener(ConsumerConfig consumerConfig, Function<MessageContent<String>, Void> function) {
-        String topic = consumerConfig.getTopic();
-        String topicPattern = consumerConfig.getTopicPattern();
-        String tag = consumerConfig.getTag();
-        if (StringUtils.isEmpty(topic) && StringUtils.isEmpty(topicPattern)) {
-            if (log.isErrorEnabled()) {
-                log.error("RocketMqHandler# pushMessageListener error: topic and topicPattern is both null");
-            }
-            return;
-        }
-        try {
-            if (StringUtils.isEmpty(tag)) {
-                tag = "*";
-            }
-            ExecutorService executorService = ThreadPoolUtils.getSingleThreadPool();
-            String finalTag = tag;
-            KafkaConsumer<String, String> consumer = kafkaClient.getConsumer(consumerConfig.getConsumerGroup(), consumerConfig.getIndex());
-            CompletableFuture.runAsync(() -> {
-                if (!StringUtils.isEmpty(topicPattern)) {
-                    KafkaConsumeUtils.consumeMessageForPattern(
-                            consumer,
-                            topicPattern, finalTag,
-                            record -> function.apply(new MessageContent<String>()
-                                    .setMessageId(record.getMessageId())
-                                    // .setMessageGroup(messageGroup)
-                                    .setTopic(record.getTopic())
-                                    .setTag(record.getTag())
-                                    .setKeys(record.getKeys())
-                                    .setBody(record.getBodyMessage())
-                                    .setBodyMessage(record.getBodyMessage())));
-                } else {
-                    KafkaConsumeUtils.consumeMessage(
-                            consumer,
-                            topic, finalTag,
-                            record -> function.apply(new MessageContent<String>()
-                                    .setMessageId(record.getMessageId())
-                                    // .setMessageGroup(messageGroup)
-                                    .setTopic(record.getTopic())
-                                    .setTag(record.getTag())
-                                    .setKeys(record.getKeys())
-                                    .setBody(record.getBodyMessage())
-                                    .setBodyMessage(record.getBodyMessage())));
-                }
-
-            }, executorService).exceptionally(throwable -> {
-                if (log.isErrorEnabled()) {
-                    log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());
-                }
-                return null;
-            });
-
-        } catch (Exception e) {
-            if (log.isErrorEnabled()) {
-                log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
-            }
-            throw new RuntimeException(e);
-        }
+        kafkaClient.consumer(consumerConfig, function);
     }
 
 }

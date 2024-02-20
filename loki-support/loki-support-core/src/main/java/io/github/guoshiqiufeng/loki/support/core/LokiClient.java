@@ -15,10 +15,13 @@
  */
 package io.github.guoshiqiufeng.loki.support.core;
 
+import io.github.guoshiqiufeng.loki.MessageContent;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * client接口，用于统一操作
@@ -66,4 +69,12 @@ public interface LokiClient {
      * @return 发送消息结果
      */
     CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord record);
+
+    /**
+     * 消费消息
+     *
+     * @param consumerConfig 消费配置
+     * @param function       消费函数
+     */
+    void consumer(ConsumerConfig consumerConfig, Function<MessageContent<String>, Void> function);
 }

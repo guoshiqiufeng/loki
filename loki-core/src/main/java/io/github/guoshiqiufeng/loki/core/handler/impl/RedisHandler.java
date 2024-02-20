@@ -16,12 +16,11 @@
 package io.github.guoshiqiufeng.loki.core.handler.impl;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
-import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.core.handler.AbstractHandler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
-import io.github.guoshiqiufeng.loki.core.toolkit.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
@@ -30,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 /**
@@ -142,48 +140,7 @@ public class RedisHandler extends AbstractHandler {
      */
     @Override
     public void pushMessageListener(ConsumerConfig consumerConfig, Function<MessageContent<String>, Void> function) {
-        String topic = consumerConfig.getTopic();
-        String topicPattern = consumerConfig.getTopicPattern();
-        String tag = consumerConfig.getTag();
 
-        if (StringUtils.isEmpty(topic) && StringUtils.isEmpty(topicPattern)) {
-            if (log.isErrorEnabled()) {
-                log.error("RocketMqHandler# pushMessageListener error: topic and topicPattern is both null");
-            }
-            return;
-        }
-        try {
-            if (StringUtils.isEmpty(tag)) {
-                tag = "*";
-            }
-            ExecutorService executorService = ThreadPoolUtils.getSingleThreadPool();
-            CompletableFuture.runAsync(() -> {
-                if (!StringUtils.isEmpty(topicPattern)) {
-                    redisClient.psubscribe(record -> function.apply(new MessageContent<String>()
-                            .setTopic(record.getTopic())
-                            .setBody(record.getBodyMessage())
-                            .setBodyMessage(record.getBodyMessage())
-                    ), topicPattern);
-                } else {
-                    redisClient.subscribe(record -> function.apply(new MessageContent<String>()
-                            .setTopic(record.getTopic())
-                            .setBody(record.getBodyMessage())
-                            .setBodyMessage(record.getBodyMessage())
-                    ), topic);
-                }
-            }, executorService).exceptionally(throwable -> {
-                if (log.isErrorEnabled()) {
-                    log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());
-                }
-                return null;
-            });
-
-        } catch (Exception e) {
-            if (log.isErrorEnabled()) {
-                log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
-            }
-            throw new RuntimeException(e);
-        }
     }
 
 }

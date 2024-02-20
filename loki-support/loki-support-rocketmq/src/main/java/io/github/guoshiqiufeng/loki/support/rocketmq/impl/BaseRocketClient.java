@@ -15,25 +15,40 @@
  */
 package io.github.guoshiqiufeng.loki.support.rocketmq.impl;
 
+import io.github.guoshiqiufeng.loki.MessageContent;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
 import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.apis.consumer.ConsumeResult;
+import org.apache.rocketmq.client.apis.consumer.FilterExpression;
+import org.apache.rocketmq.client.apis.consumer.FilterExpressionType;
+import org.apache.rocketmq.client.apis.consumer.PushConsumerBuilder;
 import org.apache.rocketmq.client.apis.message.Message;
 import org.apache.rocketmq.client.apis.message.MessageBuilder;
+import org.apache.rocketmq.client.apis.message.MessageId;
+import org.apache.rocketmq.client.apis.message.MessageView;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
 import org.apache.rocketmq.client.java.message.MessageBuilderImpl;
+import org.apache.rocketmq.shaded.com.google.common.base.Throwables;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * @author yanghq
  * @version 1.0
  * @since 2024/1/31 09:40
  */
+@Slf4j
 public abstract class BaseRocketClient implements RocketClient {
 
     /**
@@ -76,6 +91,80 @@ public abstract class BaseRocketClient implements RocketClient {
                     result.setMsgId(recordMetadata.getMessageId().toString());
                     return result;
                 });
+    }
+
+    /**
+     * 消费消息
+     *
+     * @param consumerConfig 消费配置
+     * @param function       消费函数
+     */
+    @Override
+    public void consumer(ConsumerConfig consumerConfig, Function<MessageContent<String>, Void> function) {
+        String topic = consumerConfig.getTopic();
+        String tag = consumerConfig.getTag();
+
+        if (StringUtils.isEmpty(topic)) {
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error: topic is null");
+            }
+            return;
+        }
+        try {
+            PushConsumerBuilder pushConsumerBuilder = this.getConsumer(consumerConfig.getConsumerGroup(), consumerConfig.getIndex());
+            if (StringUtils.isEmpty(tag)) {
+                tag = "*";
+            }
+            FilterExpression filterExpression = new FilterExpression(tag, FilterExpressionType.TAG);
+            pushConsumerBuilder
+                    .setConsumerGroup(consumerConfig.getConsumerGroup())
+                    // Set the subscription for the getConsumer.
+                    .setSubscriptionExpressions(Collections.singletonMap(topic, filterExpression))
+                    .setConsumptionThreadCount(consumerConfig.getConsumptionThreadCount())
+                    .setMaxCacheMessageCount(consumerConfig.getMaxCacheMessageCount())
+                    .setMessageListener(messageView -> {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Consume message={}", messageView);
+                        }
+                        ConsumerRecord consumerRecord = covertConsumerRecord(messageView);
+                        consumerRecord = PipelineUtils.processListener(consumerRecord);
+                        if (consumerRecord == null) {
+                            return ConsumeResult.SUCCESS;
+                        }
+                        try {
+                            function.apply(new MessageContent<String>()
+                                    .setMessageId(consumerRecord.getMessageId())
+                                    .setMessageGroup(consumerRecord.getMessageGroup())
+                                    .setTopic(consumerRecord.getTopic())
+                                    .setTag(consumerRecord.getTag())
+                                    .setKeys(consumerRecord.getKeys())
+                                    .setBody(consumerRecord.getBodyMessage())
+                                    .setBodyMessage(consumerRecord.getBodyMessage()));
+                        } catch (Exception e) {
+                            if (log.isErrorEnabled()) {
+                                log.error("RocketMqHandler# pushMessageListener error:{}", Throwables.getStackTraceAsString(e));
+                            }
+                            return ConsumeResult.FAILURE;
+                        }
+                        return ConsumeResult.SUCCESS;
+                    })
+                    .build();
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ConsumerRecord covertConsumerRecord(MessageView messageView) {
+        MessageId messageId = messageView.getMessageId();
+        String messageGroup = messageView.getMessageGroup().orElse("");
+        String tagName = messageView.getTag().orElse("");
+        String topicName = messageView.getTopic();
+        String body = StandardCharsets.UTF_8.decode(messageView.getBody()).toString();
+        return new ConsumerRecord(topicName, tagName, messageId.toString(), messageGroup,
+                messageView.getKeys(), body);
     }
 
     private Message covertMessage(String groupName, ProducerRecord record) {

@@ -15,16 +15,22 @@
  */
 package io.github.guoshiqiufeng.loki.support.redis.impl;
 
+import io.github.guoshiqiufeng.loki.MessageContent;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
 import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
+import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
+import io.github.guoshiqiufeng.loki.support.core.util.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import io.github.guoshiqiufeng.loki.support.redis.consumer.DefaultJedisPubSub;
+import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.JedisPubSub;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 /**
@@ -32,6 +38,7 @@ import java.util.function.Function;
  * @version 1.0
  * @since 2024/1/31 09:30
  */
+@Slf4j
 public abstract class BaseRedisClient implements RedisClient {
 
     /**
@@ -80,6 +87,58 @@ public abstract class BaseRedisClient implements RedisClient {
                     result.setTopic(finalRecord.getTopic());
                     return result;
                 });
+    }
+
+    /**
+     * 消费消息
+     *
+     * @param consumerConfig 消费配置
+     * @param function       消费函数
+     */
+    @Override
+    public void consumer(ConsumerConfig consumerConfig, Function<MessageContent<String>, Void> function) {
+        String topic = consumerConfig.getTopic();
+        String topicPattern = consumerConfig.getTopicPattern();
+        String tag = consumerConfig.getTag();
+
+        if (StringUtils.isEmpty(topic) && StringUtils.isEmpty(topicPattern)) {
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error: topic and topicPattern is both null");
+            }
+            return;
+        }
+        try {
+            if (StringUtils.isEmpty(tag)) {
+                tag = "*";
+            }
+            ExecutorService executorService = ThreadPoolUtils.getSingleThreadPool();
+            CompletableFuture.runAsync(() -> {
+                if (!StringUtils.isEmpty(topicPattern)) {
+                    this.psubscribe(record -> function.apply(new MessageContent<String>()
+                            .setTopic(record.getTopic())
+                            .setBody(record.getBodyMessage())
+                            .setBodyMessage(record.getBodyMessage())
+                    ), topicPattern);
+                } else {
+                    this.subscribe(record -> function.apply(new MessageContent<String>()
+                            .setTopic(record.getTopic())
+                            .setBody(record.getBodyMessage())
+                            .setBodyMessage(record.getBodyMessage())
+                    ), topic);
+                }
+            }, executorService).exceptionally(throwable -> {
+                if (log.isErrorEnabled()) {
+                    log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());
+                }
+                return null;
+            });
+
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
+            }
+            throw new RuntimeException(e);
+        }
     }
 
     /**

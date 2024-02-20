@@ -15,12 +15,18 @@
  */
 package io.github.guoshiqiufeng.loki.support.kafka.impl;
 
+import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.constant.Constant;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
+import io.github.guoshiqiufeng.loki.support.core.util.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
+import io.github.guoshiqiufeng.loki.support.kafka.utils.KafkaConsumeUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Header;
@@ -31,13 +37,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 /**
  * @author yanghq
  * @version 1.0
  * @since 2024/1/31 09:23
  */
+@Slf4j
 public abstract class BaseKafkaClient implements KafkaClient {
 
     /**
@@ -82,6 +91,72 @@ public abstract class BaseKafkaClient implements KafkaClient {
                     result.setMsgId(recordMetadata.partition() + "_" + recordMetadata.offset());
                     return result;
                 });
+    }
+
+    /**
+     * 消费消息
+     *
+     * @param consumerConfig 消费配置
+     * @param function       消费函数
+     */
+    @Override
+    public void consumer(ConsumerConfig consumerConfig, Function<MessageContent<String>, Void> function) {
+        String topic = consumerConfig.getTopic();
+        String topicPattern = consumerConfig.getTopicPattern();
+        String tag = consumerConfig.getTag();
+        if (StringUtils.isEmpty(topic) && StringUtils.isEmpty(topicPattern)) {
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error: topic and topicPattern is both null");
+            }
+            return;
+        }
+        try {
+            if (StringUtils.isEmpty(tag)) {
+                tag = "*";
+            }
+            ExecutorService executorService = ThreadPoolUtils.getSingleThreadPool();
+            String finalTag = tag;
+            KafkaConsumer<String, String> consumer = this.getConsumer(consumerConfig.getConsumerGroup(), consumerConfig.getIndex());
+            CompletableFuture.runAsync(() -> {
+                if (!StringUtils.isEmpty(topicPattern)) {
+                    KafkaConsumeUtils.consumeMessageForPattern(
+                            consumer,
+                            topicPattern, finalTag,
+                            record -> function.apply(new MessageContent<String>()
+                                    .setMessageId(record.getMessageId())
+                                    // .setMessageGroup(messageGroup)
+                                    .setTopic(record.getTopic())
+                                    .setTag(record.getTag())
+                                    .setKeys(record.getKeys())
+                                    .setBody(record.getBodyMessage())
+                                    .setBodyMessage(record.getBodyMessage())));
+                } else {
+                    KafkaConsumeUtils.consumeMessage(
+                            consumer,
+                            topic, finalTag,
+                            record -> function.apply(new MessageContent<String>()
+                                    .setMessageId(record.getMessageId())
+                                    // .setMessageGroup(messageGroup)
+                                    .setTopic(record.getTopic())
+                                    .setTag(record.getTag())
+                                    .setKeys(record.getKeys())
+                                    .setBody(record.getBodyMessage())
+                                    .setBodyMessage(record.getBodyMessage())));
+                }
+
+            }, executorService).exceptionally(throwable -> {
+                if (log.isErrorEnabled()) {
+                    log.error("Exception occurred in CompletableFuture: {}", throwable.getMessage());
+                }
+                return null;
+            });
+
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error("RocketMqHandler# pushMessageListener error:{}", e.getMessage());
+            }
+            throw new RuntimeException(e);
+        }
     }
 
     /**

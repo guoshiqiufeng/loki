@@ -1,18 +1,35 @@
 # Changelog
 
-## [0.9.0](https://github.com/guoshiqiufeng/loki/compare/v0.8.1...v0.9.0) (2024-02-02)
+## [1.0.0-M1](https://github.com/guoshiqiufeng/loki/compare/v0.9.0...v1.0.0-M1)
 
 
 ### ⭐ New Features
 
-* Send Listener Interceptor ([fef9a46](https://github.com/guoshiqiufeng/loki/commit/fef9a46563447f0e80c1b985508dff92a7f992c1))
-* Send Message Interceptor ([33cf09e](https://github.com/guoshiqiufeng/loki/commit/33cf09ea58e4d3ad2561b92bb0eff16365f7cc01))
+* add loki-dependencies ([43753d9](https://github.com/guoshiqiufeng/loki/commit/43753d96ccdb23c806922ac83f98f227cb98e562))
+* LokiClient support listener ([70975a4](https://github.com/guoshiqiufeng/loki/commit/70975a41a88569399fd14f2de1bc3a6bb7b2d686))
 
+
+### 🔨 Dependency Upgrades
+
+* Update gson to 2.10.1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update rocketmq-client-java to 5.0.6 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update zstd-jni to 1.5.5-1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+
+## [0.9.0](https://github.com/guoshiqiufeng/loki/compare/v0.8.1...v0.9.0)
+
+### ⭐ New Features
+
+* Send Listener
+  Interceptor ([fef9a46](https://github.com/guoshiqiufeng/loki/commit/fef9a46563447f0e80c1b985508dff92a7f992c1))
+* Send Message
+  Interceptor ([33cf09e](https://github.com/guoshiqiufeng/loki/commit/33cf09ea58e4d3ad2561b92bb0eff16365f7cc01))
 
 ### 🐞 Bug Fixes
 
-* LokiClient for RocketRemotingClient ([e1519fd](https://github.com/guoshiqiufeng/loki/commit/e1519fd46f24cec2291beb7b87ce2f6d5300131e))
-* redis auth is false,set password ([35d5f0d](https://github.com/guoshiqiufeng/loki/commit/35d5f0d5c03f5a469f4c66d16091b27f7d7947d6))
+* LokiClient for
+  RocketRemotingClient ([e1519fd](https://github.com/guoshiqiufeng/loki/commit/e1519fd46f24cec2291beb7b87ce2f6d5300131e))
+* redis auth is false,set
+  password ([35d5f0d](https://github.com/guoshiqiufeng/loki/commit/35d5f0d5c03f5a469f4c66d16091b27f7d7947d6))
 
 ## [0.8.1](https://github.com/guoshiqiufeng/loki/compare/v0.8.0...v0.8.1)
 

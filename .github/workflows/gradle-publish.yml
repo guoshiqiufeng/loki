@@ -52,4 +52,11 @@ jobs:
 
       # 发布项目
       - name: Publish
-        run: gradle publish
+        run: |
+          cd loki-dependencies
+          gradle publishToMavenLocal
+
+      - name: Publish
+        run: |
+          cd ../
+          gradle publish

@@ -16,7 +16,7 @@
 package io.github.guoshiqiufeng.loki.core.handler;
 
 import io.github.guoshiqiufeng.loki.MessageContent;
-import io.github.guoshiqiufeng.loki.core.config.ConsumerConfig;
+import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
