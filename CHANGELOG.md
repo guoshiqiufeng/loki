@@ -1,5 +1,69 @@
 # Changelog
 
+## [1.1.0-M1](https://github.com/guoshiqiufeng/loki/compare/v1.0.0-M1...v1.1.0-M1) (2024-02-20)
+
+
+### ⭐ New Features
+
+* add loki-dependencies ([43753d9](https://github.com/guoshiqiufeng/loki/commit/43753d96ccdb23c806922ac83f98f227cb98e562))
+* Add LokiClient support sending messages ([f685a9a](https://github.com/guoshiqiufeng/loki/commit/f685a9a705c6a7f072fed490e572eb3d79eab4f1))
+* kafka listener topicPattern ([d19b699](https://github.com/guoshiqiufeng/loki/commit/d19b6992aceaacfcf668f3832396061a8315308a))
+* kafka listener topicPattern ([e776165](https://github.com/guoshiqiufeng/loki/commit/e7761657dda559c0e6b2582c27a48ecd7d8a23cf))
+* LokiClient support listener ([70975a4](https://github.com/guoshiqiufeng/loki/commit/70975a41a88569399fd14f2de1bc3a6bb7b2d686))
+* redis listener topicPattern ([123a755](https://github.com/guoshiqiufeng/loki/commit/123a7551528df0a104a5e904142632331500dd36))
+* rocketmq-gRPC ([ecda4d7](https://github.com/guoshiqiufeng/loki/commit/ecda4d7106ddba2c91e13ad042593ed91a59ead3))
+* rocketmq-remoting ([1af7499](https://github.com/guoshiqiufeng/loki/commit/1af74997aa03a672f6fc9dba32e6c7277cd830e2))
+* rocketmq-remoting ([40e0138](https://github.com/guoshiqiufeng/loki/commit/40e01381b1a3224d0cd49c43acf475e329bc8abe))
+* Send Listener Interceptor ([fef9a46](https://github.com/guoshiqiufeng/loki/commit/fef9a46563447f0e80c1b985508dff92a7f992c1))
+* Send Message Interceptor ([33cf09e](https://github.com/guoshiqiufeng/loki/commit/33cf09ea58e4d3ad2561b92bb0eff16365f7cc01))
+
+
+### 🐞 Bug Fixes
+
+* add kafka default config to spring.kafka ([9ca0f08](https://github.com/guoshiqiufeng/loki/commit/9ca0f08b5b8062598e9ba06046d157abb580a15f))
+* add kafka default config to spring.kafka ([96592c9](https://github.com/guoshiqiufeng/loki/commit/96592c94359ea7b0d5b05140a0b7eb8b4c5418bf))
+* add prereleased ([e26a2ac](https://github.com/guoshiqiufeng/loki/commit/e26a2ac96446bc475b03e5c15f55b80f9d112c1a))
+* bom add support dependency ([8ba36c3](https://github.com/guoshiqiufeng/loki/commit/8ba36c3101fa95696d11dfad35e55f9bda52ad6f))
+* bom only pom to maven ([90e3a8b](https://github.com/guoshiqiufeng/loki/commit/90e3a8b2d62255cafd245e5dafc02db9bff29c53))
+* exclude loki-spring-boot-starter-test ([e7d38a3](https://github.com/guoshiqiufeng/loki/commit/e7d38a3cea47a0382e8b72f35bf64e7637726d80))
+* gradle-publish.yml ([648f6ad](https://github.com/guoshiqiufeng/loki/commit/648f6ad4145e3b406e28b10af5faa7e54ad07706))
+* javadoc quiet ([16e6b4f](https://github.com/guoshiqiufeng/loki/commit/16e6b4ffa8abbe069785283cae392f2c8a2f3df2))
+* kafka listener different groups consumer ([82ef1cc](https://github.com/guoshiqiufeng/loki/commit/82ef1ccb9fae16e8c740c6edbed77a58f230788f))
+* kafka listener different groups consumer ([21391e4](https://github.com/guoshiqiufeng/loki/commit/21391e447979c6d1684d476c299e8e71407218bf))
+* kafka listener return tag ([b8d48b5](https://github.com/guoshiqiufeng/loki/commit/b8d48b52d451bc036175684610217215aa539615))
+* kafka listener return tag ([01ecd13](https://github.com/guoshiqiufeng/loki/commit/01ecd137bac53ce1e6df64b91102df0803a76d26))
+* license ([bb0ab79](https://github.com/guoshiqiufeng/loki/commit/bb0ab79ffcbbd2c1c737528f993a756dba2824dc))
+* log conditional ([9a71024](https://github.com/guoshiqiufeng/loki/commit/9a710243b31f7e6b43f671f6e6953b65a688424f))
+* LokiClient for RocketRemotingClient ([e1519fd](https://github.com/guoshiqiufeng/loki/commit/e1519fd46f24cec2291beb7b87ce2f6d5300131e))
+* optimizing bean config ([b0d7b24](https://github.com/guoshiqiufeng/loki/commit/b0d7b2436dee80a9c8e4c09ce7e15a7db874d039))
+* Producer、Consumer only use config ([4316d85](https://github.com/guoshiqiufeng/loki/commit/4316d859efe9366124d60d61fb158d7e4c9d4f35))
+* redis auth is false,set password ([35d5f0d](https://github.com/guoshiqiufeng/loki/commit/35d5f0d5c03f5a469f4c66d16091b27f7d7947d6))
+* redis config ([60ddd78](https://github.com/guoshiqiufeng/loki/commit/60ddd787058d839a8ee0fbc26494e4db17dc2ded))
+* redis listener topicPattern ([048d7e6](https://github.com/guoshiqiufeng/loki/commit/048d7e6b08608a81f4b9bb9166d0d60735f6a85d))
+* redis listener topicPattern ([6fb2cba](https://github.com/guoshiqiufeng/loki/commit/6fb2cba79c47dc2406a69c54fcba8e44c3304220))
+* remove test module (Moved to (Test Project) [https://github.com/guoshiqiufeng/loki-test]) ([02640f0](https://github.com/guoshiqiufeng/loki/commit/02640f06e5cff5e5142f152a6aa896f62a270c35))
+* Send method optimization ([46c3de4](https://github.com/guoshiqiufeng/loki/commit/46c3de4d9f112c38ac192507cd966440dae702b0))
+* Serializable ([b381a16](https://github.com/guoshiqiufeng/loki/commit/b381a16c78126aa43a8b65167dff7b5adea0fc16))
+* spring-boot-starter dependencies ([b9c2dfc](https://github.com/guoshiqiufeng/loki/commit/b9c2dfcc905d19ef9c8ce99dc3d8f8820fafb506))
+* starter dependency ([e52855f](https://github.com/guoshiqiufeng/loki/commit/e52855f09bfdc92720dbb2b5b070117c1bd37beb))
+
+
+### 📔 Documentation
+
+* Modify readme description ([6d22eb5](https://github.com/guoshiqiufeng/loki/commit/6d22eb5fc91d6108aae8628a42498bf22d72e73f))
+
+
+### 🔨 Dependency Upgrades
+
+* SpringBoot3 version to 3.2.1 ([c638585](https://github.com/guoshiqiufeng/loki/commit/c6385857e33d9ac21882c26888b111bfc11b4ea0))
+* Update gson to 2.10.1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update guava to 33.0.0-jre ([ebc15ec](https://github.com/guoshiqiufeng/loki/commit/ebc15ece6a548a251e4cb1e22219d46cfc606636))
+* Update hutool to 5.8.25 ([30f72db](https://github.com/guoshiqiufeng/loki/commit/30f72db9a48250518d7990f8449976ae19227651))
+* Update okhttp to 4.12.0 ([9b12af1](https://github.com/guoshiqiufeng/loki/commit/9b12af1fec0d06516eb85e4e2c5deb8185dd2e7c))
+* Update opentelemetry to 1.31.0 ([9b12af1](https://github.com/guoshiqiufeng/loki/commit/9b12af1fec0d06516eb85e4e2c5deb8185dd2e7c))
+* Update rocketmq-client-java to 5.0.6 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update zstd-jni to 1.5.5-1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+
 ## [1.0.0-M1](https://github.com/guoshiqiufeng/loki/compare/v0.9.0...v1.0.0-M1)
 
 
