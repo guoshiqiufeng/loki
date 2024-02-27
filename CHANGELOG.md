@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.0-M2](https://github.com/guoshiqiufeng/loki/compare/v0.9.0...v1.0.0-M2)
+
+
+### ⭐ New Features
+
+* add loki-dependencies ([43753d9](https://github.com/guoshiqiufeng/loki/commit/43753d96ccdb23c806922ac83f98f227cb98e562))
+* LokiClient support listener ([70975a4](https://github.com/guoshiqiufeng/loki/commit/70975a41a88569399fd14f2de1bc3a6bb7b2d686))
+
+
+### 🔨 Dependency Upgrades
+
+* Update gson to 2.10.1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update rocketmq-client-java to 5.0.6 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update zstd-jni to 1.5.5-1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update gradle to 8.6 ([bf9c0e8](https://github.com/guoshiqiufeng/loki/pull/84/commits/bf9c0e8c75d5442424b74b7ade9753f07ce79c8d))
+
 ## [1.0.0-M1](https://github.com/guoshiqiufeng/loki/compare/v0.9.0...v1.0.0-M1)
 
 
