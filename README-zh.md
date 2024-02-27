@@ -19,7 +19,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 ### 开发框架
 
 - Java 21
-- Gradle 8.5
+- Gradle 8.6
 - Spring Boot 2.7.18
 - rocketmq-client-java 5.0.6 (RocketMQ-grpc)
 - kafka-clients 3.6.1
