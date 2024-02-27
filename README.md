@@ -11,7 +11,7 @@ Read in other languages: [简体中文](README-zh.md)
 
 Unified message sending and consumption framework that simplifies the use of message queues. Provides unified message
 sending and consumption interfaces, supports multiple message queue implementations, and currently supports RocketMQ
-5.x, Kafka 3.x, and Redis 5.X and above
+4.x and above, Kafka 2.x and above, and Redis 5.X and above
 
 ### Documentation
 
