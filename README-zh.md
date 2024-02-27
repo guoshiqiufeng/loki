@@ -9,7 +9,7 @@
 
 ### 介绍
 
-统一的消息发送、消费框架，简化mq使用。提供统一的消息发送、消费接口，支持多种mq实现，目前支持rocketmq 5.x、Kafka 3.x、Redis 5.X
+统一的消息发送、消费框架，简化mq使用。提供统一的消息发送、消费接口，支持多种mq实现，目前支持rocketmq 4.x 以上、Kafka 2.x 以上、Redis 5.X
 以上
 
 ### 文档
@@ -19,7 +19,7 @@ https://guoshiqiufeng.github.io/loki-doc/
 ### 开发框架
 
 - Java 21
-- Gradle 8.5
+- Gradle 8.6
 - Spring Boot 2.7.18
 - rocketmq-client-java 5.0.6 (RocketMQ-grpc)
 - kafka-clients 3.6.1
