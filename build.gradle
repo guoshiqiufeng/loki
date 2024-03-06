@@ -47,6 +47,7 @@ subprojects {
     apply plugin: 'maven-publish'
     apply plugin: "io.freefair.lombok"
     apply plugin: 'com.github.hierynomus.license'
+    apply plugin: "io.spring.dependency-management"
 
     sourceCompatibility = "${javaVersion}"
     targetCompatibility = "${javaVersion}"
@@ -66,11 +67,20 @@ subprojects {
         mavenCentral()
     }
 
-    def onlyPom = project.name == "loki-bom" || project.name == "loki-dependencies";
+    def onlyPom = project.name == "loki-bom";
 
     if (!onlyPom) {
-        dependencies {
-            implementation platform("io.github.guoshiqiufeng:loki-dependencies:${APP_VERSION}")
+        dependencyManagement {
+            imports {
+                mavenBom("io.opentelemetry:opentelemetry-bom:${opentelemetryVersion}")
+                mavenBom("com.squareup.okhttp3:okhttp-bom:${okhttpVersion}")
+            }
+            dependencies {
+                dependency("com.google.code.gson:gson:${gsonVersion}")
+                dependency("com.github.luben:zstd-jni:1.5.5-1")
+                dependency("ch.qos.logback:logback-core:1.4.14")
+                dependency("ch.qos.logback:logback-classic:1.4.14")
+            }
         }
     }
 
