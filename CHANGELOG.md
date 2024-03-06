@@ -5,7 +5,6 @@
 
 ### ⭐ New Features
 
-* add loki-dependencies ([43753d9](https://github.com/guoshiqiufeng/loki/commit/43753d96ccdb23c806922ac83f98f227cb98e562))
 * LokiClient support listener ([70975a4](https://github.com/guoshiqiufeng/loki/commit/70975a41a88569399fd14f2de1bc3a6bb7b2d686))
 
 
@@ -21,7 +20,6 @@
 
 ### ⭐ New Features
 
-* add loki-dependencies ([43753d9](https://github.com/guoshiqiufeng/loki/commit/43753d96ccdb23c806922ac83f98f227cb98e562))
 * LokiClient support listener ([70975a4](https://github.com/guoshiqiufeng/loki/commit/70975a41a88569399fd14f2de1bc3a6bb7b2d686))
 
 
