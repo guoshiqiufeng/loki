@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.1](https://github.com/guoshiqiufeng/loki/compare/v1.0.0...v1.0.1) (2024-03-11)
+
+
+### 🐞 Bug Fixes
+
+* Dependency optimization ([094514f](https://github.com/guoshiqiufeng/loki/commit/094514fd3e5a37f88f64475490ca35cf5798a277))
+
+
+### 🔨 Dependency Upgrades
+
+* Update hamcrest 2.2 ([545f35f](https://github.com/guoshiqiufeng/loki/commit/545f35fdb7c19c6e90a674f0b7417d3097c4d7d4))
+* Update jedisVersion 5.1.2 ([e104c11](https://github.com/guoshiqiufeng/loki/commit/e104c1192bfe736cb15f45dd37da1ddc4394fcda))
+* Update kafkaClients 5.7.0 ([e104c11](https://github.com/guoshiqiufeng/loki/commit/e104c1192bfe736cb15f45dd37da1ddc4394fcda))
+* Update rocketMqClient 5.2.0 ([e104c11](https://github.com/guoshiqiufeng/loki/commit/e104c1192bfe736cb15f45dd37da1ddc4394fcda))
+* Update spring 5.3.32 ([e277eec](https://github.com/guoshiqiufeng/loki/commit/e277eecc58f0cc88d3cef5e91a56faa0f9425111))
+
 ## [1.0.0](https://github.com/guoshiqiufeng/loki/compare/v0.9.0...v1.0.0)
 
 
