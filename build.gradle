@@ -14,10 +14,10 @@ ext {
             springBootVersion = '2.7.18',
             springBoot3Version = '3.2.1',
             springVersion = '5.3.32',
-            rocketMqClientVersion = '5.1.4',
+            rocketMqClientVersion = '5.2.0',
             rocketMqClientJavaVersion = '5.0.6',
-            kafkaClientsVersion = '3.6.1',
-            jedisVersion = '5.1.0',
+            kafkaClientsVersion = '3.7.0',
+            jedisVersion = '5.1.2',
             hutoolVersion = '5.8.25',
             opentelemetryVersion = "1.31.0",
             okhttpVersion = "4.12.0",
@@ -81,7 +81,7 @@ subprojects {
             }
             dependencies {
                 dependency("com.google.code.gson:gson:${gsonVersion}")
-                dependency("com.github.luben:zstd-jni:1.5.5-1")
+                // dependency("com.github.luben:zstd-jni:1.5.5-1")
                 dependency("org.slf4j:slf4j-api:${slf4jVersion}")
                 dependency("ch.qos.logback:logback-core:${logbackVersion}")
                 dependency("ch.qos.logback:logback-classic:${logbackVersion}")
