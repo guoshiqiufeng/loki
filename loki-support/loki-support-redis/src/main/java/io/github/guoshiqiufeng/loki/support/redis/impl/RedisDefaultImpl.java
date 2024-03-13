@@ -15,8 +15,12 @@
  */
 package io.github.guoshiqiufeng.loki.support.redis.impl;
 
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.params.SetParams;
+
+import java.util.Set;
 
 /**
  * 默认实现：单机版redis
@@ -42,7 +46,9 @@ public class RedisDefaultImpl extends BaseRedisClient {
      */
     @Override
     public long publish(String channel, String message) {
-        return jedisPool.getResource().publish(channel, message);
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.publish(channel, message);
+        }
     }
 
     /**
@@ -53,7 +59,9 @@ public class RedisDefaultImpl extends BaseRedisClient {
      */
     @Override
     public void subscribe(JedisPubSub jedisPubSub, String... channels) {
-        jedisPool.getResource().subscribe(jedisPubSub, channels);
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.subscribe(jedisPubSub, channels);
+        }
     }
 
     /**
@@ -64,6 +72,88 @@ public class RedisDefaultImpl extends BaseRedisClient {
      */
     @Override
     public void psubscribe(JedisPubSub jedisPubSub, String... patterns) {
-        jedisPool.getResource().psubscribe(jedisPubSub, patterns);
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.psubscribe(jedisPubSub, patterns);
+        }
+    }
+
+    /**
+     * 判断key是否存在
+     *
+     * @param key 建
+     * @return
+     */
+    @Override
+    public boolean exists(String key) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.exists(key);
+        }
+    }
+
+    /**
+     * set
+     *
+     * @param key    建
+     * @param value  值
+     * @param params 参数
+     */
+    @Override
+    public void set(String key, String value, SetParams params) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.set(key, value, params);
+        }
+    }
+
+    /**
+     * hset
+     *
+     * @param key   建
+     * @param field 字段
+     * @param value 值
+     */
+    @Override
+    public void hset(String key, String field, String value) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.hset(key, field, value);
+        }
+    }
+
+    /**
+     * hget
+     * @param key 建
+     * @param field 字段
+     * @return
+     */
+    @Override
+    public String hget(String key, String field) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.hget(key, field);
+        }
+    }
+
+    /**
+     * 删除
+     *
+     * @param key   建
+     * @param field 字段
+     */
+    @Override
+    public void hdel(String key, String... field) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.hdel(key, field);
+        }
+    }
+
+    /**
+     * hkeys
+     *
+     * @param key 建
+     * @return
+     */
+    @Override
+    public Set<String> hkeys(String key) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.hkeys(key);
+        }
     }
 }

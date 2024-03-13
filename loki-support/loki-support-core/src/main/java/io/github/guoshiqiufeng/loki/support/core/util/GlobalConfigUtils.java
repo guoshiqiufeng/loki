@@ -53,6 +53,8 @@ public class GlobalConfigUtils {
                                 .setAuth(Boolean.FALSE)
                                 .setConnectTimeout(180)
                                 .setMaxAttempts(3)
-                );
+                )
+                .setRedisHistoryDelayMessageSend(false)
+                .setRedisHistoryDelayMessageSendTime(2000);
     }
 }

@@ -15,7 +15,10 @@
  */
 package io.github.guoshiqiufeng.loki.support.redis.impl;
 
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.json.JSONUtil;
 import io.github.guoshiqiufeng.loki.MessageContent;
+import io.github.guoshiqiufeng.loki.constant.Constant;
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
 import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
@@ -28,7 +31,9 @@ import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import io.github.guoshiqiufeng.loki.support.redis.consumer.DefaultJedisPubSub;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.params.SetParams;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
@@ -58,9 +63,28 @@ public abstract class BaseRedisClient implements RedisClient {
             throw new LokiException("record is null!");
         }
         ProducerRecord finalRecord = record;
-        long publish = publish(finalRecord.getTopic(), finalRecord.getMessage());
+        String msgId = IdUtil.fastSimpleUUID();
+        if (record.getDeliveryTimestamp() != null && record.getDeliveryTimestamp() != 0) {
+            record.setDeliveryTimestamp(System.currentTimeMillis() + record.getDeliveryTimestamp());
+        }
+        if(record.getDeliveryTimestamp() != null && record.getDeliveryTimestamp() > System.currentTimeMillis()) {
+            // 定时发送
+            set(Constant.REDIS_KEY_PREFIX + record.getTopic() + ":"+ msgId, record.getMessage(), new SetParams().pxAt(record.getDeliveryTimestamp()));
+            hset(Constant.REDIS_DELIVERY_KEY, Constant.REDIS_KEY_PREFIX + record.getTopic()+ ":"+ msgId, JSONUtil.toJsonStr(record));
+            if(log.isDebugEnabled()) {
+                log.debug("publish is delivery, msgId: {}", msgId);
+            }
+        } else {
+            long publish = publish(finalRecord.getTopic(), finalRecord.getMessage());
+            if(log.isDebugEnabled()) {
+                log.debug("publish msgId:{} result: {}", msgId, publish);
+            }
+        }
+
         ProducerResult result = new ProducerResult();
         result.setTopic(finalRecord.getTopic());
+
+        result.setMsgId(msgId);
         return result;
     }
 
@@ -73,20 +97,7 @@ public abstract class BaseRedisClient implements RedisClient {
      */
     @Override
     public CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord record) {
-        if (record == null) {
-            throw new LokiException("sendAsync fail : record is null!");
-        }
-        record = PipelineUtils.processSend(record);
-        if (record == null) {
-            throw new LokiException("record is null!");
-        }
-        ProducerRecord finalRecord = record;
-        return CompletableFuture.supplyAsync(() -> publish(finalRecord.getTopic(), finalRecord.getMessage()))
-                .thenApplyAsync(recordMetadata -> {
-                    ProducerResult result = new ProducerResult();
-                    result.setTopic(finalRecord.getTopic());
-                    return result;
-                });
+        return CompletableFuture.supplyAsync(() -> send(groupName, record));
     }
 
     /**
@@ -187,4 +198,51 @@ public abstract class BaseRedisClient implements RedisClient {
     public void psubscribe(Function<ConsumerRecord, Void> function, String... patterns) {
         psubscribe(new DefaultJedisPubSub(function), patterns);
     }
+
+    /**
+     * 判断key是否存在
+     * @param key 建
+     * @return
+     */
+    abstract public boolean exists(String key);
+    /**
+     * set
+     * @param key 建
+     * @param value 值
+     * @param params 参数
+     */
+    abstract public void set(String key, String value, SetParams params);
+
+    /**
+     * hset
+     * @param key 建
+     * @param field 字段
+     * @param value 值
+     */
+    abstract public void hset(String key, String field, String value);
+
+    /**
+     * hget
+     * @param key 建
+     * @param field 字段
+     * @return
+     */
+    abstract public String hget(String key, String field);
+
+    /**
+     * 删除
+     *
+     * @param key   建
+     * @param field 字段
+     */
+    abstract public void hdel(String key, String... field);
+
+    /**
+     * hkeys
+     *
+     * @param key 建
+     * @return
+     */
+    abstract public Set<String> hkeys(String key);
+
 }

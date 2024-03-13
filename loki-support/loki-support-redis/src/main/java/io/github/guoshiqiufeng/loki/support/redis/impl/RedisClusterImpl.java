@@ -17,6 +17,9 @@ package io.github.guoshiqiufeng.loki.support.redis.impl;
 
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.params.SetParams;
+
+import java.util.Set;
 
 /**
  * 集群版redis实现
@@ -66,5 +69,74 @@ public class RedisClusterImpl extends BaseRedisClient {
     @Override
     public void psubscribe(JedisPubSub jedisPubSub, String... patterns) {
         jedisCluster.psubscribe(jedisPubSub, patterns);
+    }
+
+    /**
+     * 判断key是否存在
+     *
+     * @param key 建
+     * @return
+     */
+    @Override
+    public boolean exists(String key) {
+        return jedisCluster.exists(key);
+    }
+
+    /**
+     * set
+     *
+     * @param key    建
+     * @param value  值
+     * @param params 参数
+     */
+    @Override
+    public void set(String key, String value, SetParams params) {
+        jedisCluster.set(key, value, params);
+    }
+
+    /**
+     * hset
+     *
+     * @param key   建
+     * @param field 字段
+     * @param value 值
+     */
+    @Override
+    public void hset(String key, String field, String value) {
+        jedisCluster.hset(key, field, value);
+    }
+
+    /**
+     * hget
+     *
+     * @param key   建
+     * @param field 字段
+     * @return
+     */
+    @Override
+    public String hget(String key, String field) {
+        return jedisCluster.hget(key, field);
+    }
+
+    /**
+     * 删除
+     *
+     * @param key   建
+     * @param field 字段
+     */
+    @Override
+    public void hdel(String key, String... field) {
+        jedisCluster.hdel(key, field);
+    }
+
+    /**
+     * hkeys
+     *
+     * @param key 建
+     * @return
+     */
+    @Override
+    public Set<String> hkeys(String key) {
+        return jedisCluster.hkeys(key);
     }
 }

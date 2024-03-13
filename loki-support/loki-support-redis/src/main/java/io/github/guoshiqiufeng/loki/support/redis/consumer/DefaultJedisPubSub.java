@@ -17,9 +17,11 @@ package io.github.guoshiqiufeng.loki.support.redis.consumer;
 
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
 import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
+import io.github.guoshiqiufeng.loki.support.core.util.ThreadPoolUtils;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.JedisPubSub;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 /**
@@ -45,7 +47,8 @@ public class DefaultJedisPubSub extends JedisPubSub {
                 null, null, message);
         consumerRecord = PipelineUtils.processListener(consumerRecord);
         if (consumerRecord != null) {
-            function.apply(consumerRecord);
+            ConsumerRecord finalConsumerRecord = consumerRecord;
+            CompletableFuture.runAsync(() -> function.apply(finalConsumerRecord), ThreadPoolUtils.getSingleThreadPool());
         }
     }
 
@@ -58,7 +61,8 @@ public class DefaultJedisPubSub extends JedisPubSub {
                 null, null, message);
         consumerRecord = PipelineUtils.processListener(consumerRecord);
         if (consumerRecord != null) {
-            function.apply(consumerRecord);
+            ConsumerRecord finalConsumerRecord = consumerRecord;
+            CompletableFuture.runAsync(() -> function.apply(finalConsumerRecord), ThreadPoolUtils.getSingleThreadPool());
         }
     }
 

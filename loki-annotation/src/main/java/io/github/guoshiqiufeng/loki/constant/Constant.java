@@ -28,4 +28,14 @@ public interface Constant {
      * kafka 标签名
      */
     String KAFKA_TAG = "kafka_tag_id";
+
+    /**
+     * redis key 前缀
+     */
+    String REDIS_KEY_PREFIX = "loki:message:";
+
+    /**
+     * redis延时发送列表
+     */
+    String REDIS_DELIVERY_KEY = "loki:delivery";
 }

@@ -43,6 +43,18 @@ public class GlobalConfig implements Serializable {
     private MqConfig mqConfig;
 
     /**
+     * redis 历史延时消息是否发送<br>
+     * 默认不发送直接丢弃
+     */
+    private boolean redisHistoryDelayMessageSend;
+
+    /**
+     * redis 历史延时消息发送延迟时间<br>
+     * 默认 2000ms
+     */
+    private long redisHistoryDelayMessageSendTime;
+
+    /**
      * mq配置类
      */
     @Data
