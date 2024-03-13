@@ -70,16 +70,7 @@ public class KafkaHandler extends AbstractHandler {
      */
     @Override
     public String send(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
-        if (StringUtils.isEmpty(topic)) {
-            if (log.isErrorEnabled()) {
-                log.error("KafkaHandler# send message error: topic is null");
-            }
-            return null;
-        }
-        if (StringUtils.isEmpty(body)) {
-            if (log.isErrorEnabled()) {
-                log.error("KafkaHandler# send message error: body is null");
-            }
+        if (!validateParameters(topic, body)) {
             return null;
         }
         // 发送消息
@@ -108,16 +99,7 @@ public class KafkaHandler extends AbstractHandler {
      */
     @Override
     public CompletableFuture<String> sendAsync(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
-        if (StringUtils.isEmpty(topic)) {
-            if (log.isErrorEnabled()) {
-                log.error("KafkaHandler# send message error: topic is null");
-            }
-            return null;
-        }
-        if (StringUtils.isEmpty(body)) {
-            if (log.isErrorEnabled()) {
-                log.error("KafkaHandler# send message error: body is null");
-            }
+        if (!validateParameters(topic, body)) {
             return null;
         }
         // 发送消息

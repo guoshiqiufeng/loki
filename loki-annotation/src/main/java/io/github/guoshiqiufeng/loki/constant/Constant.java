@@ -25,7 +25,7 @@ package io.github.guoshiqiufeng.loki.constant;
 public interface Constant {
 
     /**
-     * kafaka 标签名
+     * kafka 标签名
      */
     String KAFKA_TAG = "kafka_tag_id";
 }

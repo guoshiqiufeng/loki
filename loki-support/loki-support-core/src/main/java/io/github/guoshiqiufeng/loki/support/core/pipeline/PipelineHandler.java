@@ -48,8 +48,8 @@ public class PipelineHandler {
         PipelineTemplate<? extends PipelineModel> pipelineTemplate = templateConfig.get(code);
 
         if (pipelineTemplate == null || ListUtils.isEmpty(pipelineTemplate.getProcessList())) {
-            if (log.isWarnEnabled()) {
-                log.warn("pipeline is empty, code:{}", code);
+            if (log.isDebugEnabled()) {
+                log.debug("pipeline is empty, code:{}", code);
             }
             return context;
         }

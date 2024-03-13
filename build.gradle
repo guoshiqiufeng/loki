@@ -72,7 +72,7 @@ subprojects {
         mavenCentral()
     }
 
-    def onlyPom = project.name == "loki-bom";
+    def onlyPom = project.name == "loki-bom"
 
     if (!onlyPom) {
         dependencyManagement {
@@ -82,7 +82,7 @@ subprojects {
             }
             dependencies {
                 dependency("com.google.code.gson:gson:${gsonVersion}")
-                // dependency("com.github.luben:zstd-jni:1.5.5-1")
+                dependency("com.github.luben:zstd-jni:1.5.5-1")
                 dependency("org.hamcrest:hamcrest:${hamcrestVersion}")
                 dependency("org.slf4j:slf4j-api:${slf4jVersion}")
                 dependency("ch.qos.logback:logback-core:${logbackVersion}")
