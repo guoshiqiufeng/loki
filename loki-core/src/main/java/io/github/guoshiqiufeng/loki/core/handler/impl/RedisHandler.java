@@ -122,7 +122,7 @@ public class RedisHandler extends AbstractHandler {
      */
     @Override
     public void pushMessageListener(ConsumerConfig consumerConfig, Function<MessageContent<String>, Void> function) {
-
+        redisClient.consumer(consumerConfig, function);
     }
 
 }
