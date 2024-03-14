@@ -50,14 +50,14 @@ public class KafkaDefaultImpl extends BaseKafkaClient {
     /**
      * 发送消息
      *
-     * @param producerName 生产者名称
-     * @param record       消息
+     * @param producerName   生产者名称
+     * @param producerRecord 消息
      * @return Future
      */
     @Override
-    public Future<RecordMetadata> send(String producerName, ProducerRecord<String, String> record) {
+    public Future<RecordMetadata> send(String producerName, ProducerRecord<String, String> producerRecord) {
         KafkaProducer<String, String> producer = KafkaConfigUtils.getProducer(producerName, kafkaProperties);
-        return producer.send(record);
+        return producer.send(producerRecord);
     }
 
     /**

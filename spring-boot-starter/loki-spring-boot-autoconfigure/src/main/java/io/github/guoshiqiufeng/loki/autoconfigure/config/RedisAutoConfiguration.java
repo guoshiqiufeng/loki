@@ -15,9 +15,6 @@
  */
 package io.github.guoshiqiufeng.loki.autoconfigure.config;
 
-import com.alibaba.fastjson.JSON;
-import io.github.guoshiqiufeng.loki.MessageContent;
-import io.github.guoshiqiufeng.loki.constant.Constant;
 import io.github.guoshiqiufeng.loki.core.handler.Handler;
 import io.github.guoshiqiufeng.loki.core.handler.HandlerHolder;
 import io.github.guoshiqiufeng.loki.core.handler.impl.RedisHandler;

@@ -23,7 +23,6 @@ import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
-import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import lombok.extern.slf4j.Slf4j;
 
@@ -75,8 +74,8 @@ public class RedisHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
-            ProducerResult producerResult = redisClient.send(topic, record);
+            ProducerRecord producerRecord = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
+            ProducerResult producerResult = redisClient.send(topic, producerRecord);
             return producerResult.getMsgId();
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
@@ -104,8 +103,8 @@ public class RedisHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            ProducerRecord record = new ProducerRecord(topic, tag, message, deliveryTimestamp, Arrays.asList(keys));
-            return redisClient.sendAsync(topic, record).thenApply(ProducerResult::getMsgId);
+            ProducerRecord producerRecord = new ProducerRecord(topic, tag, message, deliveryTimestamp, Arrays.asList(keys));
+            return redisClient.sendAsync(topic, producerRecord).thenApply(ProducerResult::getMsgId);
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("RedisHandler# send message error:{}", e.getMessage());

@@ -49,34 +49,34 @@ public abstract class BaseRedisClient implements RedisClient {
     /**
      * 发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
     @Override
-    public ProducerResult send(String groupName, ProducerRecord record) {
-        if (record == null) {
+    public ProducerResult send(String groupName, ProducerRecord producerRecord) {
+        if (producerRecord == null) {
             throw new LokiException("sendAsync fail : record is null!");
         }
-        record = PipelineUtils.processSend(record);
-        if (record == null) {
-            throw new LokiException("record is null!");
+        producerRecord = PipelineUtils.processSend(producerRecord);
+        if (producerRecord == null) {
+            throw new LokiException("producerRecord is null!");
         }
-        ProducerRecord finalRecord = record;
+        ProducerRecord finalRecord = producerRecord;
         String msgId = IdUtil.fastSimpleUUID();
-        if (record.getDeliveryTimestamp() != null && record.getDeliveryTimestamp() != 0) {
-            record.setDeliveryTimestamp(System.currentTimeMillis() + record.getDeliveryTimestamp());
+        if (producerRecord.getDeliveryTimestamp() != null && producerRecord.getDeliveryTimestamp() != 0) {
+            producerRecord.setDeliveryTimestamp(System.currentTimeMillis() + producerRecord.getDeliveryTimestamp());
         }
-        if(record.getDeliveryTimestamp() != null && record.getDeliveryTimestamp() > System.currentTimeMillis()) {
+        if (producerRecord.getDeliveryTimestamp() != null && producerRecord.getDeliveryTimestamp() > System.currentTimeMillis()) {
             // 定时发送
-            set(Constant.REDIS_KEY_PREFIX + record.getTopic() + ":"+ msgId, record.getMessage(), new SetParams().pxAt(record.getDeliveryTimestamp()));
-            hset(Constant.REDIS_DELIVERY_KEY, Constant.REDIS_KEY_PREFIX + record.getTopic()+ ":"+ msgId, JSONUtil.toJsonStr(record));
-            if(log.isDebugEnabled()) {
+            set(Constant.REDIS_KEY_PREFIX + producerRecord.getTopic() + ":" + msgId, producerRecord.getMessage(), new SetParams().pxAt(producerRecord.getDeliveryTimestamp()));
+            hset(Constant.REDIS_DELIVERY_KEY, Constant.REDIS_KEY_PREFIX + producerRecord.getTopic() + ":" + msgId, JSONUtil.toJsonStr(producerRecord));
+            if (log.isDebugEnabled()) {
                 log.debug("publish is delivery, msgId: {}", msgId);
             }
         } else {
             long publish = publish(finalRecord.getTopic(), finalRecord.getMessage());
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug("publish msgId:{} result: {}", msgId, publish);
             }
         }
@@ -91,13 +91,13 @@ public abstract class BaseRedisClient implements RedisClient {
     /**
      * 发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
     @Override
-    public CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord record) {
-        return CompletableFuture.supplyAsync(() -> send(groupName, record));
+    public CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord producerRecord) {
+        return CompletableFuture.supplyAsync(() -> send(groupName, producerRecord));
     }
 
     /**
@@ -201,21 +201,25 @@ public abstract class BaseRedisClient implements RedisClient {
 
     /**
      * 判断key是否存在
+     *
      * @param key 建
      * @return
      */
     abstract public boolean exists(String key);
+
     /**
      * set
-     * @param key 建
-     * @param value 值
+     *
+     * @param key    建
+     * @param value  值
      * @param params 参数
      */
     abstract public void set(String key, String value, SetParams params);
 
     /**
      * hset
-     * @param key 建
+     *
+     * @param key   建
      * @param field 字段
      * @param value 值
      */
@@ -223,7 +227,8 @@ public abstract class BaseRedisClient implements RedisClient {
 
     /**
      * hget
-     * @param key 建
+     *
+     * @param key   建
      * @param field 字段
      * @return
      */

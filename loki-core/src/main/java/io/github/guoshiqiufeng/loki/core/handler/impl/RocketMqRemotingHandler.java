@@ -23,7 +23,6 @@ import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
-import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.rocketmq.remoting.RocketRemotingClient;
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,11 +65,11 @@ public class RocketMqRemotingHandler extends AbstractHandler {
         }
         // 发送消息
         try {
-            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
+            ProducerRecord producerRecord = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
             if (log.isDebugEnabled()) {
-                log.debug("RocketMqRemotingHandler# send record:{}", record);
+                log.debug("RocketMqRemotingHandler# send producerRecord:{}", producerRecord);
             }
-            return rocketRemotingClient.send(producerName, record).getMsgId();
+            return rocketRemotingClient.send(producerName, producerRecord).getMsgId();
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("RocketMqRemotingHandler# send message error:{}", e.getMessage());
@@ -95,13 +94,13 @@ public class RocketMqRemotingHandler extends AbstractHandler {
         if (!validateParameters(topic, body)) {
             return null;
         }
-        ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
+        ProducerRecord producerRecord = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
         if (log.isDebugEnabled()) {
-            log.debug("RocketMqRemotingHandler# sendAsync record:{}", record);
+            log.debug("RocketMqRemotingHandler# sendAsync producerRecord:{}", producerRecord);
         }
         // 发送消息
         try {
-            return rocketRemotingClient.sendAsync(producerName, record).thenApply(ProducerResult::getMsgId);
+            return rocketRemotingClient.sendAsync(producerName, producerRecord).thenApply(ProducerResult::getMsgId);
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("RocketMqRemotingHandler# send message error:{}", e.getMessage());

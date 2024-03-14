@@ -15,7 +15,6 @@
  */
 package io.github.guoshiqiufeng.loki.support.redis.delivery;
 
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import io.github.guoshiqiufeng.loki.constant.Constant;
 import io.github.guoshiqiufeng.loki.support.core.config.GlobalConfig;
@@ -36,13 +35,14 @@ public class DeliveryMessageHandler {
 
     /**
      * 处理延迟消息
+     *
      * @param redisClient redis客户端
      */
     public static void handleDeliveryMessage(RedisClient redisClient) {
-        if(redisClient instanceof BaseRedisClient) {
+        if (redisClient instanceof BaseRedisClient) {
             BaseRedisClient baseRedisClient = (BaseRedisClient) redisClient;
             baseRedisClient.psubscribe(record -> {
-                if(log.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     log.debug("handleDeliveryMessage: {}", JSONUtil.toJsonStr(record));
                 }
                 sendDelayedMessage(record.getBodyMessage(), null, baseRedisClient);
@@ -53,10 +53,11 @@ public class DeliveryMessageHandler {
 
     /**
      * 处理历史数据
+     *
      * @param redisClient
      */
     public static void processingHistoricalData(RedisClient redisClient, LokiProperties properties) {
-        if(redisClient instanceof BaseRedisClient) {
+        if (redisClient instanceof BaseRedisClient) {
             BaseRedisClient baseRedisClient = (BaseRedisClient) redisClient;
             baseRedisClient.hkeys(Constant.REDIS_DELIVERY_KEY).forEach(key -> {
                 // 判断key 是否存在
@@ -76,19 +77,20 @@ public class DeliveryMessageHandler {
 
     /**
      * 发送延时消息
+     *
      * @param key
      * @param baseRedisClient
      */
     private static void sendDelayedMessage(String key, Long deliveryTimestamp, BaseRedisClient baseRedisClient) {
-        if(StringUtils.isEmpty(key)) {
+        if (StringUtils.isEmpty(key)) {
             return;
         }
-        if(!key.startsWith(Constant.REDIS_KEY_PREFIX)) {
+        if (!key.startsWith(Constant.REDIS_KEY_PREFIX)) {
             return;
         }
         // 获取消息
         String value = baseRedisClient.hget(Constant.REDIS_DELIVERY_KEY, key);
-        if(StringUtils.isNotEmpty(value)) {
+        if (StringUtils.isNotEmpty(value)) {
             ProducerRecord producerRecord = JSONUtil.toBean(value, ProducerRecord.class);
             producerRecord.setDeliveryTimestamp(deliveryTimestamp);
             // 发送
