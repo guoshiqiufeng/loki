@@ -35,15 +35,17 @@ https://guoshiqiufeng.github.io/loki-doc/
 |------------------------------------------------|:-------------:|:-----------------:|-------|-------| 
 | 【BaseMapper】Send standard messages             |       ✅       |         ✅         | ✅     | ✅     |    
 | 【BaseMapper】Send async messages                |       ✅       |         ✅         | ✅     | ✅     |    
-| 【BaseMapper】Send timed/delay messages          |       ✅       |         ✅         | 🚧    | 🚧    |    
+| 【BaseMapper】Send timed/delay messages          |       ✅       |         ✅         | 🚧    | ✅    |    
 | 【LokiClient】Send standard messages             |       ✅       |         ✅         | ✅     | ✅     |    
 | 【LokiClient】Send async messages                |       ✅       |         ✅         | ✅     | ✅     |    
-| 【LokiClient】Send timed/delay messages          |       ✅       |         ✅         | 🚧    | 🚧    |    
+| 【LokiClient】Send timed/delay messages          |       ✅       |         ✅         | 🚧    | ✅    |    
 | Producer with transactional messages           |      🚧       |        🚧         | 🚧    | 🚧    |
 | 【Topic】 consumer with message listener         |       ✅       |         ✅         | ✅     | ✅     |    
 | 【Topic-Pattern】 consumer with message listener |      🚧       |        🚧         | ✅     | ✅     |    
 
-注：Rocketmq-Remoting `Send timed/delay messages` 仅支持 `rocketmq 5.0` 以上版本
+注：
+- Rocketmq-Remoting `Send timed/delay messages` 仅支持 `rocketmq 5.0` 以上版本
+- Redis `Send timed/delay messages` 需要 redis 开启 `notify-keyspace-events Ex` 通知
 
 ### 使用
 
