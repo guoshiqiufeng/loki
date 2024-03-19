@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/guoshiqiufeng/loki/compare/v1.0.1...v1.1.0) (2024-03-19)
+
+
+### ⭐ New Features
+
+* redis delivery message ([a3d877d](https://github.com/guoshiqiufeng/loki/commit/a3d877d414e7423d3c2d4ee3978a9f48afaaeac3))
+
+
+### 🐞 Bug Fixes
+
+* Optimize message sending ([e584156](https://github.com/guoshiqiufeng/loki/commit/e5841569747930f4e1b7ade8abc0ec0d23661db6))
+* redis handler consumer ([f3d3739](https://github.com/guoshiqiufeng/loki/commit/f3d37393c3996b485ed1ce43c4cfed661fd74b16))
+* zstdJni version ([03f4b75](https://github.com/guoshiqiufeng/loki/commit/03f4b75a5ba6fef21a36a425016d6779ac8288c1))
+
 ## [1.0.1](https://github.com/guoshiqiufeng/loki/compare/v1.0.0...v1.0.1) (2024-03-11)
 
 ### 🐞 Bug Fixes
