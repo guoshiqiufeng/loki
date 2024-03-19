@@ -22,6 +22,7 @@ import io.github.guoshiqiufeng.loki.enums.MqType;
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
+import io.github.guoshiqiufeng.loki.support.redis.delivery.DeliveryMessageHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * redis自动配置
@@ -71,5 +73,13 @@ public class RedisAutoConfiguration {
     @ConditionalOnMissingBean(HandlerHolder.class)
     public HandlerHolder handlerHolder() {
         return new HandlerHolder();
+    }
+
+
+    public RedisAutoConfiguration(RedisClient redisClient, LokiProperties properties) {
+        CompletableFuture.runAsync(() -> {
+            DeliveryMessageHandler.processingHistoricalData(redisClient, properties);
+            DeliveryMessageHandler.handleDeliveryMessage(redisClient);
+        });
     }
 }

@@ -23,7 +23,6 @@ import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
-import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.kafka.KafkaClient;
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,22 +69,13 @@ public class KafkaHandler extends AbstractHandler {
      */
     @Override
     public String send(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
-        if (StringUtils.isEmpty(topic)) {
-            if (log.isErrorEnabled()) {
-                log.error("KafkaHandler# send message error: topic is null");
-            }
-            return null;
-        }
-        if (StringUtils.isEmpty(body)) {
-            if (log.isErrorEnabled()) {
-                log.error("KafkaHandler# send message error: body is null");
-            }
+        if (!validateParameters(topic, body)) {
             return null;
         }
         // 发送消息
         try {
-            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
-            return kafkaClient.sendAsync(producerName, record).get().getMsgId();
+            ProducerRecord producerRecord = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
+            return kafkaClient.sendAsync(producerName, producerRecord).get().getMsgId();
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("KafkaHandler# send message error:{}", e.getMessage());
@@ -108,22 +98,13 @@ public class KafkaHandler extends AbstractHandler {
      */
     @Override
     public CompletableFuture<String> sendAsync(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
-        if (StringUtils.isEmpty(topic)) {
-            if (log.isErrorEnabled()) {
-                log.error("KafkaHandler# send message error: topic is null");
-            }
-            return null;
-        }
-        if (StringUtils.isEmpty(body)) {
-            if (log.isErrorEnabled()) {
-                log.error("KafkaHandler# send message error: body is null");
-            }
+        if (!validateParameters(topic, body)) {
             return null;
         }
         // 发送消息
         try {
-            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
-            return kafkaClient.sendAsync(producerName, record).thenApply(ProducerResult::getMsgId);
+            ProducerRecord producerRecord = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
+            return kafkaClient.sendAsync(producerName, producerRecord).thenApply(ProducerResult::getMsgId);
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("KafkaHandler# send message error:{}", e.getMessage());

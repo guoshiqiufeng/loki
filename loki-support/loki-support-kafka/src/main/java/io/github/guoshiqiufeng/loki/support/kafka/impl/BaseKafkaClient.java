@@ -52,14 +52,14 @@ public abstract class BaseKafkaClient implements KafkaClient {
     /**
      * 发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
     @Override
-    public ProducerResult send(String groupName, io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord record) {
+    public ProducerResult send(String groupName, io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord producerRecord) {
         try {
-            return sendAsync(groupName, record).get();
+            return sendAsync(groupName, producerRecord).get();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
@@ -68,16 +68,16 @@ public abstract class BaseKafkaClient implements KafkaClient {
     /**
      * 发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
     @Override
-    public CompletableFuture<ProducerResult> sendAsync(String groupName, io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord record) {
-        if (record == null) {
-            throw new LokiException("sendAsync fail : record is null!");
+    public CompletableFuture<ProducerResult> sendAsync(String groupName, io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord producerRecord) {
+        if (producerRecord == null) {
+            throw new LokiException("sendAsync fail : producerRecord is null!");
         }
-        ProducerRecord<String, String> kafkaRecord = covertKafkaRecord(record);
+        ProducerRecord<String, String> kafkaRecord = covertKafkaRecord(producerRecord);
         return CompletableFuture.supplyAsync(() -> {
                     try {
                         return send(groupName, kafkaRecord).get();
@@ -162,17 +162,17 @@ public abstract class BaseKafkaClient implements KafkaClient {
     /**
      * record 转换为 kafka record
      *
-     * @param record record
-     * @return kafka record
+     * @param producerRecord producerRecord
+     * @return kafka producerRecord
      */
-    private ProducerRecord<String, String> covertKafkaRecord(io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord record) {
-        record = PipelineUtils.processSend(record);
-        if (record == null) {
-            throw new LokiException("record is null!");
+    private ProducerRecord<String, String> covertKafkaRecord(io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord producerRecord) {
+        producerRecord = PipelineUtils.processSend(producerRecord);
+        if (producerRecord == null) {
+            throw new LokiException("producerRecord is null!");
         }
         List<Header> headers = new ArrayList<>();
-        String tag = record.getTag();
-        Long deliveryTimestamp = record.getDeliveryTimestamp();
+        String tag = producerRecord.getTag();
+        Long deliveryTimestamp = producerRecord.getDeliveryTimestamp();
         Long timestamp = null;
         if (deliveryTimestamp != null && deliveryTimestamp != 0) {
             timestamp = System.currentTimeMillis() + deliveryTimestamp;
@@ -181,22 +181,22 @@ public abstract class BaseKafkaClient implements KafkaClient {
             headers.add(new RecordHeader(Constant.KAFKA_TAG, tag.getBytes(StandardCharsets.UTF_8)));
         }
         String key = null;
-        if (record.getKeys() != null && !record.getKeys().isEmpty()) {
-            key = record.getKeys().get(0);
+        if (producerRecord.getKeys() != null && !producerRecord.getKeys().isEmpty()) {
+            key = producerRecord.getKeys().get(0);
         }
-        return new ProducerRecord<>(record.getTopic(),
-                null, timestamp, key, record.getMessage(), headers);
+        return new ProducerRecord<>(producerRecord.getTopic(),
+                null, timestamp, key, producerRecord.getMessage(), headers);
     }
 
 
     /**
      * 发送消息
      *
-     * @param producerName 生产者名称
-     * @param record       消息
+     * @param producerName   生产者名称
+     * @param producerRecord 消息
      * @return Future
      */
-    abstract Future<RecordMetadata> send(String producerName, ProducerRecord<String, String> record);
+    abstract Future<RecordMetadata> send(String producerName, ProducerRecord<String, String> producerRecord);
 
 
 }

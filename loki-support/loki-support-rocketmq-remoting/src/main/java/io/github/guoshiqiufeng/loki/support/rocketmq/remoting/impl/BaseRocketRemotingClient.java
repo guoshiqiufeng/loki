@@ -51,16 +51,16 @@ public abstract class BaseRocketRemotingClient implements RocketRemotingClient {
     /**
      * 发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
     @Override
-    public ProducerResult send(String groupName, ProducerRecord record) {
-        if (record == null) {
-            throw new LokiException("sendAsync fail : record is null!");
+    public ProducerResult send(String groupName, ProducerRecord producerRecord) {
+        if (producerRecord == null) {
+            throw new LokiException("sendAsync fail : producerRecord is null!");
         }
-        Message message = covertMessage(record);
+        Message message = covertMessage(producerRecord);
         SendResult recordMetadata = send(groupName, message);
         ProducerResult result = new ProducerResult();
         result.setTopic(message.getTopic());
@@ -71,16 +71,16 @@ public abstract class BaseRocketRemotingClient implements RocketRemotingClient {
     /**
      * 发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
     @Override
-    public CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord record) {
-        if (record == null) {
-            throw new LokiException("sendAsync fail : record is null!");
+    public CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord producerRecord) {
+        if (producerRecord == null) {
+            throw new LokiException("sendAsync fail : producerRecord is null!");
         }
-        Message message = covertMessage(record);
+        Message message = covertMessage(producerRecord);
         return CompletableFuture.supplyAsync(() -> send(groupName, message))
                 .thenApplyAsync(recordMetadata -> {
                     ProducerResult result = new ProducerResult();
@@ -177,17 +177,17 @@ public abstract class BaseRocketRemotingClient implements RocketRemotingClient {
                 new String(msgExt.getBody()));
     }
 
-    private Message covertMessage(ProducerRecord record) {
-        record = PipelineUtils.processSend(record);
-        if (record == null) {
-            throw new LokiException("record is null!");
+    private Message covertMessage(ProducerRecord producerRecord) {
+        producerRecord = PipelineUtils.processSend(producerRecord);
+        if (producerRecord == null) {
+            throw new LokiException("producerRecord is null!");
         }
-        Message message = new Message(record.getTopic(), record.getTag(), record.getMessage().getBytes());
-        Long deliveryTimestamp = record.getDeliveryTimestamp();
+        Message message = new Message(producerRecord.getTopic(), producerRecord.getTag(), producerRecord.getMessage().getBytes());
+        Long deliveryTimestamp = producerRecord.getDeliveryTimestamp();
         if (deliveryTimestamp != null && deliveryTimestamp != 0) {
             message.setDeliverTimeMs(System.currentTimeMillis() + deliveryTimestamp);
         }
-        List<String> keys = record.getKeys();
+        List<String> keys = producerRecord.getKeys();
         if (keys != null && !keys.isEmpty()) {
             message.setKeys(keys);
         }

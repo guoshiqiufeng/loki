@@ -1,64 +1,89 @@
 # Changelog
 
-## [1.0.1](https://github.com/guoshiqiufeng/loki/compare/v1.0.0...v1.0.1) (2024-03-11)
+## [1.1.0](https://github.com/guoshiqiufeng/loki/compare/v1.0.1...v1.1.0) (2024-03-19)
+
+
+### ⭐ New Features
+
+* redis delivery message ([a3d877d](https://github.com/guoshiqiufeng/loki/commit/a3d877d414e7423d3c2d4ee3978a9f48afaaeac3))
 
 
 ### 🐞 Bug Fixes
 
-* Dependency optimization ([094514f](https://github.com/guoshiqiufeng/loki/commit/094514fd3e5a37f88f64475490ca35cf5798a277))
+* Optimize message sending ([e584156](https://github.com/guoshiqiufeng/loki/commit/e5841569747930f4e1b7ade8abc0ec0d23661db6))
+* redis handler consumer ([f3d3739](https://github.com/guoshiqiufeng/loki/commit/f3d37393c3996b485ed1ce43c4cfed661fd74b16))
+* zstdJni version ([03f4b75](https://github.com/guoshiqiufeng/loki/commit/03f4b75a5ba6fef21a36a425016d6779ac8288c1))
 
+## [1.0.1](https://github.com/guoshiqiufeng/loki/compare/v1.0.0...v1.0.1) (2024-03-11)
+
+### 🐞 Bug Fixes
+
+* Dependency
+  optimization ([094514f](https://github.com/guoshiqiufeng/loki/commit/094514fd3e5a37f88f64475490ca35cf5798a277))
 
 ### 🔨 Dependency Upgrades
 
 * Update hamcrest 2.2 ([545f35f](https://github.com/guoshiqiufeng/loki/commit/545f35fdb7c19c6e90a674f0b7417d3097c4d7d4))
-* Update jedisVersion 5.1.2 ([e104c11](https://github.com/guoshiqiufeng/loki/commit/e104c1192bfe736cb15f45dd37da1ddc4394fcda))
-* Update kafkaClients 5.7.0 ([e104c11](https://github.com/guoshiqiufeng/loki/commit/e104c1192bfe736cb15f45dd37da1ddc4394fcda))
-* Update rocketMqClient 5.2.0 ([e104c11](https://github.com/guoshiqiufeng/loki/commit/e104c1192bfe736cb15f45dd37da1ddc4394fcda))
-* Update spring 5.3.32 ([e277eec](https://github.com/guoshiqiufeng/loki/commit/e277eecc58f0cc88d3cef5e91a56faa0f9425111))
+* Update jedisVersion
+  5.1.2 ([e104c11](https://github.com/guoshiqiufeng/loki/commit/e104c1192bfe736cb15f45dd37da1ddc4394fcda))
+* Update kafkaClients
+  5.7.0 ([e104c11](https://github.com/guoshiqiufeng/loki/commit/e104c1192bfe736cb15f45dd37da1ddc4394fcda))
+* Update rocketMqClient
+  5.2.0 ([e104c11](https://github.com/guoshiqiufeng/loki/commit/e104c1192bfe736cb15f45dd37da1ddc4394fcda))
+* Update spring
+  5.3.32 ([e277eec](https://github.com/guoshiqiufeng/loki/commit/e277eecc58f0cc88d3cef5e91a56faa0f9425111))
 
 ## [1.0.0](https://github.com/guoshiqiufeng/loki/compare/v0.9.0...v1.0.0)
 
-
 ### ⭐ New Features
 
-* LokiClient support listener ([70975a4](https://github.com/guoshiqiufeng/loki/commit/70975a41a88569399fd14f2de1bc3a6bb7b2d686))
-
+* LokiClient support
+  listener ([70975a4](https://github.com/guoshiqiufeng/loki/commit/70975a41a88569399fd14f2de1bc3a6bb7b2d686))
 
 ### 🔨 Dependency Upgrades
 
-* Update gson to 2.10.1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
-* Update rocketmq-client-java to 5.0.6 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
-* Update zstd-jni to 1.5.5-1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
-* Update gradle to 8.6 ([bf9c0e8](https://github.com/guoshiqiufeng/loki/pull/84/commits/bf9c0e8c75d5442424b74b7ade9753f07ce79c8d))
+* Update gson to
+  2.10.1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update rocketmq-client-java to
+  5.0.6 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update zstd-jni to
+  1.5.5-1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update gradle to
+  8.6 ([bf9c0e8](https://github.com/guoshiqiufeng/loki/pull/84/commits/bf9c0e8c75d5442424b74b7ade9753f07ce79c8d))
 
 ## [1.0.0-M2](https://github.com/guoshiqiufeng/loki/compare/v0.9.0...v1.0.0-M2)
 
-
 ### ⭐ New Features
 
-* LokiClient support listener ([70975a4](https://github.com/guoshiqiufeng/loki/commit/70975a41a88569399fd14f2de1bc3a6bb7b2d686))
-
+* LokiClient support
+  listener ([70975a4](https://github.com/guoshiqiufeng/loki/commit/70975a41a88569399fd14f2de1bc3a6bb7b2d686))
 
 ### 🔨 Dependency Upgrades
 
-* Update gson to 2.10.1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
-* Update rocketmq-client-java to 5.0.6 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
-* Update zstd-jni to 1.5.5-1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
-* Update gradle to 8.6 ([bf9c0e8](https://github.com/guoshiqiufeng/loki/pull/84/commits/bf9c0e8c75d5442424b74b7ade9753f07ce79c8d))
+* Update gson to
+  2.10.1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update rocketmq-client-java to
+  5.0.6 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update zstd-jni to
+  1.5.5-1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update gradle to
+  8.6 ([bf9c0e8](https://github.com/guoshiqiufeng/loki/pull/84/commits/bf9c0e8c75d5442424b74b7ade9753f07ce79c8d))
 
 ## [1.0.0-M1](https://github.com/guoshiqiufeng/loki/compare/v0.9.0...v1.0.0-M1)
 
-
 ### ⭐ New Features
 
-* LokiClient support listener ([70975a4](https://github.com/guoshiqiufeng/loki/commit/70975a41a88569399fd14f2de1bc3a6bb7b2d686))
-
+* LokiClient support
+  listener ([70975a4](https://github.com/guoshiqiufeng/loki/commit/70975a41a88569399fd14f2de1bc3a6bb7b2d686))
 
 ### 🔨 Dependency Upgrades
 
-* Update gson to 2.10.1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
-* Update rocketmq-client-java to 5.0.6 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
-* Update zstd-jni to 1.5.5-1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update gson to
+  2.10.1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update rocketmq-client-java to
+  5.0.6 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
+* Update zstd-jni to
+  1.5.5-1 ([872a873](https://github.com/guoshiqiufeng/loki/commit/872a8739c0cf8caea08de13a92280f8e21370150))
 
 ## [0.9.0](https://github.com/guoshiqiufeng/loki/compare/v0.8.1...v0.9.0)
 

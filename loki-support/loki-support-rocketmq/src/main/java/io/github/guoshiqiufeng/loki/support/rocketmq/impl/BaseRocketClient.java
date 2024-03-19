@@ -54,16 +54,16 @@ public abstract class BaseRocketClient implements RocketClient {
     /**
      * 发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
     @Override
-    public ProducerResult send(String groupName, ProducerRecord record) {
-        if (record == null) {
-            throw new LokiException("sendAsync fail : record is null!");
+    public ProducerResult send(String groupName, ProducerRecord producerRecord) {
+        if (producerRecord == null) {
+            throw new LokiException("sendAsync fail : producerRecord is null!");
         }
-        Message message = covertMessage(groupName, record);
+        Message message = covertMessage(groupName, producerRecord);
         ProducerResult result = new ProducerResult();
         SendReceipt recordMetadata = send(groupName, message);
         result.setTopic(message.getTopic());
@@ -74,16 +74,16 @@ public abstract class BaseRocketClient implements RocketClient {
     /**
      * 发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
     @Override
-    public CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord record) {
-        if (record == null) {
-            throw new LokiException("sendAsync fail : record is null!");
+    public CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord producerRecord) {
+        if (producerRecord == null) {
+            throw new LokiException("sendAsync fail : producerRecord is null!");
         }
-        Message message = covertMessage(groupName, record);
+        Message message = covertMessage(groupName, producerRecord);
         return sendAsync(groupName, message)
                 .thenApply(recordMetadata -> {
                     ProducerResult result = new ProducerResult();
@@ -167,28 +167,28 @@ public abstract class BaseRocketClient implements RocketClient {
                 messageView.getKeys(), body);
     }
 
-    private Message covertMessage(String groupName, ProducerRecord record) {
-        record = PipelineUtils.processSend(record);
-        if (record == null) {
-            throw new LokiException("record is null!");
+    private Message covertMessage(String groupName, ProducerRecord producerRecord) {
+        producerRecord = PipelineUtils.processSend(producerRecord);
+        if (producerRecord == null) {
+            throw new LokiException("producerRecord is null!");
         }
         MessageBuilder messageBuilder = new MessageBuilderImpl()
-                .setTopic(record.getTopic());
-        if (StringUtils.isNotEmpty(record.getTag())) {
-            messageBuilder.setTag(record.getTag());
+                .setTopic(producerRecord.getTopic());
+        if (StringUtils.isNotEmpty(producerRecord.getTag())) {
+            messageBuilder.setTag(producerRecord.getTag());
         }
-        Long deliveryTimestamp = record.getDeliveryTimestamp();
+        Long deliveryTimestamp = producerRecord.getDeliveryTimestamp();
         if (deliveryTimestamp != null && deliveryTimestamp != 0) {
             messageBuilder.setDeliveryTimestamp(System.currentTimeMillis() + deliveryTimestamp);
         } else {
             messageBuilder.setMessageGroup(groupName);
         }
-        List<String> keys = record.getKeys();
+        List<String> keys = producerRecord.getKeys();
         if (keys != null && !keys.isEmpty()) {
             messageBuilder.setKeys(keys.toArray(new String[0]));
         }
         return messageBuilder
-                .setBody(record.getMessage().getBytes())
+                .setBody(producerRecord.getMessage().getBytes())
                 .build();
     }
 

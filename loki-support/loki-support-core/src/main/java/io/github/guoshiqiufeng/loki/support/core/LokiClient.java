@@ -35,40 +35,40 @@ public interface LokiClient {
     /**
      * 发送消息
      *
-     * @param record 发送信息
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
-    default ProducerResult send(ProducerRecord record) {
-        return send(null, record);
+    default ProducerResult send(ProducerRecord producerRecord) {
+        return send(null, producerRecord);
     }
 
     /**
      * 发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
-    ProducerResult send(String groupName, ProducerRecord record);
+    ProducerResult send(String groupName, ProducerRecord producerRecord);
 
     /**
      * 异步发送消息
      *
-     * @param record 发送信息
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
-    default CompletableFuture<ProducerResult> sendAsync(ProducerRecord record) {
-        return sendAsync(null, record);
+    default CompletableFuture<ProducerResult> sendAsync(ProducerRecord producerRecord) {
+        return sendAsync(null, producerRecord);
     }
 
     /**
      * 异步发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
-    CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord record);
+    CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord producerRecord);
 
     /**
      * 消费消息

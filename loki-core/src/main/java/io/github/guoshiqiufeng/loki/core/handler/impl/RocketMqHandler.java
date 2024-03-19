@@ -23,7 +23,6 @@ import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
-import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.rocketmq.RocketClient;
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,25 +68,16 @@ public class RocketMqHandler extends AbstractHandler {
      */
     @Override
     public String send(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
-        if (StringUtils.isEmpty(topic)) {
-            if (log.isErrorEnabled()) {
-                log.error("RocketMqHandler# send message error: topic is null");
-            }
-            return null;
-        }
-        if (StringUtils.isEmpty(body)) {
-            if (log.isErrorEnabled()) {
-                log.error("RocketMqHandler# send message error: body is null");
-            }
+        if (!validateParameters(topic, body)) {
             return null;
         }
         // 发送消息
         try {
-            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
+            ProducerRecord producerRecord = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
             if (log.isDebugEnabled()) {
-                log.debug("RocketMqHandler# send record:{}", record);
+                log.debug("RocketMqHandler# send producerRecord:{}", producerRecord);
             }
-            ProducerResult send = rocketClient.send(producerName, record);
+            ProducerResult send = rocketClient.send(producerName, producerRecord);
             if (log.isDebugEnabled()) {
                 log.debug("RocketMqHandler# send messageId:{}", send.getMsgId());
             }
@@ -113,26 +103,17 @@ public class RocketMqHandler extends AbstractHandler {
      */
     @Override
     public CompletableFuture<String> sendAsync(String producerName, String topic, String tag, String body, Long deliveryTimestamp, String... keys) {
-        if (StringUtils.isEmpty(topic)) {
-            if (log.isErrorEnabled()) {
-                log.error("RocketMqHandler# send message error: topic is null");
-            }
-            return null;
-        }
-        if (StringUtils.isEmpty(body)) {
-            if (log.isErrorEnabled()) {
-                log.error("RocketMqHandler# send message error: body is null");
-            }
+        if (!validateParameters(topic, body)) {
             return null;
         }
         // 发送消息
         try {
-            ProducerRecord record = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
+            ProducerRecord producerRecord = new ProducerRecord(topic, tag, body, deliveryTimestamp, Arrays.asList(keys));
             if (log.isDebugEnabled()) {
-                log.debug("RocketMqHandler# send record:{}", record);
+                log.debug("RocketMqHandler# send producerRecord:{}", producerRecord);
             }
 
-            return rocketClient.sendAsync(producerName, record).thenApply(ProducerResult::getMsgId);
+            return rocketClient.sendAsync(producerName, producerRecord).thenApply(ProducerResult::getMsgId);
         } catch (Exception e) {
             if (log.isErrorEnabled()) {
                 log.error("RocketMqHandler# send message error:{}", e.getMessage());

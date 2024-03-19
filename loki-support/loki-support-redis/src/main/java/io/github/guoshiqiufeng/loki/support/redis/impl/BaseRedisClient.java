@@ -15,7 +15,10 @@
  */
 package io.github.guoshiqiufeng.loki.support.redis.impl;
 
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.json.JSONUtil;
 import io.github.guoshiqiufeng.loki.MessageContent;
+import io.github.guoshiqiufeng.loki.constant.Constant;
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
 import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
@@ -28,7 +31,9 @@ import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
 import io.github.guoshiqiufeng.loki.support.redis.consumer.DefaultJedisPubSub;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.params.SetParams;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
@@ -44,49 +49,55 @@ public abstract class BaseRedisClient implements RedisClient {
     /**
      * 发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
     @Override
-    public ProducerResult send(String groupName, ProducerRecord record) {
-        if (record == null) {
+    public ProducerResult send(String groupName, ProducerRecord producerRecord) {
+        if (producerRecord == null) {
             throw new LokiException("sendAsync fail : record is null!");
         }
-        record = PipelineUtils.processSend(record);
-        if (record == null) {
-            throw new LokiException("record is null!");
+        producerRecord = PipelineUtils.processSend(producerRecord);
+        if (producerRecord == null) {
+            throw new LokiException("producerRecord is null!");
         }
-        ProducerRecord finalRecord = record;
-        long publish = publish(finalRecord.getTopic(), finalRecord.getMessage());
+        ProducerRecord finalRecord = producerRecord;
+        String msgId = IdUtil.fastSimpleUUID();
+        if (producerRecord.getDeliveryTimestamp() != null && producerRecord.getDeliveryTimestamp() != 0) {
+            producerRecord.setDeliveryTimestamp(System.currentTimeMillis() + producerRecord.getDeliveryTimestamp());
+        }
+        if (producerRecord.getDeliveryTimestamp() != null && producerRecord.getDeliveryTimestamp() > System.currentTimeMillis()) {
+            // 定时发送
+            set(Constant.REDIS_KEY_PREFIX + producerRecord.getTopic() + ":" + msgId, producerRecord.getMessage(), new SetParams().pxAt(producerRecord.getDeliveryTimestamp()));
+            hset(Constant.REDIS_DELIVERY_KEY, Constant.REDIS_KEY_PREFIX + producerRecord.getTopic() + ":" + msgId, JSONUtil.toJsonStr(producerRecord));
+            if (log.isDebugEnabled()) {
+                log.debug("publish is delivery, msgId: {}", msgId);
+            }
+        } else {
+            long publish = publish(finalRecord.getTopic(), finalRecord.getMessage());
+            if (log.isDebugEnabled()) {
+                log.debug("publish msgId:{} result: {}", msgId, publish);
+            }
+        }
+
         ProducerResult result = new ProducerResult();
         result.setTopic(finalRecord.getTopic());
+
+        result.setMsgId(msgId);
         return result;
     }
 
     /**
      * 发送消息
      *
-     * @param groupName 组名称
-     * @param record    发送信息
+     * @param groupName      组名称
+     * @param producerRecord 发送信息
      * @return 发送消息结果
      */
     @Override
-    public CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord record) {
-        if (record == null) {
-            throw new LokiException("sendAsync fail : record is null!");
-        }
-        record = PipelineUtils.processSend(record);
-        if (record == null) {
-            throw new LokiException("record is null!");
-        }
-        ProducerRecord finalRecord = record;
-        return CompletableFuture.supplyAsync(() -> publish(finalRecord.getTopic(), finalRecord.getMessage()))
-                .thenApplyAsync(recordMetadata -> {
-                    ProducerResult result = new ProducerResult();
-                    result.setTopic(finalRecord.getTopic());
-                    return result;
-                });
+    public CompletableFuture<ProducerResult> sendAsync(String groupName, ProducerRecord producerRecord) {
+        return CompletableFuture.supplyAsync(() -> send(groupName, producerRecord));
     }
 
     /**
@@ -187,4 +198,56 @@ public abstract class BaseRedisClient implements RedisClient {
     public void psubscribe(Function<ConsumerRecord, Void> function, String... patterns) {
         psubscribe(new DefaultJedisPubSub(function), patterns);
     }
+
+    /**
+     * 判断key是否存在
+     *
+     * @param key 建
+     * @return
+     */
+    abstract public boolean exists(String key);
+
+    /**
+     * set
+     *
+     * @param key    建
+     * @param value  值
+     * @param params 参数
+     */
+    abstract public void set(String key, String value, SetParams params);
+
+    /**
+     * hset
+     *
+     * @param key   建
+     * @param field 字段
+     * @param value 值
+     */
+    abstract public void hset(String key, String field, String value);
+
+    /**
+     * hget
+     *
+     * @param key   建
+     * @param field 字段
+     * @return
+     */
+    abstract public String hget(String key, String field);
+
+    /**
+     * 删除
+     *
+     * @param key   建
+     * @param field 字段
+     */
+    abstract public void hdel(String key, String... field);
+
+    /**
+     * hkeys
+     *
+     * @param key 建
+     * @return
+     */
+    abstract public Set<String> hkeys(String key);
+
 }

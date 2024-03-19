@@ -16,8 +16,8 @@
 package io.github.guoshiqiufeng.loki.core.handler;
 
 import io.github.guoshiqiufeng.loki.support.core.config.LokiProperties;
-
-import javax.annotation.PostConstruct;
+import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 消息处理事件抽象类
@@ -26,6 +26,7 @@ import javax.annotation.PostConstruct;
  * @version 1.0
  * @since 2023/11/21 13:20
  */
+@Slf4j
 public abstract class AbstractHandler implements Handler {
 
     /**
@@ -48,7 +49,6 @@ public abstract class AbstractHandler implements Handler {
     /**
      * 初始化
      */
-    @PostConstruct
     protected void init() {
         // 将handler添加到handlerHolder中
         handlerHolder.putHandler(type, this);
@@ -63,5 +63,24 @@ public abstract class AbstractHandler implements Handler {
     public AbstractHandler(LokiProperties properties, HandlerHolder handlerHolder) {
         this.properties = properties;
         this.handlerHolder = handlerHolder;
+    }
+
+    /**
+     * 校验参数
+     */
+    protected boolean validateParameters(String topic, String body) {
+        if (StringUtils.isEmpty(topic)) {
+            if (log.isErrorEnabled()) {
+                log.error("{}# send message error: topic is null", this.getClass().getSimpleName());
+            }
+            return false;
+        }
+        if (StringUtils.isEmpty(body)) {
+            if (log.isErrorEnabled()) {
+                log.error("{}# send message error: body is null", this.getClass().getSimpleName());
+            }
+            return false;
+        }
+        return true;
     }
 }
