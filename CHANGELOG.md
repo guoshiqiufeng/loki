@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/guoshiqiufeng/loki/compare/v1.1.0...v1.1.1) (2024-03-25)
+
+
+### 🔨 Dependency Upgrades
+
+* Update hutool 5.8.26 ([e52f4cd](https://github.com/guoshiqiufeng/loki/commit/e52f4cd122a8ed548ab3ed206c50e95d1463046f))
+* Update spring 5.3.33 ([e52f4cd](https://github.com/guoshiqiufeng/loki/commit/e52f4cd122a8ed548ab3ed206c50e95d1463046f))
+
 ## [1.1.0](https://github.com/guoshiqiufeng/loki/compare/v1.0.1...v1.1.0) (2024-03-19)
 
 
