@@ -5,45 +5,7 @@ allprojects {
     version APP_VERSION
 }
 
-ext {
-    configuration = [
-            javaVersion = JavaVersion.VERSION_21
-    ]
-
-    libraries = [
-            springBootVersion = '2.7.18',
-            springBoot3Version = '3.2.1',
-            springVersion = '5.3.33',
-            rocketMqClientVersion = '5.2.0',
-            rocketMqClientJavaVersion = '5.0.6',
-            kafkaClientsVersion = '3.7.0',
-            jedisVersion = '5.1.2',
-            hutoolVersion = '5.8.26',
-            opentelemetryVersion = "1.31.0",
-            okhttpVersion = "4.12.0",
-            gsonVersion = "2.10.1",
-            slf4jVersion = "2.0.11",
-            fastjson2Version = "2.0.42",
-            guavaVersion = "33.0.0-jre",
-            logbackVersion = "1.4.14",
-            hamcrestVersion = "2.2",
-            zstdJniVersion = "1.5.5-1",
-    ]
-
-    lib = [
-            "slf4j-api"           : "org.slf4j:slf4j-api:${slf4jVersion}",
-            "kafka-clients"       : "org.apache.kafka:kafka-clients:${kafkaClientsVersion}",
-            "rocketmq-client"     : "org.apache.rocketmq:rocketmq-client:${rocketMqClientVersion}",
-            "rocketmq-client-java": "org.apache.rocketmq:rocketmq-client-java:${rocketMqClientJavaVersion}",
-            "jedis"               : "redis.clients:jedis:${jedisVersion}",
-            "spring-context"      : "org.springframework:spring-context:${springVersion}",
-            "fastjson2"           : "com.alibaba.fastjson2:fastjson2:${fastjson2Version}",
-            "logback-classic"     : "ch.qos.logback:logback-classic:${logbackVersion}",
-            "hutool-all"          : "cn.hutool:hutool-all:${hutoolVersion}",
-            "guava"               : "com.google.guava:guava:${guavaVersion}",
-            "gson"                : "com.google.code.gson:gson:${gsonVersion}",
-    ]
-}
+apply from: 'ext.gradle'
 
 description = "Simplifying mq usage"
 
