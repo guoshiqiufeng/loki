@@ -1,1 +1,3 @@
 io.github.guoshiqiufeng.loki.support.redis.config.RedisAutoConfiguration
+io.github.guoshiqiufeng.loki.support.redis.config.RedisDefaultAutoConfiguration
+io.github.guoshiqiufeng.loki.support.redis.config.RedisSpringDataAutoConfiguration

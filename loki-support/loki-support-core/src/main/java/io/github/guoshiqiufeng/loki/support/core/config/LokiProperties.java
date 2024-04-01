@@ -42,5 +42,6 @@ public class LokiProperties implements Serializable {
     @NestedConfigurationProperty
     private GlobalConfig globalConfig;
 
-
+    @NestedConfigurationProperty
+    private RedisConfig redis;
 }

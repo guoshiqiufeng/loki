@@ -15,6 +15,7 @@
  */
 package io.github.guoshiqiufeng.loki.support.core.config;
 
+import io.github.guoshiqiufeng.loki.enums.RedisSupportType;
 import io.github.guoshiqiufeng.loki.support.core.util.GlobalConfigUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -42,6 +43,7 @@ public class LokiPropertiesAutoConfiguration {
     public LokiProperties lokiProperties() {
         LokiProperties autoConfigurationProperties = new LokiProperties();
         autoConfigurationProperties.setGlobalConfig(GlobalConfigUtils.defaults());
+        autoConfigurationProperties.setRedis(new RedisConfig().setSupportType(RedisSupportType.DEFAULT));
         return autoConfigurationProperties;
     }
 }

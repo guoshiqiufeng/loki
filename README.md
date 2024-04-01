@@ -26,6 +26,7 @@ https://guoshiqiufeng.github.io/loki-doc/en/
 - rocketmq-client-java 5.0.6 (RocketMQ-grpc)
 - kafka-clients 3.7.0
 - jedis 5.1.2
+- spring-data-redis (Optional)
 
 ### Features
 
