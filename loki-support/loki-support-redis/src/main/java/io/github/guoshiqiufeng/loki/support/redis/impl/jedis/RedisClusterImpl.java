@@ -15,7 +15,6 @@
  */
 package io.github.guoshiqiufeng.loki.support.redis.impl.jedis;
 
-import io.github.guoshiqiufeng.loki.support.redis.impl.BaseRedisClient;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.params.SetParams;
