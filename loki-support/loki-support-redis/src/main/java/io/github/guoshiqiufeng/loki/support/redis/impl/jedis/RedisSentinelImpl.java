@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.redis.impl;
+package io.github.guoshiqiufeng.loki.support.redis.impl.jedis;
 
-import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.JedisSentinelPool;
 import redis.clients.jedis.params.SetParams;
 
 import java.util.Set;
 
 /**
- * 集群版redis实现
+ * 哨兵redis实现
  *
  * @author yanghq
  * @version 1.0
- * @since 2023/12/25 17:26
+ * @since 2023/12/25 17:29
  */
-public class RedisClusterImpl extends BaseRedisClient {
+public class RedisSentinelImpl extends BaseJedisClient {
 
-    private final JedisCluster jedisCluster;
+    private final JedisSentinelPool jedisSentinelPool;
 
-    public RedisClusterImpl(JedisCluster jedisCluster) {
-        this.jedisCluster = jedisCluster;
+    public RedisSentinelImpl(JedisSentinelPool jedisSentinelPool) {
+        this.jedisSentinelPool = jedisSentinelPool;
     }
-
 
     /**
      * 发布消息
@@ -46,7 +46,9 @@ public class RedisClusterImpl extends BaseRedisClient {
      */
     @Override
     public long publish(String channel, String message) {
-        return jedisCluster.publish(channel, message);
+        try (Jedis jedis = jedisSentinelPool.getResource()) {
+            return jedis.publish(channel, message);
+        }
     }
 
     /**
@@ -57,7 +59,9 @@ public class RedisClusterImpl extends BaseRedisClient {
      */
     @Override
     public void subscribe(JedisPubSub jedisPubSub, String... channels) {
-        jedisCluster.subscribe(jedisPubSub, channels);
+        try (Jedis jedis = jedisSentinelPool.getResource()) {
+            jedis.subscribe(jedisPubSub, channels);
+        }
     }
 
     /**
@@ -68,7 +72,9 @@ public class RedisClusterImpl extends BaseRedisClient {
      */
     @Override
     public void psubscribe(JedisPubSub jedisPubSub, String... patterns) {
-        jedisCluster.psubscribe(jedisPubSub, patterns);
+        try (Jedis jedis = jedisSentinelPool.getResource()) {
+            jedis.psubscribe(jedisPubSub, patterns);
+        }
     }
 
     /**
@@ -79,19 +85,27 @@ public class RedisClusterImpl extends BaseRedisClient {
      */
     @Override
     public boolean exists(String key) {
-        return jedisCluster.exists(key);
+        try (Jedis jedis = jedisSentinelPool.getResource()) {
+            return jedis.exists(key);
+        }
     }
 
     /**
      * set
      *
-     * @param key    建
-     * @param value  值
-     * @param params 参数
+     * @param key          建
+     * @param value        值
+     * @param expireAtTime 过期时间戳
      */
     @Override
-    public void set(String key, String value, SetParams params) {
-        jedisCluster.set(key, value, params);
+    public void set(String key, String value, Long expireAtTime) {
+        try (Jedis jedis = jedisSentinelPool.getResource()) {
+            if (expireAtTime != null) {
+                jedis.set(key, value, new SetParams().pxAt(expireAtTime));
+            } else {
+                jedis.set(key, value);
+            }
+        }
     }
 
     /**
@@ -103,7 +117,9 @@ public class RedisClusterImpl extends BaseRedisClient {
      */
     @Override
     public void hset(String key, String field, String value) {
-        jedisCluster.hset(key, field, value);
+        try (Jedis jedis = jedisSentinelPool.getResource()) {
+            jedis.hset(key, field, value);
+        }
     }
 
     /**
@@ -115,7 +131,9 @@ public class RedisClusterImpl extends BaseRedisClient {
      */
     @Override
     public String hget(String key, String field) {
-        return jedisCluster.hget(key, field);
+        try (Jedis jedis = jedisSentinelPool.getResource()) {
+            return jedis.hget(key, field);
+        }
     }
 
     /**
@@ -126,7 +144,9 @@ public class RedisClusterImpl extends BaseRedisClient {
      */
     @Override
     public void hdel(String key, String... field) {
-        jedisCluster.hdel(key, field);
+        try (Jedis jedis = jedisSentinelPool.getResource()) {
+            jedis.hdel(key, field);
+        }
     }
 
     /**
@@ -137,6 +157,8 @@ public class RedisClusterImpl extends BaseRedisClient {
      */
     @Override
     public Set<String> hkeys(String key) {
-        return jedisCluster.hkeys(key);
+        try (Jedis jedis = jedisSentinelPool.getResource()) {
+            return jedis.hkeys(key);
+        }
     }
 }

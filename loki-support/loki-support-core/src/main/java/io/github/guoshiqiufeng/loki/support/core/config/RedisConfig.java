@@ -15,33 +15,21 @@
  */
 package io.github.guoshiqiufeng.loki.support.core.config;
 
+import io.github.guoshiqiufeng.loki.enums.RedisSupportType;
 import lombok.Data;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
 /**
- * Loki配置类
- *
  * @author yanghq
  * @version 1.0
- * @since 2023/11/16 09:47
+ * @since 2024/3/26 16:37
  */
 @Data
-public class LokiProperties implements Serializable {
+@Accessors(chain = true)
+public class RedisConfig implements Serializable {
 
-    private static final long serialVersionUID = -6036393369576832795L;
-    /**
-     * 是否启用
-     */
-    private Boolean enabled = true;
+    private RedisSupportType supportType;
 
-    /**
-     * 全局配置
-     */
-    @NestedConfigurationProperty
-    private GlobalConfig globalConfig;
-
-    @NestedConfigurationProperty
-    private RedisConfig redis;
 }

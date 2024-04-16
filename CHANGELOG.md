@@ -1,25 +1,45 @@
 # Changelog
 
-## [1.1.1](https://github.com/guoshiqiufeng/loki/compare/v1.1.0...v1.1.1) (2024-03-26)
-
-
-### 🔨 Dependency Upgrades
-
-* Update hutool 5.8.26 ([e52f4cd](https://github.com/guoshiqiufeng/loki/commit/e52f4cd122a8ed548ab3ed206c50e95d1463046f))
-* Update spring 5.3.33 ([e52f4cd](https://github.com/guoshiqiufeng/loki/commit/e52f4cd122a8ed548ab3ed206c50e95d1463046f))
-
-## [1.1.0](https://github.com/guoshiqiufeng/loki/compare/v1.0.1...v1.1.0) (2024-03-19)
+## [1.2.0](https://github.com/guoshiqiufeng/loki/compare/v1.1.1...v1.2.0) (2024-04-16)
 
 
 ### ⭐ New Features
 
-* redis delivery message ([a3d877d](https://github.com/guoshiqiufeng/loki/commit/a3d877d414e7423d3c2d4ee3978a9f48afaaeac3))
+* redisClient support spring-data-redis ([e12c2e0](https://github.com/guoshiqiufeng/loki/commit/e12c2e0e8c24f209d38166273b00102bde46dd5e))
 
 
 ### 🐞 Bug Fixes
 
-* Optimize message sending ([e584156](https://github.com/guoshiqiufeng/loki/commit/e5841569747930f4e1b7ade8abc0ec0d23661db6))
-* redis handler consumer ([f3d3739](https://github.com/guoshiqiufeng/loki/commit/f3d37393c3996b485ed1ce43c4cfed661fd74b16))
+* Remove invalid code ([e206754](https://github.com/guoshiqiufeng/loki/commit/e206754bcb881ce3b41d0edc34830bf211da0300))
+
+
+### 🔨 Dependency Upgrades
+
+* Update gradle 8.7 ([7792e51](https://github.com/guoshiqiufeng/loki/commit/7792e51b66b1e349c2723baf959001fd3380025b))
+* Update Spring Framework to 5.3.34 ([b189ca3](https://github.com/guoshiqiufeng/loki/commit/b189ca3d2d37c71e498e035a49db718dec96ca69))
+
+## [1.1.1](https://github.com/guoshiqiufeng/loki/compare/v1.1.0...v1.1.1) (2024-03-26)
+
+### 🔨 Dependency Upgrades
+
+* Update hutool
+  5.8.26 ([e52f4cd](https://github.com/guoshiqiufeng/loki/commit/e52f4cd122a8ed548ab3ed206c50e95d1463046f))
+* Update spring
+  5.3.33 ([e52f4cd](https://github.com/guoshiqiufeng/loki/commit/e52f4cd122a8ed548ab3ed206c50e95d1463046f))
+
+## [1.1.0](https://github.com/guoshiqiufeng/loki/compare/v1.0.1...v1.1.0) (2024-03-19)
+
+### ⭐ New Features
+
+* redis delivery
+  message ([a3d877d](https://github.com/guoshiqiufeng/loki/commit/a3d877d414e7423d3c2d4ee3978a9f48afaaeac3))
+
+### 🐞 Bug Fixes
+
+* Optimize message
+  sending ([e584156](https://github.com/guoshiqiufeng/loki/commit/e5841569747930f4e1b7ade8abc0ec0d23661db6))
+* redis handler
+  consumer ([f3d3739](https://github.com/guoshiqiufeng/loki/commit/f3d37393c3996b485ed1ce43c4cfed661fd74b16))
 * zstdJni version ([03f4b75](https://github.com/guoshiqiufeng/loki/commit/03f4b75a5ba6fef21a36a425016d6779ac8288c1))
 
 ## [1.0.1](https://github.com/guoshiqiufeng/loki/compare/v1.0.0...v1.0.1) (2024-03-11)

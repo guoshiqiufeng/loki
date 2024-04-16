@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.redis.impl;
+package io.github.guoshiqiufeng.loki.support.redis.impl.jedis;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -29,7 +29,7 @@ import java.util.Set;
  * @version 1.0
  * @since 2023/12/25 17:34
  */
-public class RedisDefaultImpl extends BaseRedisClient {
+public class RedisDefaultImpl extends BaseJedisClient {
 
     private final JedisPool jedisPool;
 
@@ -93,14 +93,18 @@ public class RedisDefaultImpl extends BaseRedisClient {
     /**
      * set
      *
-     * @param key    建
-     * @param value  值
-     * @param params 参数
+     * @param key          建
+     * @param value        值
+     * @param expireAtTime 过期时间戳
      */
     @Override
-    public void set(String key, String value, SetParams params) {
+    public void set(String key, String value, Long expireAtTime) {
         try (Jedis jedis = jedisPool.getResource()) {
-            jedis.set(key, value, params);
+            if (expireAtTime != null) {
+                jedis.set(key, value, new SetParams().pxAt(expireAtTime));
+            } else {
+                jedis.set(key, value);
+            }
         }
     }
 

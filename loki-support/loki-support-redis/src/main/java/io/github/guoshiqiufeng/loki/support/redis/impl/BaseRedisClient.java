@@ -20,7 +20,6 @@ import cn.hutool.json.JSONUtil;
 import io.github.guoshiqiufeng.loki.MessageContent;
 import io.github.guoshiqiufeng.loki.constant.Constant;
 import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerConfig;
-import io.github.guoshiqiufeng.loki.support.core.consumer.ConsumerRecord;
 import io.github.guoshiqiufeng.loki.support.core.exception.LokiException;
 import io.github.guoshiqiufeng.loki.support.core.pipeline.PipelineUtils;
 import io.github.guoshiqiufeng.loki.support.core.producer.ProducerRecord;
@@ -28,10 +27,7 @@ import io.github.guoshiqiufeng.loki.support.core.producer.ProducerResult;
 import io.github.guoshiqiufeng.loki.support.core.util.StringUtils;
 import io.github.guoshiqiufeng.loki.support.core.util.ThreadPoolUtils;
 import io.github.guoshiqiufeng.loki.support.redis.RedisClient;
-import io.github.guoshiqiufeng.loki.support.redis.consumer.DefaultJedisPubSub;
 import lombok.extern.slf4j.Slf4j;
-import redis.clients.jedis.JedisPubSub;
-import redis.clients.jedis.params.SetParams;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -69,7 +65,7 @@ public abstract class BaseRedisClient implements RedisClient {
         }
         if (producerRecord.getDeliveryTimestamp() != null && producerRecord.getDeliveryTimestamp() > System.currentTimeMillis()) {
             // 定时发送
-            set(Constant.REDIS_KEY_PREFIX + producerRecord.getTopic() + ":" + msgId, producerRecord.getMessage(), new SetParams().pxAt(producerRecord.getDeliveryTimestamp()));
+            set(Constant.REDIS_KEY_PREFIX + producerRecord.getTopic() + ":" + msgId, producerRecord.getMessage(), producerRecord.getDeliveryTimestamp());
             hset(Constant.REDIS_DELIVERY_KEY, Constant.REDIS_KEY_PREFIX + producerRecord.getTopic() + ":" + msgId, JSONUtil.toJsonStr(producerRecord));
             if (log.isDebugEnabled()) {
                 log.debug("publish is delivery, msgId: {}", msgId);
@@ -159,45 +155,7 @@ public abstract class BaseRedisClient implements RedisClient {
      * @param message 消息
      * @return 发布结果
      */
-    abstract long publish(String channel, String message);
-
-    /**
-     * 订阅消息
-     *
-     * @param jedisPubSub 消息处理器
-     * @param channels    频道
-     */
-    abstract public void subscribe(JedisPubSub jedisPubSub, String... channels);
-
-    /**
-     * 订阅消息
-     *
-     * @param jedisPubSub 消息处理器
-     * @param patterns    规则
-     */
-    abstract public void psubscribe(JedisPubSub jedisPubSub, String... patterns);
-
-    /**
-     * 订阅消息
-     *
-     * @param function 回调
-     * @param channels 频道
-     */
-    @Override
-    public void subscribe(Function<ConsumerRecord, Void> function, String... channels) {
-        subscribe(new DefaultJedisPubSub(function), channels);
-    }
-
-    /**
-     * 订阅消息
-     *
-     * @param function 回调
-     * @param patterns 规则
-     */
-    @Override
-    public void psubscribe(Function<ConsumerRecord, Void> function, String... patterns) {
-        psubscribe(new DefaultJedisPubSub(function), patterns);
-    }
+    abstract public long publish(String channel, String message);
 
     /**
      * 判断key是否存在
@@ -210,11 +168,11 @@ public abstract class BaseRedisClient implements RedisClient {
     /**
      * set
      *
-     * @param key    建
-     * @param value  值
-     * @param params 参数
+     * @param key          建
+     * @param value        值
+     * @param expireAtTime 过期时间戳
      */
-    abstract public void set(String key, String value, SetParams params);
+    abstract public void set(String key, String value, Long expireAtTime);
 
     /**
      * hset

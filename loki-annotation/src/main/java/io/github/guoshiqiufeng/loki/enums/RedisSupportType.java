@@ -13,35 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.guoshiqiufeng.loki.support.core.config;
+package io.github.guoshiqiufeng.loki.enums;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
- * Loki配置类
- *
  * @author yanghq
  * @version 1.0
- * @since 2023/11/16 09:47
+ * @since 2024/3/26 16:39
  */
-@Data
-public class LokiProperties implements Serializable {
-
-    private static final long serialVersionUID = -6036393369576832795L;
-    /**
-     * 是否启用
-     */
-    private Boolean enabled = true;
+@Getter
+@AllArgsConstructor
+public enum RedisSupportType {
 
     /**
-     * 全局配置
+     * 默认使用jedis
      */
-    @NestedConfigurationProperty
-    private GlobalConfig globalConfig;
+    DEFAULT("default", "默认实现"),
 
-    @NestedConfigurationProperty
-    private RedisConfig redis;
+    /**
+     * 使用spring data
+     */
+    SPRING_DATA("spring-data", "Spring Data 实现"),
+
+    ;
+
+
+    /**
+     * 值
+     */
+    private final String value;
+
+    /**
+     * 描述
+     */
+    private final String desc;
 }
