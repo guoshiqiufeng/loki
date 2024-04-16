@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.0](https://github.com/guoshiqiufeng/loki/compare/v1.1.1...v1.2.0) (2024-04-16)
+
+
+### ⭐ New Features
+
+* redisClient support spring-data-redis ([e12c2e0](https://github.com/guoshiqiufeng/loki/commit/e12c2e0e8c24f209d38166273b00102bde46dd5e))
+
+
+### 🐞 Bug Fixes
+
+* Remove invalid code ([e206754](https://github.com/guoshiqiufeng/loki/commit/e206754bcb881ce3b41d0edc34830bf211da0300))
+
+
+### 🔨 Dependency Upgrades
+
+* Update gradle 8.7 ([7792e51](https://github.com/guoshiqiufeng/loki/commit/7792e51b66b1e349c2723baf959001fd3380025b))
+* Update Spring Framework to 5.3.34 ([b189ca3](https://github.com/guoshiqiufeng/loki/commit/b189ca3d2d37c71e498e035a49db718dec96ca69))
+
 ## [1.1.1](https://github.com/guoshiqiufeng/loki/compare/v1.1.0...v1.1.1) (2024-03-26)
 
 ### 🔨 Dependency Upgrades
