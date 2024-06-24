@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.1](https://github.com/guoshiqiufeng/loki/compare/v1.2.0...v1.2.1) (2024-06-24)
+
+
+### 🔨 Dependency Upgrades
+
+* Update Gradle to 8.8 ([24e0970](https://github.com/guoshiqiufeng/loki/commit/24e09706063d9f31d1c1f2345fade3a3cefff95f))
+* Update JedisClient to 5.1.3 ([24e0970](https://github.com/guoshiqiufeng/loki/commit/24e09706063d9f31d1c1f2345fade3a3cefff95f))
+* Update rocketmq-client-java to 5.0.7 ([4e928bb](https://github.com/guoshiqiufeng/loki/commit/4e928bba19f9f01893b0413063b22ad05e078ddc))
+* Update Spring Framework to 5.3.37 ([24e0970](https://github.com/guoshiqiufeng/loki/commit/24e09706063d9f31d1c1f2345fade3a3cefff95f))
+
 ## [1.2.0](https://github.com/guoshiqiufeng/loki/compare/v1.1.1...v1.2.0) (2024-04-16)
 
 
